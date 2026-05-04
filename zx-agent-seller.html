@@ -275,7 +275,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
   </div>
   <div class="hero-stats">
     <div class="hst"><span class="hst-n">COD</span><span class="hst-l">Payment Method</span></div>
-    <div class="hst"><span class="hst-n">5+</span><span class="hst-l">Products</span></div>
+    <div class="hst"><span class="hst-n">7+</span><span class="hst-l">Products</span></div>
     <div class="hst"><span class="hst-n">All PK</span><span class="hst-l">Delivery</span></div>
     <div class="hst"><span class="hst-n">0%</span><span class="hst-l">Hidden Charges</span></div>
   </div>
@@ -290,7 +290,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
       <span class="sec-num">01</span>
       <h2 class="sec-title">Our Products</h2>
     </div>
-    <span class="sec-tag">6 Items Available</span>
+    <span class="sec-tag">7 Items Available</span>
   </div>
 
   <div class="products-grid">
@@ -551,6 +551,50 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
       </div>
     </div>
 
+    <!-- TICH BUTTONS CARD -->
+    <div class="prod-card reveal">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="tb-main" src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg" alt="Tich Buttons 50 Pcs" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <span class="prod-badge">New Arrival</span>
+          <span class="prod-sku">SKU: MZ1701200032ALHAGS</span>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="tbSwap(this,'https://i.postimg.cc/GpZkbCBW/1777894125333.jpg')" class="gthumb gthumb-tb active"><img src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/KYdnm2kh/1777894126213.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/KYdnm2kh/1777894126213.jpg"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/Dztq7TWH/1777894129823.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/Dztq7TWH/1777894129823.jpg"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/25P4CDqg/1777894130589.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/25P4CDqg/1777894130589.jpg"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/N0W1QcyW/1777894131554.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/N0W1QcyW/1777894131554.jpg"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/TPZrT6yt/1777894133423.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/TPZrT6yt/1777894133423.jpg"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Sewing &amp; Craft</span>
+        </div>
+        <h3 class="prod-name">Stainless Steel Tich Buttons — 50 Pcs</h3>
+        <p class="prod-desc">Premium stainless steel snap/tich buttons in silver finish. Pack of 50 pieces — perfect for garments, bags, crafts, and DIY sewing projects. Strong, rust-resistant, and easy to press.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Stainless Steel</div></div>
+          <div class="ps-item"><div class="ps-k">Pieces</div><div class="ps-v">50 Pcs</div></div>
+          <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Silver</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price">Rs. 799</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">50 Pcs · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('tichbuttons')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20Stainless%20Steel%20Tich%20Buttons%2050%20Pcs%20(Rs.%20799)" target="_blank" title="WhatsApp">📲</a>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -737,6 +781,12 @@ function flSwap(el, url) {
   el.classList.add('active');
 }
 
+function tbSwap(el, url) {
+  document.getElementById('tb-main').src = url;
+  document.querySelectorAll('.gthumb-tb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
 let currentProduct = 'screwdriver';
 
 function openModal(product) {
@@ -748,9 +798,9 @@ function openModal(product) {
 
   const isFlashlight = product === 'flashlight';
 
-  const titles = { screwdriver: 'Order Screwdriver Set', watch: 'Order Watch', earbuds: 'Order Earbuds', massager: 'Order Massager Gun', cable: 'Order Charging Cable', flashlight: 'Order Flashlight' };
-  const names  = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight' };
-  const prices = { screwdriver: 'Rs. 1,599', watch: 'Rs. 1,099', earbuds: 'Rs. 999', massager: 'Rs. 2,499', cable: 'Rs. 599', flashlight: 'Rs. 599' };
+  const titles = { screwdriver: 'Order Screwdriver Set', watch: 'Order Watch', earbuds: 'Order Earbuds', massager: 'Order Massager Gun', cable: 'Order Charging Cable', flashlight: 'Order Flashlight', tichbuttons: 'Order Tich Buttons' };
+  const names  = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons — 50 Pcs' };
+  const prices = { screwdriver: 'Rs. 1,599', watch: 'Rs. 1,099', earbuds: 'Rs. 999', massager: 'Rs. 2,499', cable: 'Rs. 599', flashlight: 'Rs. 599', tichbuttons: 'Rs. 799' };
 
   document.getElementById('modalTitle').textContent = titles[product];
   document.getElementById('modalProductName').textContent = names[product];
@@ -791,9 +841,9 @@ function submitOrder() {
   btn.disabled = true;
   btn.textContent = 'Opening WhatsApp…';
 
-  const productNames = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Stainless Steel Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight' };
-  const skus         = { screwdriver: 'MZ1293200023CCCEPK', watch: 'MZ1156200080TEWEHB', earbuds: 'MZ2290200004IZMT', massager: 'MZ57800000348GALAXY', cable: 'MZ1155200134SEHB', flashlight: 'MZ1172200470SE' };
-  const productPrices= { screwdriver: 1599, watch: 1099, earbuds: 999, massager: 2499, cable: 599, flashlight: 599 };
+  const productNames = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Stainless Steel Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons — 50 Pcs' };
+  const skus         = { screwdriver: 'MZ1293200023CCCEPK', watch: 'MZ1156200080TEWEHB', earbuds: 'MZ2290200004IZMT', massager: 'MZ57800000348GALAXY', cable: 'MZ1155200134SEHB', flashlight: 'MZ1172200470SE', tichbuttons: 'MZ1701200032ALHAGS' };
+  const productPrices= { screwdriver: 1599, watch: 1099, earbuds: 999, massager: 2499, cable: 599, flashlight: 599, tichbuttons: 799 };
 
   const productName  = productNames[currentProduct];
   const sku          = skus[currentProduct];
