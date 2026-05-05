@@ -917,6 +917,13 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
         <!-- ADD TAB -->
         <div id="tab-add" class="admin-tab-panel active">
 
+          <!-- GitHub Token -->
+          <div class="admin-group">
+            <label class="admin-label">GitHub Token <span style="color:#555;font-size:0.48rem">(saved on your device only)</span></label>
+            <input class="admin-input" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"/>
+            <div class="admin-img-hint">Required to save products for all visitors · Stored only in your browser</div>
+          </div>
+
           <div class="admin-group">
             <label class="admin-label">Product Name *</label>
             <input class="admin-input" id="ap-name" type="text" placeholder="e.g. Electric Kettle 1.8L"/>
@@ -945,12 +952,12 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
             <div class="admin-img-hint">Paste postimg.cc links · Leave extra fields blank</div>
           </div>
 
-          <button class="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
+          <button class="btn-add-product" id="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
 
           <div class="admin-success" id="adminSuccess">
-            <div class="admin-success-ico">✅</div>
-            <div class="admin-success-title">Product Added!</div>
-            <div class="admin-success-sub">Scroll down to see your new product in the store.</div>
+            <div class="admin-success-ico" id="adminSuccessIco">⏳</div>
+            <div class="admin-success-title" id="adminSuccessTitle">Publishing…</div>
+            <div class="admin-success-sub" id="adminSuccessSub">Saving to GitHub, please wait ~30 seconds.</div>
           </div>
 
         </div>
@@ -1333,11 +1340,19 @@ function addProductToPage() {
   const desc  = document.getElementById('ap-desc').value.trim();
   const price = document.getElementById('ap-price').value.trim();
   const imgs  = [1,2,3,4,5,6].map(i => document.getElementById('img-'+i).value.trim()).filter(Boolean);
+  const token = document.getElementById('gh-token').value.trim() || localStorage.getItem('zx_gh_token') || '';
 
   if (!name || !price || !imgs[0]) {
     alert('⚠️ Please fill in Product Name, Price, and at least one Image link.');
     return;
   }
+  if (!token) {
+    alert('⚠️ Please enter your GitHub Token so the product can be saved for all visitors.');
+    return;
+  }
+
+  // Save token for next time
+  localStorage.setItem('zx_gh_token', token);
 
   const id = 'p' + Date.now();
   const formattedPrice = parseInt(price).toLocaleString('en-PK');
@@ -1347,13 +1362,26 @@ function addProductToPage() {
   let thumbsHTML = '';
   if (imgs.length > 1) {
     thumbsHTML = `<div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">`;
-    imgs.forEach((url, i) => {
-      thumbsHTML += `<div onclick="dynSwap(this,'${id}-main','${id}','${url}')" class="gthumb gthumb-${id}${i===0?' active':''}"><img src="${url}" loading="lazy"/></div>`;
+    imgs.forEach((url, idx) => {
+      thumbsHTML += `<div onclick="dynSwap(this,'${id}-main','${id}','${url}')" class="gthumb gthumb-${id}${idx===0?' active':''}"><img src="${url}" loading="lazy"/></div>`;
     });
     thumbsHTML += `</div>`;
   }
 
-  // Build full card HTML
+  // Build card HTML to inject into file
+  const cardHTML = `\n    <!-- PRODUCT: ${name} -->\n    <div class="prod-card reveal">\n      <div class="prod-img-wrap" style="aspect-ratio:unset">\n        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">\n          <img id="${id}-main" src="${imgs[0]}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('${imgs[0]}')"/>\n          <span class="prod-badge">New Arrival</span>\n        </div>\n        ${thumbsHTML}\n      </div>\n      <div class="prod-body">\n        <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat">ZX Agent Seller</span></div>\n        <h3 class="prod-name">${name}</h3>\n        <p class="prod-desc">${desc}</p>\n        <div class="prod-price-row"><div><div class="prod-price-label">Price</div><div class="prod-price">Rs. ${formattedPrice}</div></div><div class="prod-price-pkg" style="margin-left:auto">1 Pc &middot; Free Delivery</div></div>\n        <div class="prod-footer">\n          <button class="btn-order" onclick="openDynModal('${id}','${name.replace(/'/g,"\\'")}','Rs. ${formattedPrice}')">Order Now</button>\n          <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp">&#128242;</a>\n        </div>\n      </div>\n    </div>`;
+
+  // Show publishing state
+  const btn = document.getElementById('btn-add-product');
+  btn.disabled = true;
+  btn.textContent = '⏳ Publishing…';
+  const successDiv = document.getElementById('adminSuccess');
+  successDiv.style.display = 'block';
+  document.getElementById('adminSuccessIco').textContent = '⏳';
+  document.getElementById('adminSuccessTitle').textContent = 'Publishing…';
+  document.getElementById('adminSuccessSub').textContent = 'Saving to GitHub, please wait…';
+
+  // Also show on page immediately for you
   const card = document.createElement('div');
   card.className = 'prod-card reveal';
   card.innerHTML = `
@@ -1361,125 +1389,186 @@ function addProductToPage() {
       <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
         <img id="${id}-main" src="${imgs[0]}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('${imgs[0]}')"/>
         <span class="prod-badge">New Arrival</span>
-      </div>
-      ${thumbsHTML}
-    </div>
+      </div>${thumbsHTML}</div>
     <div class="prod-body">
-      <div class="prod-tag-row">
-        <span class="prod-dot"></span>
-        <span class="prod-cat">ZX Agent Seller</span>
-      </div>
+      <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat">ZX Agent Seller</span></div>
       <h3 class="prod-name">${name}</h3>
       <p class="prod-desc">${desc}</p>
-      <div class="prod-price-row">
-        <div>
-          <div class="prod-price-label">Price</div>
-          <div class="prod-price">Rs. ${formattedPrice}</div>
-        </div>
-        <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
-      </div>
+      <div class="prod-price-row"><div><div class="prod-price-label">Price</div><div class="prod-price">Rs. ${formattedPrice}</div></div><div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div></div>
       <div class="prod-footer">
         <button class="btn-order" onclick="openDynModal('${id}','${name.replace(/'/g,"\\'")}','Rs. ${formattedPrice}')">Order Now</button>
         <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp">📲</a>
       </div>
     </div>`;
-
   document.querySelector('.products-grid').appendChild(card);
+  setTimeout(() => card.classList.add('visible'), 80);
 
-  // Trigger scroll reveal
-  setTimeout(() => { card.classList.add('visible'); }, 80);
-
-  // Save to localStorage
-  saveProduct({ id, name, desc, price, imgs });
-
-  // Show success, reset form
-  document.getElementById('adminSuccess').style.display = 'block';
-  ['ap-name','ap-desc','ap-price','img-1','img-2','img-3','img-4','img-5','img-6'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-
-  setTimeout(() => closeAdminPanel(), 1800);
-}
-
-// ── LOCALSTORAGE PERSISTENCE ──
-function saveProduct(data) {
-  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
-  products.push(data);
-  localStorage.setItem('zx_products', JSON.stringify(products));
-}
-
-function renderSavedProducts() {
-  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
-  products.forEach(({ id, name, desc, price, imgs }) => {
-    const formattedPrice = parseInt(price).toLocaleString('en-PK');
-    const waText = encodeURIComponent(`Hi, I want to order ${name} (Rs. ${formattedPrice})`);
-
-    let thumbsHTML = '';
-    if (imgs.length > 1) {
-      thumbsHTML = `<div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">`;
-      imgs.forEach((url, i) => {
-        thumbsHTML += `<div onclick="dynSwap(this,'${id}-main','${id}','${url}')" class="gthumb gthumb-${id}${i===0?' active':''}"><img src="${url}" loading="lazy"/></div>`;
+  // Push to GitHub
+  pushToGitHub(cardHTML, token, name)
+    .then(() => {
+      document.getElementById('adminSuccessIco').textContent = '✅';
+      document.getElementById('adminSuccessTitle').textContent = 'Published!';
+      document.getElementById('adminSuccessSub').textContent = 'Live for all visitors in ~30 seconds. Refreshing…';
+      ['ap-name','ap-desc','ap-price','img-1','img-2','img-3','img-4','img-5','img-6'].forEach(fid => {
+        document.getElementById(fid).value = '';
       });
-      thumbsHTML += `</div>`;
+      btn.disabled = false;
+      btn.textContent = '+ Add Product to Store';
+      setTimeout(() => { closeAdminPanel(); location.reload(); }, 3000);
+    })
+    .catch(err => {
+      document.getElementById('adminSuccessIco').textContent = '❌';
+      document.getElementById('adminSuccessTitle').textContent = 'GitHub Error';
+      document.getElementById('adminSuccessSub').textContent = err.message || 'Check your token and try again.';
+      btn.disabled = false;
+      btn.textContent = '+ Add Product to Store';
+    });
+}
+
+// ── GITHUB API ──
+const GH_USER = 'z1sx1';
+const GH_REPO = 'ZX-Agent-Store';
+const GH_FILE = 'zx-agent-seller.html';
+const GH_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+
+async function pushToGitHub(cardHTML, token, productName) {
+  // 1. Get current file content + SHA
+  const getRes = await fetch(GH_API, {
+    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!getRes.ok) {
+    const err = await getRes.json();
+    throw new Error(err.message || 'Could not fetch file from GitHub. Check your token.');
+  }
+  const fileData = await getRes.json();
+  const sha = fileData.sha;
+  const currentHTML = atob(fileData.content.replace(/\n/g, ''));
+
+  // 2. Inject new card before closing </div> of products-grid
+  const INJECT_MARKER = '\n\n  </div>\n</section>\n\n<!-- FEATURES STRIP -->';
+  if (!currentHTML.includes(INJECT_MARKER)) {
+    throw new Error('Could not find injection point in HTML. File may have been modified.');
+  }
+  const newHTML = currentHTML.replace(INJECT_MARKER, cardHTML + '\n\n  </div>\n</section>\n\n<!-- FEATURES STRIP -->');
+
+  // 3. Push updated file
+  const putRes = await fetch(GH_API, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: `Add product: ${productName}`,
+      content: btoa(unescape(encodeURIComponent(newHTML))),
+      sha: sha
+    })
+  });
+  if (!putRes.ok) {
+    const err = await putRes.json();
+    throw new Error(err.message || 'Failed to push to GitHub.');
+  }
+}
+
+// ── LOAD SAVED TOKEN ──
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('zx_gh_token');
+  if (saved) { const el = document.getElementById('gh-token'); if(el) el.value = saved; }
+});
+
+// ── DELETE PRODUCT (also push deletion to GitHub) ──
+async function deleteProduct(id) {
+  if (!confirm('Delete this product from the store?')) return;
+  const token = localStorage.getItem('zx_gh_token') || '';
+  if (!token) { alert('⚠️ GitHub token not found. Open admin panel and enter your token first.'); return; }
+
+  // Fade out card from DOM
+  const card = document.querySelector(`[id="${id}-main"]`)?.closest('.prod-card');
+  if (card) {
+    card.style.transition = 'opacity 0.35s,transform 0.35s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => card.remove(), 380);
+  }
+
+  showToast('⏳ Deleting from GitHub…');
+
+  try {
+    const getRes = await fetch(GH_API, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    const fileData = await getRes.json();
+    const sha = fileData.sha;
+    let html = atob(fileData.content.replace(/\n/g, ''));
+
+    // Remove the product card block from HTML
+    const startMarker = `<!-- PRODUCT: `;
+    const startIdx = html.indexOf(`<!-- PRODUCT:`);
+    // Find and remove the specific card by its img id
+    const imgMarker = `id="${id}-main"`;
+    const imgIdx = html.indexOf(imgMarker);
+    if (imgIdx !== -1) {
+      // Find the opening <div class="prod-card reveal"> before imgIdx
+      const cardOpen = html.lastIndexOf('<div class="prod-card reveal">', imgIdx);
+      // Find the closing </div>\n    </div> after imgIdx  (prod-body close + prod-card close)
+      let depth = 0, i = cardOpen, cardClose = -1;
+      while (i < html.length) {
+        if (html.slice(i, i+4) === '<div') depth++;
+        if (html.slice(i, i+6) === '</div>') { depth--; if (depth === 0) { cardClose = i + 6; break; } }
+        i++;
+      }
+      if (cardClose !== -1) {
+        // Also remove the comment line before it
+        const commentStart = html.lastIndexOf('\n    <!-- PRODUCT:', imgIdx);
+        const removeFrom = commentStart !== -1 ? commentStart : cardOpen - 1;
+        html = html.slice(0, removeFrom) + html.slice(cardClose);
+      }
     }
 
-    const card = document.createElement('div');
-    card.className = 'prod-card reveal visible';
-    card.innerHTML = `
-      <div class="prod-img-wrap" style="aspect-ratio:unset">
-        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="${id}-main" src="${imgs[0]}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('${imgs[0]}')"/>
-          <span class="prod-badge">New Arrival</span>
-        </div>
-        ${thumbsHTML}
-      </div>
-      <div class="prod-body">
-        <div class="prod-tag-row">
-          <span class="prod-dot"></span>
-          <span class="prod-cat">ZX Agent Seller</span>
-        </div>
-        <h3 class="prod-name">${name}</h3>
-        <p class="prod-desc">${desc}</p>
-        <div class="prod-price-row">
-          <div>
-            <div class="prod-price-label">Price</div>
-            <div class="prod-price">Rs. ${formattedPrice}</div>
-          </div>
-          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
-        </div>
-        <div class="prod-footer">
-          <button class="btn-order" onclick="openDynModal('${id}','${name.replace(/'/g,"\\'")}','Rs. ${formattedPrice}')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp">📲</a>
-        </div>
-      </div>`;
+    const putRes = await fetch(GH_API, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Delete product ${id}`, content: btoa(unescape(encodeURIComponent(html))), sha })
+    });
+    if (!putRes.ok) throw new Error('GitHub push failed');
+    showToast('✅ Deleted — live in ~30 seconds');
+    renderDeleteList();
+  } catch(e) {
+    showToast('❌ Delete failed: ' + (e.message || 'unknown error'));
+  }
+}
 
-    document.querySelector('.products-grid').appendChild(card);
+function renderDeleteList() {
+  // Scan current DOM for dynamically added product cards
+  const list = document.getElementById('del-product-list');
+  const dynCards = [...document.querySelectorAll('.prod-card')].filter(c => {
+    const img = c.querySelector('img[id]');
+    return img && img.id && img.id.startsWith('p') && /^p\d+/.test(img.id.replace('-main',''));
   });
-}
 
-// Load saved products on page start
-renderSavedProducts();
+  if (dynCards.length === 0) {
+    list.innerHTML = '<div class="del-empty">No added products found.</div>';
+    return;
+  }
 
-// Universal thumb swap for dynamically added products
-function dynSwap(el, imgId, groupId, url) {
-  document.getElementById(imgId).src = url;
-  document.querySelectorAll('.gthumb-' + groupId).forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-}
-
-// Modal support for dynamically added products
-function openDynModal(id, name, price) {
-  currentProduct = '__dyn__' + id;
-  document.getElementById('modalTitle').textContent = 'Order ' + name;
-  document.getElementById('modalProductName').textContent = name;
-  document.getElementById('modalProductPrice').textContent = price;
-  document.getElementById('colorGroup').style.display = 'none';
-  document.getElementById('orderForm').style.display = 'block';
-  document.getElementById('successScreen').classList.remove('show');
-  document.getElementById('submitBtn').disabled = false;
-  document.getElementById('submitBtn').innerHTML = '<span>📲</span> Confirm Order via WhatsApp';
-  document.getElementById('modalOverlay').classList.add('active');
-  document.body.style.overflow = 'hidden';
+  list.innerHTML = dynCards.map(card => {
+    const img = card.querySelector('img[id]');
+    const pid = img.id.replace('-main','');
+    const pname = card.querySelector('.prod-name')?.textContent || 'Product';
+    const pprice = card.querySelector('.prod-price')?.textContent || '';
+    return `
+      <div class="del-item" id="del-row-${pid}">
+        <div class="del-item-info">
+          <img class="del-item-thumb" src="${img.src}" onerror="this.style.display='none'"/>
+          <div>
+            <div class="del-item-name">${pname}</div>
+            <div class="del-item-price">${pprice}</div>
+          </div>
+        </div>
+        <button class="btn-del-item" onclick="deleteProduct('${pid}')">Delete</button>
+      </div>`;
+  }).join('');
 }
 
 // Scroll reveal
