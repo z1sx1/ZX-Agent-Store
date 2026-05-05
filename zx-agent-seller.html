@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ZX Agent Seller â Official Store</title>
+<title>ZX Agent Seller — Official Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -23,17 +23,17 @@
 html{scroll-behavior:smooth}
 body{font-family:'Space Grotesk',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden}
 
-/* ââ GRAIN ââ */
+/* ── GRAIN ── */
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4}
 
-/* ââ TOP TICKER ââ */
+/* ── TOP TICKER ── */
 .ticker{background:var(--white);color:var(--black);padding:9px 0;overflow:hidden;white-space:nowrap}
 .ticker-inner{display:inline-block;animation:ticker 28s linear infinite}
 @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .ticker span{font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;margin:0 2.5rem}
 .ticker-dot{opacity:0.4}
 
-/* ââ NAV ââ */
+/* ── NAV ── */
 nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(0,0,0,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
 .nav-left{display:flex;align-items:center;gap:0.8rem}
 .logo-box{width:36px;height:36px;background:var(--white);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -47,7 +47,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .nav-wa{background:var(--white);color:var(--black);border:none;padding:0.5rem 1.3rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem}
 .nav-wa:hover{opacity:0.85;transform:scale(1.04)}
 
-/* ââ HERO ââ */
+/* ── HERO ── */
 .hero{min-height:82vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 3rem 4rem;position:relative;overflow:hidden}
 .hero-wm{position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:26rem;color:rgba(255,255,255,0.018);line-height:1;pointer-events:none;user-select:none;white-space:nowrap}
 .hero-eyebrow{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border-md);padding:0.3rem 1rem;display:inline-block;margin-bottom:2rem;animation:fadeUp 0.6s ease both}
@@ -67,12 +67,12 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .hst-l{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-/* ââ SECTION DIVIDER ââ */
+/* ── SECTION DIVIDER ── */
 .sdiv{display:flex;align-items:center;gap:1.5rem;padding:0 3rem;margin:3rem 0}
 .sdiv-line{flex:1;height:1px;background:var(--border)}
 .sdiv-lbl{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 
-/* ââ PRODUCTS GRID ââ */
+/* ── PRODUCTS GRID ── */
 .products-section{padding:2rem 3rem 6rem}
 .sec-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3rem}
 .sec-num{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:0.12em;margin-right:1rem}
@@ -80,7 +80,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .sec-tag{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border-md);padding:0.28rem 0.8rem}
 .products-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
 
-/* ââ PRODUCT CARD ââ */
+/* ── PRODUCT CARD ── */
 .prod-card{background:var(--dark);display:flex;flex-direction:column;position:relative;overflow:hidden;transition:background 0.3s}
 .prod-card:hover{background:var(--card)}
 .prod-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--white);transition:width 0.4s}
@@ -111,7 +111,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .btn-wa{background:transparent;color:var(--white);border:1px solid var(--border-md);padding:0.85rem 1.2rem;font-size:0.9rem;cursor:pointer;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;justify-content:center}
 .btn-wa:hover{border-color:var(--border-strong);background:rgba(255,255,255,0.05)}
 
-/* ââ FEATURES STRIP ââ */
+/* ── FEATURES STRIP ── */
 .features-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .feat{background:var(--dark);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background 0.2s}
 .feat:last-child{border-right:none}
@@ -120,7 +120,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .feat-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem}
 .feat-sub{font-size:0.78rem;color:var(--muted);line-height:1.5}
 
-/* ââ WHY SECTION ââ */
+/* ── WHY SECTION ── */
 .why-section{padding:6rem 3rem;background:var(--dark);position:relative;overflow:hidden}
 .why-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
 .why-grid{display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start}
@@ -138,7 +138,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .wc-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:0.5rem}
 .wc-body{font-size:0.82rem;color:var(--muted);line-height:1.65}
 
-/* ââ CTA BANNER ââ */
+/* ── CTA BANNER ── */
 .cta-banner{padding:7rem 3rem;text-align:center;position:relative;overflow:hidden;border-top:1px solid var(--border)}
 .cta-wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Bebas Neue',sans-serif;font-size:18rem;color:rgba(255,255,255,0.015);pointer-events:none;white-space:nowrap}
 .cta-eyebrow{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;position:relative}
@@ -146,7 +146,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .cta-sub{color:var(--muted);font-size:1rem;margin-bottom:2.5rem;position:relative;max-width:420px;margin-left:auto;margin-right:auto}
 .cta-btns{display:flex;gap:1rem;justify-content:center;position:relative}
 
-/* ââ FOOTER ââ */
+/* ── FOOTER ── */
 footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;background:var(--dark)}
 .foot-left{display:flex;align-items:center;gap:0.8rem}
 .foot-right{text-align:right}
@@ -155,7 +155,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .foot-wa{color:var(--white);font-size:0.75rem}
 .foot-wa:hover{color:var(--off)}
 
-/* ââ MODAL ââ */
+/* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.active{display:flex}
 .modal{background:var(--dark);border:1px solid var(--border-md);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;animation:modalIn 0.3s ease}
@@ -185,18 +185,18 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .success-msg{font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:2rem}
 .wa-badge{display:inline-flex;align-items:center;gap:0.5rem;font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;color:var(--muted);border:1px solid var(--border-md);padding:0.4rem 1rem}
 
-/* ââ GALLERY THUMBS ââ */
+/* ── GALLERY THUMBS ── */
 .gthumb{width:58px;height:58px;flex-shrink:0;border:1px solid var(--border-md);cursor:pointer;overflow:hidden;transition:border-color 0.2s}
 .gthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
 .gthumb:hover{border-color:var(--border-strong)}
 .gthumb:hover img{transform:scale(1.08)}
 .gthumb.active{border-color:var(--white)}
 
-/* ââ SCROLL REVEAL ââ */
+/* ── SCROLL REVEAL ── */
 .reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s cubic-bezier(.22,1,.36,1),transform 0.7s cubic-bezier(.22,1,.36,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
-/* ââ PAGE LOADER ââ */
+/* ── PAGE LOADER ── */
 #page-loader{position:fixed;inset:0;background:var(--black);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;transition:opacity 0.5s ease,visibility 0.5s ease}
 #page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .loader-logo{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:0.3em;animation:loaderPulse 1.2s ease-in-out infinite}
@@ -205,13 +205,13 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .loader-bar{height:100%;width:0;background:var(--white);animation:loaderFill 1.4s ease forwards}
 @keyframes loaderFill{0%{width:0}60%{width:80%}100%{width:100%}}
 
-/* ââ CURSOR GLOW (desktop) ââ */
+/* ── CURSOR GLOW (desktop) ── */
 #cursor-glow{position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.045) 0%,transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0}
 
-/* ââ SCROLL PROGRESS BAR ââ */
+/* ── SCROLL PROGRESS BAR ── */
 #scroll-prog{position:fixed;top:0;left:0;height:2px;background:var(--white);z-index:600;width:0%;transition:width 0.1s linear}
 
-/* ââ PRODUCT CARD ENHANCED ââ */
+/* ── PRODUCT CARD ENHANCED ── */
 .prod-card{transition:background 0.35s,transform 0.35s cubic-bezier(.22,1,.36,1),box-shadow 0.35s}
 .prod-card:hover{background:var(--card);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
 .prod-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--white),rgba(255,255,255,0.3));transition:width 0.5s cubic-bezier(.22,1,.36,1)}
@@ -219,51 +219,51 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .prod-img-wrap img{transition:transform 0.7s cubic-bezier(.22,1,.36,1),filter 0.5s}
 .prod-card:hover .prod-img-wrap img{transform:scale(1.07);filter:grayscale(0%)}
 
-/* ââ QUICK VIEW OVERLAY ââ */
+/* ── QUICK VIEW OVERLAY ── */
 .prod-quick-view{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);padding:0.65rem;text-align:center;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--white);transform:translateY(100%);transition:transform 0.35s cubic-bezier(.22,1,.36,1);cursor:pointer;border:none;width:100%;z-index:2}
 .prod-img-wrap:hover .prod-quick-view{transform:translateY(0)}
 
-/* ââ TOAST NOTIFICATION ââ */
+/* ── TOAST NOTIFICATION ── */
 #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--white);color:var(--black);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.14em;padding:0.75rem 1.6rem;z-index:8000;opacity:0;transition:all 0.4s cubic-bezier(.22,1,.36,1);white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ââ BACK TO TOP ââ */
+/* ── BACK TO TOP ── */
 #back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;background:var(--white);color:var(--black);border:none;cursor:pointer;font-size:1.1rem;z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(20px);transition:all 0.35s cubic-bezier(.22,1,.36,1);pointer-events:none}
 #back-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
 #back-top:hover{background:var(--off);transform:translateY(-3px)}
 
-/* ââ TICKER PAUSE ON HOVER ââ */
+/* ── TICKER PAUSE ON HOVER ── */
 .ticker:hover .ticker-inner{animation-play-state:paused}
 
-/* ââ NAV ACTIVE INDICATOR ââ */
+/* ── NAV ACTIVE INDICATOR ── */
 .nav-link{position:relative}
 .nav-link.active::after{content:'';position:absolute;bottom:-2px;left:0.9rem;right:0.9rem;height:1px;background:var(--white)}
 
-/* ââ PRICE PULSE ââ */
+/* ── PRICE PULSE ── */
 @keyframes pricePop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
 .prod-price.pop{animation:pricePop 0.4s ease}
 
-/* ââ IMAGE ZOOM MODAL ââ */
+/* ── IMAGE ZOOM MODAL ── */
 #img-zoom-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:5000;display:none;align-items:center;justify-content:center;cursor:zoom-out}
 #img-zoom-overlay.active{display:flex}
 #img-zoom-img{max-width:92vw;max-height:88vh;object-fit:contain;animation:zoomIn 0.3s cubic-bezier(.22,1,.36,1)}
 @keyframes zoomIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
 #img-zoom-close{position:absolute;top:1.5rem;right:1.5rem;background:none;border:1px solid rgba(255,255,255,0.25);color:var(--white);width:36px;height:36px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center}
 
-/* ââ RIPPLE on buttons ââ */
+/* ── RIPPLE on buttons ── */
 .btn-order,.btn-white,.btn-submit{position:relative;overflow:hidden}
 .ripple{position:absolute;border-radius:50%;transform:scale(0);animation:rippleAnim 0.55s linear;background:rgba(0,0,0,0.18);pointer-events:none}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 
-/* ââ STAGGER DELAYS ââ */
+/* ── STAGGER DELAYS ── */
 .stagger-1{transition-delay:0.05s}
 .stagger-2{transition-delay:0.13s}
 .stagger-3{transition-delay:0.21s}
 .stagger-4{transition-delay:0.29s}
 
-/* ââ ADMIN PANEL ââ */
+/* ── ADMIN PANEL ── */
 .admin-trigger{background:none;border:none;color:transparent;cursor:default;font-size:0.58rem;padding:2px 4px;user-select:none;position:relative}
-.admin-trigger::after{content:'Â©';color:var(--muted);font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.12em}
+.admin-trigger::after{content:'©';color:var(--muted);font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.12em}
 .admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);backdrop-filter:blur(12px);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem}
 .admin-overlay.active{display:flex}
 .admin-modal{background:#0a0a0a;border:1px solid rgba(255,255,255,0.18);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;animation:modalIn 0.3s ease}
@@ -310,7 +310,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .admin-success-sub{font-size:0.82rem;color:var(--muted)}
 @media(max-width:600px){.admin-body{padding:1.2rem}}
 
-/* ââ RESPONSIVE ââ */
+/* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:1rem 1.5rem}
   .nav-mid{display:none}
@@ -352,24 +352,24 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 <!-- TOAST -->
 <div id="toast"></div>
 <!-- BACK TO TOP -->
-<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">â</button>
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
 <!-- IMAGE ZOOM OVERLAY -->
 <div id="img-zoom-overlay" onclick="closeZoom()">
   <img id="img-zoom-img" src="" alt=""/>
-  <button id="img-zoom-close" onclick="closeZoom()">â</button>
+  <button id="img-zoom-close" onclick="closeZoom()">✕</button>
 </div>
 
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner">
-    <span>ZX AGENT SELLER</span><span class="ticker-dot">â</span>
-    <span>CASH ON DELIVERY</span><span class="ticker-dot">â</span>
-    <span>WHATSAPP SUPPORT 9AMâ10PM</span><span class="ticker-dot">â</span>
-    <span>HALAL BUSINESS</span><span class="ticker-dot">â</span>
-    <span>ZX AGENT SELLER</span><span class="ticker-dot">â</span>
-    <span>CASH ON DELIVERY</span><span class="ticker-dot">â</span>
-    <span>WHATSAPP SUPPORT 9AMâ10PM</span><span class="ticker-dot">â</span>
-    <span>HALAL BUSINESS</span><span class="ticker-dot">â</span>
+    <span>ZX AGENT SELLER</span><span class="ticker-dot">◆</span>
+    <span>CASH ON DELIVERY</span><span class="ticker-dot">◆</span>
+    <span>WHATSAPP SUPPORT 9AM–10PM</span><span class="ticker-dot">◆</span>
+    <span>HALAL BUSINESS</span><span class="ticker-dot">◆</span>
+    <span>ZX AGENT SELLER</span><span class="ticker-dot">◆</span>
+    <span>CASH ON DELIVERY</span><span class="ticker-dot">◆</span>
+    <span>WHATSAPP SUPPORT 9AM–10PM</span><span class="ticker-dot">◆</span>
+    <span>HALAL BUSINESS</span><span class="ticker-dot">◆</span>
   </div>
 </div>
 
@@ -385,9 +385,9 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <a class="nav-link" href="https://wa.me/923182756013" target="_blank">Contact</a>
   </div>
   <div class="nav-right">
-    <span class="nav-badge">Official Store ðµð°</span>
+    <span class="nav-badge">Official Store 🇵🇰</span>
     <a class="nav-wa" href="https://wa.me/923182756013" target="_blank">
-      <span>ð²</span> WhatsApp
+      <span>📲</span> WhatsApp
     </a>
   </div>
 </nav>
@@ -395,7 +395,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 <!-- HERO -->
 <section class="hero">
   <div class="hero-wm">STORE</div>
-  <div class="hero-eyebrow">Official Store â Pakistan ðµð°</div>
+  <div class="hero-eyebrow">Official Store — Pakistan 🇵🇰</div>
   <h1 class="hero-title">
     <span class="solid">Premium</span>
     <span class="outline">Products</span>
@@ -435,7 +435,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <img id="sd-main" src="https://i.postimg.cc/XYYBV7qp/1776024119629.jpg" alt="Screwdriver Set" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/XYYBV7qp/1776024119629.jpg')"/>
           <span class="prod-badge">Best Seller</span>
           <span class="prod-sku">SKU: MZ1293200023</span>
-          <button class="prod-quick-view" onclick="event.stopPropagation()">ð Tap image to zoom</button>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="sdSwap(this,'https://i.postimg.cc/XYYBV7qp/1776024119629.jpg')" class="gthumb gthumb-sd active"><img src="https://i.postimg.cc/XYYBV7qp/1776024119629.jpg"/></div>
@@ -456,18 +456,18 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <div class="ps-item"><div class="ps-k">Pieces</div><div class="ps-v">12 Pcs</div></div>
           <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Chrome Vanadium</div></div>
           <div class="ps-item"><div class="ps-k">Tip Types</div><div class="ps-v">Flat + Phillips</div></div>
-          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD Â· All PK</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
         </div>
         <div class="prod-price-row">
           <div>
             <div class="prod-price-label">Price</div>
             <div class="prod-price">Rs. 1,599</div>
           </div>
-          <div class="prod-price-pkg" style="margin-left:auto">Full Set Â· Free Delivery</div>
+          <div class="prod-price-pkg" style="margin-left:auto">Full Set · Free Delivery</div>
         </div>
         <div class="prod-footer">
           <button class="btn-order" onclick="openModal('screwdriver')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%2012-Piece%20Screwdriver%20Set%20(Rs.%201%2C599)" target="_blank" title="WhatsApp">ð²</a>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%2012-Piece%20Screwdriver%20Set%20(Rs.%201%2C599)" target="_blank" title="WhatsApp">📲</a>
         </div>
       </div>
     </div>
@@ -479,7 +479,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <img id="w-main" src="https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg" alt="Chronograph Watch" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1156200080</span>
-          <button class="prod-quick-view" onclick="event.stopPropagation()">ð Tap image to zoom</button>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="wSwap(this,'https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg')" class="gthumb gthumb-w active"><img src="https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg"/></div>
@@ -499,18 +499,18 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Stainless Steel</div></div>
           <div class="ps-item"><div class="ps-k">Strap</div><div class="ps-v">Chain Strap</div></div>
           <div class="ps-item"><div class="ps-k">Colors</div><div class="ps-v">5 Variants</div></div>
-          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD Â· All PK</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
         </div>
         <div class="prod-price-row">
           <div>
             <div class="prod-price-label">Price</div>
             <div class="prod-price">Rs. 1,099</div>
           </div>
-          <div class="prod-price-pkg" style="margin-left:auto">1 Pc Â· Free Delivery</div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
         </div>
         <div class="prod-footer">
           <button class="btn-order" onclick="openModal('watch')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Chronograph%20Watch%20(Rs.%201%2C099)" target="_blank" title="WhatsApp">ð²</a>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Chronograph%20Watch%20(Rs.%201%2C099)" target="_blank" title="WhatsApp">📲</a>
         </div>
       </div>
     </div>
@@ -522,7 +522,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <img id="eb-main" src="https://i.postimg.cc/x1PrxRnr/1776069221987.jpg" alt="Bluetooth Earbuds" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/x1PrxRnr/1776069221987.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ2290200004</span>
-          <button class="prod-quick-view" onclick="event.stopPropagation()">ð Tap image to zoom</button>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="ebSwap(this,'https://i.postimg.cc/x1PrxRnr/1776069221987.jpg')" class="gthumb gthumb-eb active"><img src="https://i.postimg.cc/x1PrxRnr/1776069221987.jpg"/></div>
@@ -542,18 +542,18 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <div class="ps-item"><div class="ps-k">Bluetooth</div><div class="ps-v">v5.1</div></div>
           <div class="ps-item"><div class="ps-k">Call Time</div><div class="ps-v">15 Hours</div></div>
           <div class="ps-item"><div class="ps-k">Battery</div><div class="ps-v">250 mAh</div></div>
-          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD Â· All PK</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
         </div>
         <div class="prod-price-row">
           <div>
             <div class="prod-price-label">Price</div>
             <div class="prod-price">Rs. 999</div>
           </div>
-          <div class="prod-price-pkg" style="margin-left:auto">Full Set Â· Free Delivery</div>
+          <div class="prod-price-pkg" style="margin-left:auto">Full Set · Free Delivery</div>
         </div>
         <div class="prod-footer">
           <button class="btn-order" onclick="openModal('earbuds')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Bluetooth%20Earbuds%20(Rs.%20999)" target="_blank" title="WhatsApp">ð²</a>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Bluetooth%20Earbuds%20(Rs.%20999)" target="_blank" title="WhatsApp">📲</a>
         </div>
       </div>
     </div>
@@ -565,7 +565,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <img id="mg-main" src="https://i.postimg.cc/pTNmV6VF/1777464197971.webp" alt="Mini Massager Gun" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/pTNmV6VF/1777464197971.webp')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ57800000348</span>
-          <button class="prod-quick-view" onclick="event.stopPropagation()">ð Tap image to zoom</button>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="mgSwap(this,'https://i.postimg.cc/pTNmV6VF/1777464197971.webp')" class="gthumb gthumb-mg active"><img src="https://i.postimg.cc/pTNmV6VF/1777464197971.webp"/></div>
@@ -587,18 +587,18 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <div class="ps-item"><div class="ps-k">Battery</div><div class="ps-v">1200 mAh</div></div>
           <div class="ps-item"><div class="ps-k">Standby</div><div class="ps-v">62 Minutes</div></div>
           <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Blue</div></div>
-          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD Â· All PK</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
         </div>
         <div class="prod-price-row">
           <div>
             <div class="prod-price-label">Price</div>
             <div class="prod-price">Rs. 2,499</div>
           </div>
-          <div class="prod-price-pkg" style="margin-left:auto">1 Pc Â· Free Delivery</div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
         </div>
         <div class="prod-footer">
           <button class="btn-order" onclick="openModal('massager')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Mini%20Massager%20Gun%20(Rs.%202%2C499)" target="_blank" title="WhatsApp">ð²</a>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Mini%20Massager%20Gun%20(Rs.%202%2C499)" target="_blank" title="WhatsApp">📲</a>
         </div>
       </div>
     </div>
@@ -610,7 +610,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <img id="cc-main" src="https://i.postimg.cc/rsJXGrGP/1777617882672.jpg" alt="3-in-1 Charging Cable" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/rsJXGrGP/1777617882672.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1155200134</span>
-          <button class="prod-quick-view" onclick="event.stopPropagation()">ð Tap image to zoom</button>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="ccSwap(this,'https://i.postimg.cc/rsJXGrGP/1777617882672.jpg')" class="gthumb gthumb-cc active"><img src="https://i.postimg.cc/rsJXGrGP/1777617882672.jpg"/></div>
@@ -627,23 +627,23 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <span class="prod-cat">Cables &amp; Accessories</span>
         </div>
         <h3 class="prod-name">100W 3-in-1 Fast Charging Cable</h3>
-        <p class="prod-desc">100W fast charging nylon braided multi-cable with Type-C, Micro USB, and universal adapter â charges all your devices at full speed. Copper core for maximum efficiency.</p>
+        <p class="prod-desc">100W fast charging nylon braided multi-cable with Type-C, Micro USB, and universal adapter — charges all your devices at full speed. Copper core for maximum efficiency.</p>
         <div class="prod-specs">
           <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Copper Core</div></div>
           <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Black</div></div>
-          <div class="ps-item"><div class="ps-k">Connectors</div><div class="ps-v">Type-C Â· Micro Â· USB</div></div>
-          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD Â· All PK</div></div>
+          <div class="ps-item"><div class="ps-k">Connectors</div><div class="ps-v">Type-C · Micro · USB</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
         </div>
         <div class="prod-price-row">
           <div>
             <div class="prod-price-label">Price</div>
             <div class="prod-price">Rs. 599</div>
           </div>
-          <div class="prod-price-pkg" style="margin-left:auto">1 Cable Â· Free Delivery</div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Cable · Free Delivery</div>
         </div>
         <div class="prod-footer">
           <button class="btn-order" onclick="openModal('cable')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20100W%203-in-1%20Fast%20Charging%20Cable%20(Rs.%20599)" target="_blank" title="WhatsApp">ð²</a>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20100W%203-in-1%20Fast%20Charging%20Cable%20(Rs.%20599)" target="_blank" title="WhatsApp">📲</a>
         </div>
       </div>
     </div>
@@ -655,7 +655,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <img id="fl-main" src="https://i.postimg.cc/QxKGYk9J/1777618063385.webp" alt="Rechargeable Flashlight" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/QxKGYk9J/1777618063385.webp')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1172200470</span>
-          <button class="prod-quick-view" onclick="event.stopPropagation()">ð Tap image to zoom</button>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="flSwap(this,'https://i.postimg.cc/QxKGYk9J/1777618063385.webp')" class="gthumb gthumb-fl active"><img src="https://i.postimg.cc/QxKGYk9J/1777618063385.webp"/></div>
@@ -669,23 +669,23 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <span class="prod-cat">Lighting &amp; Outdoor</span>
         </div>
         <h3 class="prod-name">Rechargeable Type-C Flashlight</h3>
-        <p class="prod-desc">Compact ABS plastic flashlight with Type-C rechargeable port. Durable black body, bright output â ideal for home, travel, and outdoor use.</p>
+        <p class="prod-desc">Compact ABS plastic flashlight with Type-C rechargeable port. Durable black body, bright output — ideal for home, travel, and outdoor use.</p>
         <div class="prod-specs">
           <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">ABS Plastic</div></div>
           <div class="ps-item"><div class="ps-k">Charging</div><div class="ps-v">Type-C</div></div>
           <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Black</div></div>
-          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD Â· All PK</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
         </div>
         <div class="prod-price-row">
           <div>
             <div class="prod-price-label">Price</div>
             <div class="prod-price">Rs. 599</div>
           </div>
-          <div class="prod-price-pkg" style="margin-left:auto">1 Pc Â· Free Delivery</div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
         </div>
         <div class="prod-footer">
           <button class="btn-order" onclick="openModal('flashlight')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Rechargeable%20Type-C%20Flashlight%20(Rs.%20599)" target="_blank" title="WhatsApp">ð²</a>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Rechargeable%20Type-C%20Flashlight%20(Rs.%20599)" target="_blank" title="WhatsApp">📲</a>
         </div>
       </div>
     </div>
@@ -697,7 +697,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <img id="tb-main" src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg" alt="Tich Buttons 50 Pcs" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/GpZkbCBW/1777894125333.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1701200032ALHAGS</span>
-          <button class="prod-quick-view" onclick="event.stopPropagation()">ð Tap image to zoom</button>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="tbSwap(this,'https://i.postimg.cc/GpZkbCBW/1777894125333.jpg')" class="gthumb gthumb-tb active"><img src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg"/></div>
@@ -713,50 +713,24 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <span class="prod-dot"></span>
           <span class="prod-cat">Sewing &amp; Craft</span>
         </div>
-        <h3 class="prod-name">Stainless Steel Tich Buttons â 50 Pcs</h3>
-        <p class="prod-desc">Premium stainless steel snap/tich buttons in silver finish. Pack of 50 pieces â perfect for garments, bags, crafts, and DIY sewing projects. Strong, rust-resistant, and easy to press.</p>
+        <h3 class="prod-name">Stainless Steel Tich Buttons — 50 Pcs</h3>
+        <p class="prod-desc">Premium stainless steel snap/tich buttons in silver finish. Pack of 50 pieces — perfect for garments, bags, crafts, and DIY sewing projects. Strong, rust-resistant, and easy to press.</p>
         <div class="prod-specs">
           <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Stainless Steel</div></div>
           <div class="ps-item"><div class="ps-k">Pieces</div><div class="ps-v">50 Pcs</div></div>
           <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Silver</div></div>
-          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD Â· All PK</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
         </div>
         <div class="prod-price-row">
           <div>
             <div class="prod-price-label">Price</div>
             <div class="prod-price">Rs. 799</div>
           </div>
-          <div class="prod-price-pkg" style="margin-left:auto">50 Pcs Â· Free Delivery</div>
+          <div class="prod-price-pkg" style="margin-left:auto">50 Pcs · Free Delivery</div>
         </div>
         <div class="prod-footer">
           <button class="btn-order" onclick="openModal('tichbuttons')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20Stainless%20Steel%20Tich%20Buttons%2050%20Pcs%20(Rs.%20799)" target="_blank" title="WhatsApp">ð²</a>
-        </div>
-      </div>
-    </div>
-    <!-- PRODUCT: 1 in 32 Screwdriver set with Green handle -->
-    <div class="prod-card reveal">
-      <div class="prod-img-wrap" style="aspect-ratio:unset">
-        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="p1778020017981-main" src="https://i.postimg.cc/WbV3P0r1/1777951540928.webp" alt="1 in 32 Screwdriver set with Green handle" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/WbV3P0r1/1777951540928.webp')"/>
-          <span class="prod-badge">New Arrival</span>
-        </div>
-        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)"><div onclick="dynSwap(this,'p1778020017981-main','p1778020017981','https://i.postimg.cc/WbV3P0r1/1777951540928.webp')" class="gthumb gthumb-p1778020017981 active"><img src="https://i.postimg.cc/WbV3P0r1/1777951540928.webp" loading="lazy"/></div><div onclick="dynSwap(this,'p1778020017981-main','p1778020017981','https://i.postimg.cc/BZH6ym8b/1777951541161.webp')" class="gthumb gthumb-p1778020017981"><img src="https://i.postimg.cc/BZH6ym8b/1777951541161.webp" loading="lazy"/></div><div onclick="dynSwap(this,'p1778020017981-main','p1778020017981','https://i.postimg.cc/Yq79wQgS/1777951540636.webp')" class="gthumb gthumb-p1778020017981"><img src="https://i.postimg.cc/Yq79wQgS/1777951540636.webp" loading="lazy"/></div></div>
-      </div>
-      <div class="prod-body">
-        <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat">ZX Agent Seller</span></div>
-        <h3 class="prod-name">1 in 32 Screwdriver set with Green handle</h3>
-        <p class="prod-desc">Easy to carry
-•  Material: Iron
-•  Number Of Pieces: 1 Pc
-•  Color: Multicolor
-•  Package Includes: 1 x Screwdriver Set
-•  Note: There might be an error of 1-3 cm due to manual measurement, and slight color differences may occur as a result of varying lighting and monitor effects.
-•  Product Code: MZ16300000060WRSR</p>
-        <div class="prod-price-row"><div><div class="prod-price-label">Price</div><div class="prod-price">Rs. 799</div></div><div class="prod-price-pkg" style="margin-left:auto">1 Pc &middot; Free Delivery</div></div>
-        <div class="prod-footer">
-          <button class="btn-order" onclick="openDynModal('p1778020017981','1 in 32 Screwdriver set with Green handle','Rs. 799')">Order Now</button>
-          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%201%20in%2032%20Screwdriver%20set%20with%20Green%20handle%20(Rs.%20799)" target="_blank" title="WhatsApp">&#128242;</a>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20Stainless%20Steel%20Tich%20Buttons%2050%20Pcs%20(Rs.%20799)" target="_blank" title="WhatsApp">📲</a>
         </div>
       </div>
     </div>
@@ -767,24 +741,24 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 <!-- FEATURES STRIP -->
 <div class="features-strip">
   <div class="feat reveal">
-    <div class="feat-ico">ð¦</div>
+    <div class="feat-ico">📦</div>
     <div class="feat-title">Cash on Delivery</div>
     <div class="feat-sub">Pay when your order arrives. No advance required.</div>
   </div>
   <div class="feat reveal">
-    <div class="feat-ico">ð</div>
+    <div class="feat-ico">🚚</div>
     <div class="feat-title">Delivery Available</div>
     <div class="feat-sub">Delivered across all of Pakistan.</div>
   </div>
   <div class="feat reveal">
-    <div class="feat-ico">â</div>
+    <div class="feat-ico">✅</div>
     <div class="feat-title">Halal Business</div>
     <div class="feat-sub">100% transparent, honest pricing. No hidden fees.</div>
   </div>
   <div class="feat reveal">
-    <div class="feat-ico">ð¬</div>
+    <div class="feat-ico">💬</div>
     <div class="feat-title">WhatsApp Support</div>
-    <div class="feat-sub">Talk to us directly 9AM â 10PM, 7 days a week.</div>
+    <div class="feat-sub">Talk to us directly 9AM – 10PM, 7 days a week.</div>
   </div>
 </div>
 
@@ -800,10 +774,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
       <p class="why-body">We are a trusted agent seller in Pakistan. We pick the best products and connect you directly with reliable suppliers. All orders are confirmed via WhatsApp so you always know what's happening.</p>
     </div>
     <div class="why-right">
-      <div class="wcard reveal"><div class="wc-ico">ð</div><div class="wc-title">Curated Selection</div><div class="wc-body">Every product is hand-picked for quality and value before we list it.</div></div>
-      <div class="wcard reveal"><div class="wc-ico">ð²</div><div class="wc-title">Direct WhatsApp Orders</div><div class="wc-body">Your order goes straight to our WhatsApp. No bots, no delays.</div></div>
-      <div class="wcard reveal"><div class="wc-ico">ðµð°</div><div class="wc-title">Made for Pakistan</div><div class="wc-body">COD, Urdu support, local delivery â designed for Pakistani shoppers.</div></div>
-      <div class="wcard reveal"><div class="wc-ico">ð¡ï¸</div><div class="wc-title">Verified Seller</div><div class="wc-body">We are a verified and accountable seller. What you see is what you get.</div></div>
+      <div class="wcard reveal"><div class="wc-ico">🔍</div><div class="wc-title">Curated Selection</div><div class="wc-body">Every product is hand-picked for quality and value before we list it.</div></div>
+      <div class="wcard reveal"><div class="wc-ico">📲</div><div class="wc-title">Direct WhatsApp Orders</div><div class="wc-body">Your order goes straight to our WhatsApp. No bots, no delays.</div></div>
+      <div class="wcard reveal"><div class="wc-ico">🇵🇰</div><div class="wc-title">Made for Pakistan</div><div class="wc-body">COD, Urdu support, local delivery — designed for Pakistani shoppers.</div></div>
+      <div class="wcard reveal"><div class="wc-ico">🛡️</div><div class="wc-title">Verified Seller</div><div class="wc-body">We are a verified and accountable seller. What you see is what you get.</div></div>
     </div>
   </div>
 </section>
@@ -816,7 +790,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
   <p class="cta-sub">Cash on delivery. Confirm on WhatsApp in seconds.</p>
   <div class="cta-btns">
     <button class="btn-white" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Browse Products</button>
-    <a class="btn-ghost" href="https://wa.me/923182756013" target="_blank">ð² Chat on WhatsApp</a>
+    <a class="btn-ghost" href="https://wa.me/923182756013" target="_blank">📲 Chat on WhatsApp</a>
   </div>
 </section>
 
@@ -830,12 +804,12 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     </div>
   </div>
   <div class="foot-right">
-    <div class="foot-copy"><button class="admin-trigger" onclick="openAdminPanel()" title=""></button> 2026 ZX Agent Seller Â· Halal Â· Transparent Â· ðµð°</div>
-    <div class="foot-sub">Halal Â· Transparent Â· <a class="foot-wa" href="https://wa.me/923182756013" target="_blank">+92 318 2756013</a></div>
+    <div class="foot-copy"><button class="admin-trigger" onclick="openAdminPanel()" title=""></button> 2026 ZX Agent Seller · Halal · Transparent · 🇵🇰</div>
+    <div class="foot-sub">Halal · Transparent · <a class="foot-wa" href="https://wa.me/923182756013" target="_blank">+92 318 2756013</a></div>
   </div>
 </footer>
 
-<!-- âââ ORDER MODAL âââ -->
+<!-- ═══ ORDER MODAL ═══ -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal">
 
@@ -843,14 +817,14 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div id="orderForm">
       <div class="modal-head">
         <span class="modal-title" id="modalTitle">Place Order</span>
-        <button class="modal-close" onclick="closeModal()">â</button>
+        <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
       <div class="modal-product-bar">
-        <div class="mpb-name" id="modalProductName">â</div>
-        <div class="mpb-price" id="modalProductPrice">â</div>
+        <div class="mpb-name" id="modalProductName">—</div>
+        <div class="mpb-price" id="modalProductPrice">—</div>
       </div>
       <div class="modal-body">
-        <div class="notice-bar">ð² Order confirmed directly via WhatsApp Â· Cash on Delivery</div>
+        <div class="notice-bar">📲 Order confirmed directly via WhatsApp · Cash on Delivery</div>
 
         <div class="form-group">
           <label class="form-label">Full Name *</label>
@@ -862,7 +836,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
         </div>
         <div class="form-group">
           <label class="form-label">Delivery Address *</label>
-          <textarea class="form-input form-textarea" id="faddress" rows="2" placeholder="House No., Street, Areaâ¦"></textarea>
+          <textarea class="form-input form-textarea" id="faddress" rows="2" placeholder="House No., Street, Area…"></textarea>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -889,21 +863,21 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 
         <div class="form-group">
           <label class="form-label">Notes (Optional)</label>
-          <input class="form-input" id="fnotes" type="text" placeholder="Any special instructionsâ¦"/>
+          <input class="form-input" id="fnotes" type="text" placeholder="Any special instructions…"/>
         </div>
 
         <button class="btn-submit" id="submitBtn" onclick="submitOrder()">
-          <span>ð²</span> Confirm Order via WhatsApp
+          <span>📲</span> Confirm Order via WhatsApp
         </button>
       </div>
     </div>
 
     <!-- SUCCESS STATE -->
     <div class="success-screen" id="successScreen">
-      <div class="success-ico">â</div>
+      <div class="success-ico">✅</div>
       <div class="success-title">Order Sent!</div>
-      <div class="success-msg">Your order has been sent to ZX Agent Seller on WhatsApp. We'll confirm it shortly. Thank you for shopping with us! ðµð°</div>
-      <div class="wa-badge"><span>â</span> WhatsApp Notification Sent</div>
+      <div class="success-msg">Your order has been sent to ZX Agent Seller on WhatsApp. We'll confirm it shortly. Thank you for shopping with us! 🇵🇰</div>
+      <div class="wa-badge"><span>●</span> WhatsApp Notification Sent</div>
       <br/><br/>
       <button class="btn-ghost" onclick="closeModal()" style="padding:0.7rem 2rem;cursor:pointer">Close</button>
     </div>
@@ -911,15 +885,15 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
   </div>
 </div>
 
-<!-- âââ ADMIN PANEL âââ -->
+<!-- ═══ ADMIN PANEL ═══ -->
 <div class="admin-overlay" id="adminOverlay" onclick="handleAdminOverlayClick(event)">
   <div class="admin-modal">
 
     <!-- PASSWORD SCREEN -->
     <div id="adminPwScreen" class="admin-pw-screen">
       <div class="admin-pw-title">Admin Access</div>
-      <div class="admin-pw-sub">ZX Agent Seller Â· Owner Only</div>
-      <input class="admin-pw-input" id="adminPwInput" type="password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" maxlength="32"
+      <div class="admin-pw-sub">ZX Agent Seller · Owner Only</div>
+      <input class="admin-pw-input" id="adminPwInput" type="password" placeholder="••••••••" maxlength="32"
         onkeydown="if(event.key==='Enter')checkAdminPw()"/>
       <br/>
       <button class="admin-pw-btn" onclick="checkAdminPw()">Unlock</button>
@@ -929,13 +903,13 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div id="adminMainPanel" style="display:none">
       <div class="admin-head">
         <span class="admin-head-title">Admin Panel</span>
-        <button class="admin-close" onclick="closeAdminPanel()">â</button>
+        <button class="admin-close" onclick="closeAdminPanel()">✕</button>
       </div>
 
       <!-- TABS -->
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('add')">+ Add Product</button>
-        <button class="admin-tab" onclick="switchTab('delete')">ð Delete Product</button>
+        <button class="admin-tab" onclick="switchTab('delete')">🗑 Delete Product</button>
       </div>
 
       <div class="admin-body">
@@ -947,7 +921,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <div class="admin-group">
             <label class="admin-label">GitHub Token <span style="color:#555;font-size:0.48rem">(saved on your device only)</span></label>
             <input class="admin-input" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"/>
-            <div class="admin-img-hint">Required to save products for all visitors Â· Stored only in your browser</div>
+            <div class="admin-img-hint">Required to save products for all visitors · Stored only in your browser</div>
           </div>
 
           <div class="admin-group">
@@ -957,7 +931,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 
           <div class="admin-group">
             <label class="admin-label">Description *</label>
-            <textarea class="admin-input admin-textarea" id="ap-desc" rows="3" placeholder="Short product descriptionâ¦"></textarea>
+            <textarea class="admin-input admin-textarea" id="ap-desc" rows="3" placeholder="Short product description…"></textarea>
           </div>
 
           <div class="admin-group">
@@ -975,14 +949,14 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
               <input class="admin-input" id="img-5" type="url" placeholder="Thumbnail 5 (optional)"/>
               <input class="admin-input" id="img-6" type="url" placeholder="Thumbnail 6 (optional)"/>
             </div>
-            <div class="admin-img-hint">Paste postimg.cc links Â· Leave extra fields blank</div>
+            <div class="admin-img-hint">Paste postimg.cc links · Leave extra fields blank</div>
           </div>
 
           <button class="btn-add-product" id="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
 
           <div class="admin-success" id="adminSuccess">
-            <div class="admin-success-ico" id="adminSuccessIco">â³</div>
-            <div class="admin-success-title" id="adminSuccessTitle">Publishingâ¦</div>
+            <div class="admin-success-ico" id="adminSuccessIco">⏳</div>
+            <div class="admin-success-title" id="adminSuccessTitle">Publishing…</div>
             <div class="admin-success-sub" id="adminSuccessSub">Saving to GitHub, please wait ~30 seconds.</div>
           </div>
 
@@ -1053,7 +1027,7 @@ function openModal(product) {
   const isFlashlight = product === 'flashlight';
 
   const titles = { screwdriver: 'Order Screwdriver Set', watch: 'Order Watch', earbuds: 'Order Earbuds', massager: 'Order Massager Gun', cable: 'Order Charging Cable', flashlight: 'Order Flashlight', tichbuttons: 'Order Tich Buttons' };
-  const names  = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons â 50 Pcs' };
+  const names  = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons — 50 Pcs' };
   const prices = { screwdriver: 'Rs. 1,599', watch: 'Rs. 1,099', earbuds: 'Rs. 999', massager: 'Rs. 2,499', cable: 'Rs. 599', flashlight: 'Rs. 599', tichbuttons: 'Rs. 799' };
 
   document.getElementById('modalTitle').textContent = titles[product];
@@ -1063,7 +1037,7 @@ function openModal(product) {
   document.getElementById('orderForm').style.display = 'block';
   document.getElementById('successScreen').classList.remove('show');
   document.getElementById('submitBtn').disabled = false;
-  document.getElementById('submitBtn').innerHTML = '<span>ð²</span> Confirm Order via WhatsApp';
+  document.getElementById('submitBtn').innerHTML = '<span>📲</span> Confirm Order via WhatsApp';
   document.getElementById('modalOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -1087,15 +1061,15 @@ function submitOrder() {
   const color   = document.getElementById('fcolor').value;
 
   if (!name || !phone || !address || !city) {
-    alert('â ï¸ Please fill in Name, Phone, Address, and City.');
+    alert('⚠️ Please fill in Name, Phone, Address, and City.');
     return;
   }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'Opening WhatsAppâ¦';
+  btn.textContent = 'Opening WhatsApp…';
 
-  const productNames = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Stainless Steel Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons â 50 Pcs' };
+  const productNames = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Stainless Steel Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons — 50 Pcs' };
   const skus         = { screwdriver: 'MZ1293200023CCCEPK', watch: 'MZ1156200080TEWEHB', earbuds: 'MZ2290200004IZMT', massager: 'MZ57800000348GALAXY', cable: 'MZ1155200134SEHB', flashlight: 'MZ1172200470SE', tichbuttons: 'MZ1701200032ALHAGS' };
   const productPrices= { screwdriver: 1599, watch: 1099, earbuds: 999, massager: 2499, cable: 599, flashlight: 599, tichbuttons: 799 };
 
@@ -1113,24 +1087,24 @@ function submitOrder() {
   }
 
   let msg =
-`ð *NEW ORDER â ZX AGENT SELLER*
-ââââââââââââââââââââ
-ð¦ *Product:* ${productName}
-ð *SKU:* ${sku}
-ð° *Price:* Rs. ${price} Ã ${qty} = Rs. ${total}`;
+`🛒 *NEW ORDER — ZX AGENT SELLER*
+━━━━━━━━━━━━━━━━━━━━
+📦 *Product:* ${productName}
+🔖 *SKU:* ${sku}
+💰 *Price:* Rs. ${price} × ${qty} = Rs. ${total}`;
 
-  if (currentProduct === 'watch') msg += `\nð¨ *Color:* ${color}`;
+  if (currentProduct === 'watch') msg += `\n🎨 *Color:* ${color}`;
 
   msg +=
 `
-ââââââââââââââââââââ
-ð¤ *Customer Info*
-â¢ Name: ${name}
-â¢ Phone: ${phone}
-â¢ City: ${city}
-â¢ Address: ${address}${notes ? '\nâ¢ Notes: ' + notes : ''}
-ââââââââââââââââââââ
-â Please confirm this order!`;
+━━━━━━━━━━━━━━━━━━━━
+👤 *Customer Info*
+• Name: ${name}
+• Phone: ${phone}
+• City: ${city}
+• Address: ${address}${notes ? '\n• Notes: ' + notes : ''}
+━━━━━━━━━━━━━━━━━━━━
+✅ Please confirm this order!`;
 
   window.open(`https://wa.me/923182756013?text=${encodeURIComponent(msg)}`, '_blank');
 
@@ -1140,14 +1114,14 @@ function submitOrder() {
   }, 700);
 }
 
-// ââ PAGE LOADER ââ
+// ── PAGE LOADER ──
 window.addEventListener('load', () => {
   setTimeout(() => {
     document.getElementById('page-loader').classList.add('hidden');
   }, 1500);
 });
 
-// ââ CURSOR GLOW (desktop only) ââ
+// ── CURSOR GLOW (desktop only) ──
 const cursorGlow = document.getElementById('cursor-glow');
 if (window.innerWidth > 768) {
   document.addEventListener('mousemove', e => {
@@ -1158,7 +1132,7 @@ if (window.innerWidth > 768) {
   document.addEventListener('mouseleave', () => { cursorGlow.style.opacity = '0'; });
 }
 
-// ââ SCROLL PROGRESS BAR ââ
+// ── SCROLL PROGRESS BAR ──
 window.addEventListener('scroll', () => {
   const prog = document.getElementById('scroll-prog');
   const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
@@ -1180,7 +1154,7 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// ââ RIPPLE EFFECT ââ
+// ── RIPPLE EFFECT ──
 function addRipple(e) {
   const btn = e.currentTarget;
   const circle = document.createElement('span');
@@ -1196,7 +1170,7 @@ document.querySelectorAll('.btn-order, .btn-white, .btn-submit').forEach(btn => 
   btn.addEventListener('click', addRipple);
 });
 
-// ââ TOAST ââ
+// ── TOAST ──
 function showToast(msg, duration = 2800) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1204,7 +1178,7 @@ function showToast(msg, duration = 2800) {
   setTimeout(() => t.classList.remove('show'), duration);
 }
 
-// ââ IMAGE ZOOM ââ
+// ── IMAGE ZOOM ──
 function zoomImg(src) {
   document.getElementById('img-zoom-img').src = src;
   document.getElementById('img-zoom-overlay').classList.add('active');
@@ -1215,7 +1189,7 @@ function closeZoom() {
   document.body.style.overflow = '';
 }
 
-// ââ PRICE POP on hover ââ
+// ── PRICE POP on hover ──
 document.querySelectorAll('.prod-price').forEach(p => {
   p.closest('.prod-card')?.addEventListener('mouseenter', () => {
     p.classList.remove('pop');
@@ -1224,7 +1198,7 @@ document.querySelectorAll('.prod-price').forEach(p => {
   });
 });
 
-// ââ HERO COUNTER ANIMATION ââ
+// ── HERO COUNTER ANIMATION ──
 function animateCounter(el, target, suffix = '') {
   let start = 0;
   const isText = isNaN(parseInt(target));
@@ -1258,19 +1232,19 @@ const heroObs = new IntersectionObserver(entries => {
 const heroStats = document.querySelector('.hero-stats');
 if (heroStats) heroObs.observe(heroStats);
 
-// ââ TOAST on Order button click ââ
+// ── TOAST on Order button click ──
 document.querySelectorAll('.btn-order').forEach(btn => {
   btn.addEventListener('click', () => {
-    setTimeout(() => showToast('â Opening order formâ¦'), 100);
+    setTimeout(() => showToast('✓ Opening order form…'), 100);
   });
 });
 
-// ââ STAGGER product cards ââ
+// ── STAGGER product cards ──
 document.querySelectorAll('.prod-card').forEach((card, i) => {
   card.style.transitionDelay = (i * 0.06) + 's';
 });
 
-// ââ KEYBOARD: close zoom on Escape ââ
+// ── KEYBOARD: close zoom on Escape ──
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeModal();
@@ -1279,7 +1253,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ââ ADMIN TABS ââ */
+/* ── ADMIN TABS ── */
 function switchTab(tab) {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('active'));
@@ -1323,10 +1297,10 @@ function deleteProduct(id) {
   localStorage.setItem('zx_products', JSON.stringify(products.filter(p => p.id !== id)));
   const row = document.getElementById('del-row-' + id);
   if (row) { row.style.opacity = '0'; setTimeout(() => renderDeleteList(), 280); }
-  showToast('ð Product deleted');
+  showToast('🗑 Product deleted');
 }
 
-/* âââ ADMIN PANEL âââ */
+/* ─── ADMIN PANEL ─── */
 const ADMIN_PASSWORD = 'zxadmin786';
 
 function openAdminPanel() {
@@ -1369,11 +1343,11 @@ function addProductToPage() {
   const token = document.getElementById('gh-token').value.trim() || localStorage.getItem('zx_gh_token') || '';
 
   if (!name || !price || !imgs[0]) {
-    alert('â ï¸ Please fill in Product Name, Price, and at least one Image link.');
+    alert('⚠️ Please fill in Product Name, Price, and at least one Image link.');
     return;
   }
   if (!token) {
-    alert('â ï¸ Please enter your GitHub Token so the product can be saved for all visitors.');
+    alert('⚠️ Please enter your GitHub Token so the product can be saved for all visitors.');
     return;
   }
 
@@ -1400,12 +1374,12 @@ function addProductToPage() {
   // Show publishing state
   const btn = document.getElementById('btn-add-product');
   btn.disabled = true;
-  btn.textContent = 'â³ Publishingâ¦';
+  btn.textContent = '⏳ Publishing…';
   const successDiv = document.getElementById('adminSuccess');
   successDiv.style.display = 'block';
-  document.getElementById('adminSuccessIco').textContent = 'â³';
-  document.getElementById('adminSuccessTitle').textContent = 'Publishingâ¦';
-  document.getElementById('adminSuccessSub').textContent = 'Saving to GitHub, please waitâ¦';
+  document.getElementById('adminSuccessIco').textContent = '⏳';
+  document.getElementById('adminSuccessTitle').textContent = 'Publishing…';
+  document.getElementById('adminSuccessSub').textContent = 'Saving to GitHub, please wait…';
 
   // Also show on page immediately for you
   const card = document.createElement('div');
@@ -1420,10 +1394,10 @@ function addProductToPage() {
       <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat">ZX Agent Seller</span></div>
       <h3 class="prod-name">${name}</h3>
       <p class="prod-desc">${desc}</p>
-      <div class="prod-price-row"><div><div class="prod-price-label">Price</div><div class="prod-price">Rs. ${formattedPrice}</div></div><div class="prod-price-pkg" style="margin-left:auto">1 Pc Â· Free Delivery</div></div>
+      <div class="prod-price-row"><div><div class="prod-price-label">Price</div><div class="prod-price">Rs. ${formattedPrice}</div></div><div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div></div>
       <div class="prod-footer">
         <button class="btn-order" onclick="openDynModal('${id}','${name.replace(/'/g,"\\'")}','Rs. ${formattedPrice}')">Order Now</button>
-        <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp">ð²</a>
+        <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp">📲</a>
       </div>
     </div>`;
   document.querySelector('.products-grid').appendChild(card);
@@ -1432,9 +1406,9 @@ function addProductToPage() {
   // Push to GitHub
   pushToGitHub(cardHTML, token, name)
     .then(() => {
-      document.getElementById('adminSuccessIco').textContent = 'â';
+      document.getElementById('adminSuccessIco').textContent = '✅';
       document.getElementById('adminSuccessTitle').textContent = 'Published!';
-      document.getElementById('adminSuccessSub').textContent = 'Live for all visitors in ~30 seconds. Refreshingâ¦';
+      document.getElementById('adminSuccessSub').textContent = 'Live for all visitors in ~30 seconds. Refreshing…';
       ['ap-name','ap-desc','ap-price','img-1','img-2','img-3','img-4','img-5','img-6'].forEach(fid => {
         document.getElementById(fid).value = '';
       });
@@ -1443,7 +1417,7 @@ function addProductToPage() {
       setTimeout(() => { closeAdminPanel(); location.reload(); }, 3000);
     })
     .catch(err => {
-      document.getElementById('adminSuccessIco').textContent = 'â';
+      document.getElementById('adminSuccessIco').textContent = '❌';
       document.getElementById('adminSuccessTitle').textContent = 'GitHub Error';
       document.getElementById('adminSuccessSub').textContent = err.message || 'Check your token and try again.';
       btn.disabled = false;
@@ -1451,7 +1425,15 @@ function addProductToPage() {
     });
 }
 
-// ââ GITHUB API ââ
+// ── GITHUB API ──
+// Safe UTF-8 base64 encode/decode (handles emojis & all unicode)
+function encodeToBase64(str) {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
+}
+function decodeFromBase64(b64) {
+  return decodeURIComponent(atob(b64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+}
+
 const GH_USER = 'z1sx1';
 const GH_REPO = 'ZX-Agent-Store';
 const GH_FILE = 'zx-agent-seller.html';
@@ -1468,7 +1450,7 @@ async function pushToGitHub(cardHTML, token, productName) {
   }
   const fileData = await getRes.json();
   const sha = fileData.sha;
-  const currentHTML = atob(fileData.content.replace(/\n/g, ''));
+  const currentHTML = decodeFromBase64(fileData.content.replace(/\n/g, ''));
 
   // 2. Inject new card before closing </div> of products-grid
   const INJECT_MARKER = '\n\n  </div>\n</section>\n\n<!-- FEATURES STRIP -->';
@@ -1487,7 +1469,7 @@ async function pushToGitHub(cardHTML, token, productName) {
     },
     body: JSON.stringify({
       message: `Add product: ${productName}`,
-      content: btoa(unescape(encodeURIComponent(newHTML))),
+      content: encodeToBase64(newHTML),
       sha: sha
     })
   });
@@ -1497,17 +1479,17 @@ async function pushToGitHub(cardHTML, token, productName) {
   }
 }
 
-// ââ LOAD SAVED TOKEN ââ
+// ── LOAD SAVED TOKEN ──
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('zx_gh_token');
   if (saved) { const el = document.getElementById('gh-token'); if(el) el.value = saved; }
 });
 
-// ââ DELETE PRODUCT (also push deletion to GitHub) ââ
+// ── DELETE PRODUCT (also push deletion to GitHub) ──
 async function deleteProduct(id) {
   if (!confirm('Delete this product from the store?')) return;
   const token = localStorage.getItem('zx_gh_token') || '';
-  if (!token) { alert('â ï¸ GitHub token not found. Open admin panel and enter your token first.'); return; }
+  if (!token) { alert('⚠️ GitHub token not found. Open admin panel and enter your token first.'); return; }
 
   // Fade out card from DOM
   const card = document.querySelector(`[id="${id}-main"]`)?.closest('.prod-card');
@@ -1518,7 +1500,7 @@ async function deleteProduct(id) {
     setTimeout(() => card.remove(), 380);
   }
 
-  showToast('â³ Deleting from GitHubâ¦');
+  showToast('⏳ Deleting from GitHub…');
 
   try {
     const getRes = await fetch(GH_API, {
@@ -1526,7 +1508,7 @@ async function deleteProduct(id) {
     });
     const fileData = await getRes.json();
     const sha = fileData.sha;
-    let html = atob(fileData.content.replace(/\n/g, ''));
+    let html = decodeFromBase64(fileData.content.replace(/\n/g, ''));
 
     // Remove the product card block from HTML
     const startMarker = `<!-- PRODUCT: `;
@@ -1555,13 +1537,13 @@ async function deleteProduct(id) {
     const putRes = await fetch(GH_API, {
       method: 'PUT',
       headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `Delete product ${id}`, content: btoa(unescape(encodeURIComponent(html))), sha })
+      body: JSON.stringify({ message: `Delete product ${id}`, content: encodeToBase64(html), sha })
     });
     if (!putRes.ok) throw new Error('GitHub push failed');
-    showToast('â Deleted â live in ~30 seconds');
+    showToast('✅ Deleted — live in ~30 seconds');
     renderDeleteList();
   } catch(e) {
-    showToast('â Delete failed: ' + (e.message || 'unknown error'));
+    showToast('❌ Delete failed: ' + (e.message || 'unknown error'));
   }
 }
 
