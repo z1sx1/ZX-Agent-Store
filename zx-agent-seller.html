@@ -193,8 +193,73 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .gthumb.active{border-color:var(--white)}
 
 /* ── SCROLL REVEAL ── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s cubic-bezier(.22,1,.36,1),transform 0.7s cubic-bezier(.22,1,.36,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── PAGE LOADER ── */
+#page-loader{position:fixed;inset:0;background:var(--black);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;transition:opacity 0.5s ease,visibility 0.5s ease}
+#page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-logo{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:0.3em;animation:loaderPulse 1.2s ease-in-out infinite}
+@keyframes loaderPulse{0%,100%{opacity:1}50%{opacity:0.2}}
+.loader-bar-wrap{width:160px;height:1px;background:rgba(255,255,255,0.12);overflow:hidden}
+.loader-bar{height:100%;width:0;background:var(--white);animation:loaderFill 1.4s ease forwards}
+@keyframes loaderFill{0%{width:0}60%{width:80%}100%{width:100%}}
+
+/* ── CURSOR GLOW (desktop) ── */
+#cursor-glow{position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.045) 0%,transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0}
+
+/* ── SCROLL PROGRESS BAR ── */
+#scroll-prog{position:fixed;top:0;left:0;height:2px;background:var(--white);z-index:600;width:0%;transition:width 0.1s linear}
+
+/* ── PRODUCT CARD ENHANCED ── */
+.prod-card{transition:background 0.35s,transform 0.35s cubic-bezier(.22,1,.36,1),box-shadow 0.35s}
+.prod-card:hover{background:var(--card);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.prod-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--white),rgba(255,255,255,0.3));transition:width 0.5s cubic-bezier(.22,1,.36,1)}
+.prod-card:hover::before{width:100%}
+.prod-img-wrap img{transition:transform 0.7s cubic-bezier(.22,1,.36,1),filter 0.5s}
+.prod-card:hover .prod-img-wrap img{transform:scale(1.07);filter:grayscale(0%)}
+
+/* ── QUICK VIEW OVERLAY ── */
+.prod-quick-view{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);padding:0.65rem;text-align:center;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--white);transform:translateY(100%);transition:transform 0.35s cubic-bezier(.22,1,.36,1);cursor:pointer;border:none;width:100%;z-index:2}
+.prod-img-wrap:hover .prod-quick-view{transform:translateY(0)}
+
+/* ── TOAST NOTIFICATION ── */
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--white);color:var(--black);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.14em;padding:0.75rem 1.6rem;z-index:8000;opacity:0;transition:all 0.4s cubic-bezier(.22,1,.36,1);white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── BACK TO TOP ── */
+#back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;background:var(--white);color:var(--black);border:none;cursor:pointer;font-size:1.1rem;z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(20px);transition:all 0.35s cubic-bezier(.22,1,.36,1);pointer-events:none}
+#back-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+#back-top:hover{background:var(--off);transform:translateY(-3px)}
+
+/* ── TICKER PAUSE ON HOVER ── */
+.ticker:hover .ticker-inner{animation-play-state:paused}
+
+/* ── NAV ACTIVE INDICATOR ── */
+.nav-link{position:relative}
+.nav-link.active::after{content:'';position:absolute;bottom:-2px;left:0.9rem;right:0.9rem;height:1px;background:var(--white)}
+
+/* ── PRICE PULSE ── */
+@keyframes pricePop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+.prod-price.pop{animation:pricePop 0.4s ease}
+
+/* ── IMAGE ZOOM MODAL ── */
+#img-zoom-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:5000;display:none;align-items:center;justify-content:center;cursor:zoom-out}
+#img-zoom-overlay.active{display:flex}
+#img-zoom-img{max-width:92vw;max-height:88vh;object-fit:contain;animation:zoomIn 0.3s cubic-bezier(.22,1,.36,1)}
+@keyframes zoomIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
+#img-zoom-close{position:absolute;top:1.5rem;right:1.5rem;background:none;border:1px solid rgba(255,255,255,0.25);color:var(--white);width:36px;height:36px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center}
+
+/* ── RIPPLE on buttons ── */
+.btn-order,.btn-white,.btn-submit{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;transform:scale(0);animation:rippleAnim 0.55s linear;background:rgba(0,0,0,0.18);pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* ── STAGGER DELAYS ── */
+.stagger-1{transition-delay:0.05s}
+.stagger-2{transition-delay:0.13s}
+.stagger-3{transition-delay:0.21s}
+.stagger-4{transition-delay:0.29s}
 
 /* ── ADMIN PANEL ── */
 .admin-trigger{background:none;border:none;color:transparent;cursor:default;font-size:0.58rem;padding:2px 4px;user-select:none;position:relative}
@@ -224,7 +289,22 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .admin-pw-btn{margin-top:1rem;background:var(--white);color:var(--black);border:none;padding:0.75rem 2.5rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
 .admin-pw-btn:hover{background:var(--off)}
-.admin-success{text-align:center;padding:2rem 0;display:none}
+.admin-tabs{display:flex;border-bottom:1px solid var(--border)}
+.admin-tab{flex:1;padding:0.85rem;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;background:none;border:none;color:#555;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent}
+.admin-tab.active{color:var(--white);border-bottom-color:var(--white)}
+.admin-tab-panel{display:none}
+.admin-tab-panel.active{display:flex;flex-direction:column;gap:1rem}
+.del-product-list{display:flex;flex-direction:column;gap:0.5rem;max-height:340px;overflow-y:auto}
+.del-item{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;padding:0.75rem 1rem;background:#111;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.2s}
+.del-item:hover{border-color:rgba(255,255,255,0.18)}
+.del-item-info{display:flex;align-items:center;gap:0.75rem;flex:1;min-width:0}
+.del-item-thumb{width:42px;height:42px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.del-item-name{font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del-item-price{font-family:'Space Mono',monospace;font-size:0.6rem;color:#666;margin-top:0.15rem}
+.del-item-tag{font-family:'Space Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:#444;padding:0.15rem 0.4rem;border:1px solid #222}
+.btn-del-item{background:none;border:1px solid rgba(255,60,60,0.3);color:rgba(255,80,80,0.8);padding:0.4rem 0.75rem;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;flex-shrink:0;white-space:nowrap}
+.btn-del-item:hover{background:rgba(255,40,40,0.1);border-color:rgba(255,80,80,0.7);color:#ff5555}
+.del-empty{font-family:'Space Mono',monospace;font-size:0.65rem;color:#444;text-align:center;padding:2.5rem 1rem;letter-spacing:0.1em}
 .admin-success-ico{font-size:2.5rem;margin-bottom:0.8rem}
 .admin-success-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;margin-bottom:0.4rem}
 .admin-success-sub{font-size:0.82rem;color:var(--muted)}
@@ -259,6 +339,25 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 </style>
 </head>
 <body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader">
+  <div class="loader-logo">ZX</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+<!-- CURSOR GLOW -->
+<div id="cursor-glow"></div>
+<!-- SCROLL PROGRESS -->
+<div id="scroll-prog"></div>
+<!-- TOAST -->
+<div id="toast"></div>
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<!-- IMAGE ZOOM OVERLAY -->
+<div id="img-zoom-overlay" onclick="closeZoom()">
+  <img id="img-zoom-img" src="" alt=""/>
+  <button id="img-zoom-close" onclick="closeZoom()">✕</button>
+</div>
 
 <!-- TICKER -->
 <div class="ticker">
@@ -333,9 +432,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div class="prod-card reveal">
       <div class="prod-img-wrap" style="aspect-ratio:unset">
         <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="sd-main" src="https://i.postimg.cc/XYYBV7qp/1776024119629.jpg" alt="Screwdriver Set" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <img id="sd-main" src="https://i.postimg.cc/XYYBV7qp/1776024119629.jpg" alt="Screwdriver Set" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/XYYBV7qp/1776024119629.jpg')"/>
           <span class="prod-badge">Best Seller</span>
           <span class="prod-sku">SKU: MZ1293200023</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="sdSwap(this,'https://i.postimg.cc/XYYBV7qp/1776024119629.jpg')" class="gthumb gthumb-sd active"><img src="https://i.postimg.cc/XYYBV7qp/1776024119629.jpg"/></div>
@@ -376,9 +476,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div class="prod-card reveal">
       <div class="prod-img-wrap" style="aspect-ratio:unset">
         <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="w-main" src="https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg" alt="Chronograph Watch" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <img id="w-main" src="https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg" alt="Chronograph Watch" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1156200080</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="wSwap(this,'https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg')" class="gthumb gthumb-w active"><img src="https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg"/></div>
@@ -418,9 +519,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div class="prod-card reveal">
       <div class="prod-img-wrap" style="aspect-ratio:unset">
         <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="eb-main" src="https://i.postimg.cc/x1PrxRnr/1776069221987.jpg" alt="Bluetooth Earbuds" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <img id="eb-main" src="https://i.postimg.cc/x1PrxRnr/1776069221987.jpg" alt="Bluetooth Earbuds" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/x1PrxRnr/1776069221987.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ2290200004</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="ebSwap(this,'https://i.postimg.cc/x1PrxRnr/1776069221987.jpg')" class="gthumb gthumb-eb active"><img src="https://i.postimg.cc/x1PrxRnr/1776069221987.jpg"/></div>
@@ -460,9 +562,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div class="prod-card reveal">
       <div class="prod-img-wrap" style="aspect-ratio:unset">
         <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="mg-main" src="https://i.postimg.cc/pTNmV6VF/1777464197971.webp" alt="Mini Massager Gun" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <img id="mg-main" src="https://i.postimg.cc/pTNmV6VF/1777464197971.webp" alt="Mini Massager Gun" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/pTNmV6VF/1777464197971.webp')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ57800000348</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="mgSwap(this,'https://i.postimg.cc/pTNmV6VF/1777464197971.webp')" class="gthumb gthumb-mg active"><img src="https://i.postimg.cc/pTNmV6VF/1777464197971.webp"/></div>
@@ -504,9 +607,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div class="prod-card reveal">
       <div class="prod-img-wrap" style="aspect-ratio:unset">
         <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="cc-main" src="https://i.postimg.cc/rsJXGrGP/1777617882672.jpg" alt="3-in-1 Charging Cable" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <img id="cc-main" src="https://i.postimg.cc/rsJXGrGP/1777617882672.jpg" alt="3-in-1 Charging Cable" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/rsJXGrGP/1777617882672.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1155200134</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="ccSwap(this,'https://i.postimg.cc/rsJXGrGP/1777617882672.jpg')" class="gthumb gthumb-cc active"><img src="https://i.postimg.cc/rsJXGrGP/1777617882672.jpg"/></div>
@@ -548,9 +652,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div class="prod-card reveal">
       <div class="prod-img-wrap" style="aspect-ratio:unset">
         <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="fl-main" src="https://i.postimg.cc/QxKGYk9J/1777618063385.webp" alt="Rechargeable Flashlight" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <img id="fl-main" src="https://i.postimg.cc/QxKGYk9J/1777618063385.webp" alt="Rechargeable Flashlight" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/QxKGYk9J/1777618063385.webp')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1172200470</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="flSwap(this,'https://i.postimg.cc/QxKGYk9J/1777618063385.webp')" class="gthumb gthumb-fl active"><img src="https://i.postimg.cc/QxKGYk9J/1777618063385.webp"/></div>
@@ -589,9 +694,10 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div class="prod-card reveal">
       <div class="prod-img-wrap" style="aspect-ratio:unset">
         <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-          <img id="tb-main" src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg" alt="Tich Buttons 50 Pcs" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+          <img id="tb-main" src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg" alt="Tich Buttons 50 Pcs" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('https://i.postimg.cc/GpZkbCBW/1777894125333.jpg')"/>
           <span class="prod-badge">New Arrival</span>
           <span class="prod-sku">SKU: MZ1701200032ALHAGS</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation()">🔍 Tap image to zoom</button>
         </div>
         <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
           <div onclick="tbSwap(this,'https://i.postimg.cc/GpZkbCBW/1777894125333.jpg')" class="gthumb gthumb-tb active"><img src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg"/></div>
@@ -796,52 +902,62 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <!-- MAIN PANEL -->
     <div id="adminMainPanel" style="display:none">
       <div class="admin-head">
-        <span class="admin-head-title">Add New Product</span>
+        <span class="admin-head-title">Admin Panel</span>
         <button class="admin-close" onclick="closeAdminPanel()">✕</button>
+      </div>
+
+      <!-- TABS -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('add')">+ Add Product</button>
+        <button class="admin-tab" onclick="switchTab('delete')">🗑 Delete Product</button>
       </div>
 
       <div class="admin-body">
 
-        <!-- Product Name -->
-        <div class="admin-group">
-          <label class="admin-label">Product Name *</label>
-          <input class="admin-input" id="ap-name" type="text" placeholder="e.g. Electric Kettle 1.8L"/>
-        </div>
+        <!-- ADD TAB -->
+        <div id="tab-add" class="admin-tab-panel active">
 
-        <!-- Description -->
-        <div class="admin-group">
-          <label class="admin-label">Description *</label>
-          <textarea class="admin-input admin-textarea" id="ap-desc" rows="3" placeholder="Short product description…"></textarea>
-        </div>
-
-        <!-- Price -->
-        <div class="admin-group">
-          <label class="admin-label">Price (Rs.) *</label>
-          <input class="admin-input" id="ap-price" type="number" placeholder="e.g. 1299"/>
-        </div>
-
-        <!-- Images -->
-        <div class="admin-group">
-          <label class="admin-label">Image Links</label>
-          <div class="admin-imgs">
-            <input class="admin-input" id="img-1" type="url" placeholder="Main image URL (required)"/>
-            <input class="admin-input" id="img-2" type="url" placeholder="Thumbnail 2 (optional)"/>
-            <input class="admin-input" id="img-3" type="url" placeholder="Thumbnail 3 (optional)"/>
-            <input class="admin-input" id="img-4" type="url" placeholder="Thumbnail 4 (optional)"/>
-            <input class="admin-input" id="img-5" type="url" placeholder="Thumbnail 5 (optional)"/>
-            <input class="admin-input" id="img-6" type="url" placeholder="Thumbnail 6 (optional)"/>
+          <div class="admin-group">
+            <label class="admin-label">Product Name *</label>
+            <input class="admin-input" id="ap-name" type="text" placeholder="e.g. Electric Kettle 1.8L"/>
           </div>
-          <div class="admin-img-hint">Paste postimg.cc links · Leave extra fields blank</div>
+
+          <div class="admin-group">
+            <label class="admin-label">Description *</label>
+            <textarea class="admin-input admin-textarea" id="ap-desc" rows="3" placeholder="Short product description…"></textarea>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Price (Rs.) *</label>
+            <input class="admin-input" id="ap-price" type="number" placeholder="e.g. 1299"/>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Image Links</label>
+            <div class="admin-imgs">
+              <input class="admin-input" id="img-1" type="url" placeholder="Main image URL (required)"/>
+              <input class="admin-input" id="img-2" type="url" placeholder="Thumbnail 2 (optional)"/>
+              <input class="admin-input" id="img-3" type="url" placeholder="Thumbnail 3 (optional)"/>
+              <input class="admin-input" id="img-4" type="url" placeholder="Thumbnail 4 (optional)"/>
+              <input class="admin-input" id="img-5" type="url" placeholder="Thumbnail 5 (optional)"/>
+              <input class="admin-input" id="img-6" type="url" placeholder="Thumbnail 6 (optional)"/>
+            </div>
+            <div class="admin-img-hint">Paste postimg.cc links · Leave extra fields blank</div>
+          </div>
+
+          <button class="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
+
+          <div class="admin-success" id="adminSuccess">
+            <div class="admin-success-ico">✅</div>
+            <div class="admin-success-title">Product Added!</div>
+            <div class="admin-success-sub">Scroll down to see your new product in the store.</div>
+          </div>
+
         </div>
 
-        <!-- Submit -->
-        <button class="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
-
-        <!-- Success -->
-        <div class="admin-success" id="adminSuccess">
-          <div class="admin-success-ico">✅</div>
-          <div class="admin-success-title">Product Added!</div>
-          <div class="admin-success-sub">Scroll down to see your new product in the store.</div>
+        <!-- DELETE TAB -->
+        <div id="tab-delete" class="admin-tab-panel">
+          <div id="del-product-list" class="del-product-list"></div>
         </div>
 
       </div>
@@ -991,9 +1107,191 @@ function submitOrder() {
   }, 700);
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeAdminPanel(); }
+// ── PAGE LOADER ──
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('page-loader').classList.add('hidden');
+  }, 1500);
 });
+
+// ── CURSOR GLOW (desktop only) ──
+const cursorGlow = document.getElementById('cursor-glow');
+if (window.innerWidth > 768) {
+  document.addEventListener('mousemove', e => {
+    cursorGlow.style.opacity = '1';
+    cursorGlow.style.left = e.clientX + 'px';
+    cursorGlow.style.top = e.clientY + 'px';
+  });
+  document.addEventListener('mouseleave', () => { cursorGlow.style.opacity = '0'; });
+}
+
+// ── SCROLL PROGRESS BAR ──
+window.addEventListener('scroll', () => {
+  const prog = document.getElementById('scroll-prog');
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  prog.style.width = Math.min(pct, 100) + '%';
+
+  // Back to top visibility
+  const bt = document.getElementById('back-top');
+  if (window.scrollY > 500) bt.classList.add('visible');
+  else bt.classList.remove('visible');
+
+  // Nav active link highlight
+  document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+    const sec = document.querySelector(link.getAttribute('href'));
+    if (sec) {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 120 && rect.bottom >= 120) link.classList.add('active');
+      else link.classList.remove('active');
+    }
+  });
+});
+
+// ── RIPPLE EFFECT ──
+function addRipple(e) {
+  const btn = e.currentTarget;
+  const circle = document.createElement('span');
+  const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+  const radius = diameter / 2;
+  const rect = btn.getBoundingClientRect();
+  circle.style.cssText = `width:${diameter}px;height:${diameter}px;left:${e.clientX - rect.left - radius}px;top:${e.clientY - rect.top - radius}px`;
+  circle.classList.add('ripple');
+  btn.querySelector('.ripple')?.remove();
+  btn.appendChild(circle);
+}
+document.querySelectorAll('.btn-order, .btn-white, .btn-submit').forEach(btn => {
+  btn.addEventListener('click', addRipple);
+});
+
+// ── TOAST ──
+function showToast(msg, duration = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ── IMAGE ZOOM ──
+function zoomImg(src) {
+  document.getElementById('img-zoom-img').src = src;
+  document.getElementById('img-zoom-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeZoom() {
+  document.getElementById('img-zoom-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ── PRICE POP on hover ──
+document.querySelectorAll('.prod-price').forEach(p => {
+  p.closest('.prod-card')?.addEventListener('mouseenter', () => {
+    p.classList.remove('pop');
+    void p.offsetWidth;
+    p.classList.add('pop');
+  });
+});
+
+// ── HERO COUNTER ANIMATION ──
+function animateCounter(el, target, suffix = '') {
+  let start = 0;
+  const isText = isNaN(parseInt(target));
+  if (isText) { el.textContent = target; return; }
+  const num = parseInt(target);
+  const duration = 1200;
+  const step = duration / num;
+  const timer = setInterval(() => {
+    start++;
+    el.textContent = start + suffix;
+    if (start >= num) { el.textContent = target; clearInterval(timer); }
+  }, step);
+}
+
+// Trigger counter when hero is visible
+const heroObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    document.querySelectorAll('.hst-n').forEach(el => {
+      const orig = el.textContent;
+      if (orig === 'COD' || orig === 'All PK') return;
+      const num = parseInt(orig);
+      if (!isNaN(num)) {
+        const suffix = orig.replace(num.toString(), '');
+        el.textContent = '0' + suffix;
+        animateCounter(el, orig, '');
+      }
+    });
+    heroObs.disconnect();
+  }
+}, { threshold: 0.5 });
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) heroObs.observe(heroStats);
+
+// ── TOAST on Order button click ──
+document.querySelectorAll('.btn-order').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setTimeout(() => showToast('✓ Opening order form…'), 100);
+  });
+});
+
+// ── STAGGER product cards ──
+document.querySelectorAll('.prod-card').forEach((card, i) => {
+  card.style.transitionDelay = (i * 0.06) + 's';
+});
+
+// ── KEYBOARD: close zoom on Escape ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeAdminPanel();
+    closeZoom();
+  }
+});
+
+/* ── ADMIN TABS ── */
+function switchTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (tab === 'delete') renderDeleteList();
+}
+
+function renderDeleteList() {
+  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
+  const list = document.getElementById('del-product-list');
+  if (products.length === 0) {
+    list.innerHTML = '<div class="del-empty">No saved products to delete.</div>';
+    return;
+  }
+  list.innerHTML = products.map(p => `
+    <div class="del-item" id="del-row-${p.id}">
+      <div class="del-item-info">
+        <img class="del-item-thumb" src="${p.imgs[0]}" onerror="this.style.display='none'"/>
+        <div>
+          <div class="del-item-name">${p.name}</div>
+          <div class="del-item-price">Rs. ${parseInt(p.price).toLocaleString('en-PK')}</div>
+        </div>
+      </div>
+      <span class="del-item-tag">SAVED</span>
+      <button class="btn-del-item" onclick="deleteProduct('${p.id}')">Delete</button>
+    </div>
+  `).join('');
+}
+
+function deleteProduct(id) {
+  if (!confirm('Delete this product from the store?')) return;
+  const card = document.querySelector(`[id="${id}-main"]`)?.closest('.prod-card');
+  if (card) {
+    card.style.transition = 'opacity 0.35s,transform 0.35s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => card.remove(), 380);
+  }
+  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
+  localStorage.setItem('zx_products', JSON.stringify(products.filter(p => p.id !== id)));
+  const row = document.getElementById('del-row-' + id);
+  if (row) { row.style.opacity = '0'; setTimeout(() => renderDeleteList(), 280); }
+  showToast('🗑 Product deleted');
+}
 
 /* ─── ADMIN PANEL ─── */
 const ADMIN_PASSWORD = 'zxadmin786';
@@ -1061,7 +1359,7 @@ function addProductToPage() {
   card.innerHTML = `
     <div class="prod-img-wrap" style="aspect-ratio:unset">
       <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
-        <img id="${id}-main" src="${imgs[0]}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+        <img id="${id}-main" src="${imgs[0]}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('${imgs[0]}')"/>
         <span class="prod-badge">New Arrival</span>
       </div>
       ${thumbsHTML}
@@ -1091,6 +1389,9 @@ function addProductToPage() {
   // Trigger scroll reveal
   setTimeout(() => { card.classList.add('visible'); }, 80);
 
+  // Save to localStorage
+  saveProduct({ id, name, desc, price, imgs });
+
   // Show success, reset form
   document.getElementById('adminSuccess').style.display = 'block';
   ['ap-name','ap-desc','ap-price','img-1','img-2','img-3','img-4','img-5','img-6'].forEach(id => {
@@ -1099,6 +1400,65 @@ function addProductToPage() {
 
   setTimeout(() => closeAdminPanel(), 1800);
 }
+
+// ── LOCALSTORAGE PERSISTENCE ──
+function saveProduct(data) {
+  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
+  products.push(data);
+  localStorage.setItem('zx_products', JSON.stringify(products));
+}
+
+function renderSavedProducts() {
+  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
+  products.forEach(({ id, name, desc, price, imgs }) => {
+    const formattedPrice = parseInt(price).toLocaleString('en-PK');
+    const waText = encodeURIComponent(`Hi, I want to order ${name} (Rs. ${formattedPrice})`);
+
+    let thumbsHTML = '';
+    if (imgs.length > 1) {
+      thumbsHTML = `<div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">`;
+      imgs.forEach((url, i) => {
+        thumbsHTML += `<div onclick="dynSwap(this,'${id}-main','${id}','${url}')" class="gthumb gthumb-${id}${i===0?' active':''}"><img src="${url}" loading="lazy"/></div>`;
+      });
+      thumbsHTML += `</div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'prod-card reveal visible';
+    card.innerHTML = `
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="${id}-main" src="${imgs[0]}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" onclick="zoomImg('${imgs[0]}')"/>
+          <span class="prod-badge">New Arrival</span>
+        </div>
+        ${thumbsHTML}
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">ZX Agent Seller</span>
+        </div>
+        <h3 class="prod-name">${name}</h3>
+        <p class="prod-desc">${desc}</p>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price">Rs. ${formattedPrice}</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openDynModal('${id}','${name.replace(/'/g,"\\'")}','Rs. ${formattedPrice}')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp">📲</a>
+        </div>
+      </div>`;
+
+    document.querySelector('.products-grid').appendChild(card);
+  });
+}
+
+// Load saved products on page start
+renderSavedProducts();
 
 // Universal thumb swap for dynamically added products
 function dynSwap(el, imgId, groupId, url) {
