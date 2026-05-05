@@ -196,6 +196,40 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
+/* ── ADMIN PANEL ── */
+.admin-trigger{background:none;border:none;color:transparent;cursor:default;font-size:0.58rem;padding:2px 4px;user-select:none;position:relative}
+.admin-trigger::after{content:'©';color:var(--muted);font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.12em}
+.admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);backdrop-filter:blur(12px);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem}
+.admin-overlay.active{display:flex}
+.admin-modal{background:#0a0a0a;border:1px solid rgba(255,255,255,0.18);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;animation:modalIn 0.3s ease}
+.admin-head{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 1.8rem;border-bottom:1px solid var(--border)}
+.admin-head-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.1em}
+.admin-close{background:none;border:1px solid var(--border-md);color:var(--white);width:30px;height:30px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.admin-close:hover{background:rgba(255,255,255,0.08)}
+.admin-body{padding:1.6rem 1.8rem;display:flex;flex-direction:column;gap:1rem}
+.admin-group{display:flex;flex-direction:column;gap:0.45rem}
+.admin-label{font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.16em;text-transform:uppercase;color:#666}
+.admin-input,.admin-textarea{width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:0.7rem 0.9rem;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;resize:vertical}
+.admin-input:focus,.admin-textarea:focus{border-color:rgba(255,255,255,0.35)}
+.admin-img-hint{font-family:'Space Mono',monospace;font-size:0.5rem;color:#444;letter-spacing:0.08em;margin-top:0.2rem}
+.admin-imgs{display:flex;flex-direction:column;gap:0.5rem}
+.btn-add-product{width:100%;background:var(--white);color:var(--black);border:none;padding:1rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:0.5rem}
+.btn-add-product:hover{background:var(--off);transform:translateY(-1px)}
+.admin-pw-screen{padding:3rem 2rem;text-align:center}
+.admin-pw-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.08em;margin-bottom:0.4rem}
+.admin-pw-sub{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;color:#555;margin-bottom:2rem;text-transform:uppercase}
+.admin-pw-input{background:#111;border:1px solid rgba(255,255,255,0.15);color:var(--white);padding:0.85rem 1.2rem;font-family:'Space Mono',monospace;font-size:1rem;outline:none;text-align:center;letter-spacing:0.3em;width:100%;max-width:260px;transition:border-color 0.2s}
+.admin-pw-input:focus{border-color:rgba(255,255,255,0.4)}
+.admin-pw-input.wrong{border-color:#ff3333;animation:shake 0.3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.admin-pw-btn{margin-top:1rem;background:var(--white);color:var(--black);border:none;padding:0.75rem 2.5rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.admin-pw-btn:hover{background:var(--off)}
+.admin-success{text-align:center;padding:2rem 0;display:none}
+.admin-success-ico{font-size:2.5rem;margin-bottom:0.8rem}
+.admin-success-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;margin-bottom:0.4rem}
+.admin-success-sub{font-size:0.82rem;color:var(--muted)}
+@media(max-width:600px){.admin-body{padding:1.2rem}}
+
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:1rem 1.5rem}
@@ -664,7 +698,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     </div>
   </div>
   <div class="foot-right">
-    <div class="foot-copy">© 2026 ZX Agent Seller · Halal · Transparent · 🇵🇰</div>
+    <div class="foot-copy"><button class="admin-trigger" onclick="openAdminPanel()" title=""></button> 2026 ZX Agent Seller · Halal · Transparent · 🇵🇰</div>
     <div class="foot-sub">Halal · Transparent · <a class="foot-wa" href="https://wa.me/923182756013" target="_blank">+92 318 2756013</a></div>
   </div>
 </footer>
@@ -740,6 +774,77 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
       <div class="wa-badge"><span>●</span> WhatsApp Notification Sent</div>
       <br/><br/>
       <button class="btn-ghost" onclick="closeModal()" style="padding:0.7rem 2rem;cursor:pointer">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ ADMIN PANEL ═══ -->
+<div class="admin-overlay" id="adminOverlay" onclick="handleAdminOverlayClick(event)">
+  <div class="admin-modal">
+
+    <!-- PASSWORD SCREEN -->
+    <div id="adminPwScreen" class="admin-pw-screen">
+      <div class="admin-pw-title">Admin Access</div>
+      <div class="admin-pw-sub">ZX Agent Seller · Owner Only</div>
+      <input class="admin-pw-input" id="adminPwInput" type="password" placeholder="••••••••" maxlength="32"
+        onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+      <br/>
+      <button class="admin-pw-btn" onclick="checkAdminPw()">Unlock</button>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div id="adminMainPanel" style="display:none">
+      <div class="admin-head">
+        <span class="admin-head-title">Add New Product</span>
+        <button class="admin-close" onclick="closeAdminPanel()">✕</button>
+      </div>
+
+      <div class="admin-body">
+
+        <!-- Product Name -->
+        <div class="admin-group">
+          <label class="admin-label">Product Name *</label>
+          <input class="admin-input" id="ap-name" type="text" placeholder="e.g. Electric Kettle 1.8L"/>
+        </div>
+
+        <!-- Description -->
+        <div class="admin-group">
+          <label class="admin-label">Description *</label>
+          <textarea class="admin-input admin-textarea" id="ap-desc" rows="3" placeholder="Short product description…"></textarea>
+        </div>
+
+        <!-- Price -->
+        <div class="admin-group">
+          <label class="admin-label">Price (Rs.) *</label>
+          <input class="admin-input" id="ap-price" type="number" placeholder="e.g. 1299"/>
+        </div>
+
+        <!-- Images -->
+        <div class="admin-group">
+          <label class="admin-label">Image Links</label>
+          <div class="admin-imgs">
+            <input class="admin-input" id="img-1" type="url" placeholder="Main image URL (required)"/>
+            <input class="admin-input" id="img-2" type="url" placeholder="Thumbnail 2 (optional)"/>
+            <input class="admin-input" id="img-3" type="url" placeholder="Thumbnail 3 (optional)"/>
+            <input class="admin-input" id="img-4" type="url" placeholder="Thumbnail 4 (optional)"/>
+            <input class="admin-input" id="img-5" type="url" placeholder="Thumbnail 5 (optional)"/>
+            <input class="admin-input" id="img-6" type="url" placeholder="Thumbnail 6 (optional)"/>
+          </div>
+          <div class="admin-img-hint">Paste postimg.cc links · Leave extra fields blank</div>
+        </div>
+
+        <!-- Submit -->
+        <button class="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
+
+        <!-- Success -->
+        <div class="admin-success" id="adminSuccess">
+          <div class="admin-success-ico">✅</div>
+          <div class="admin-success-title">Product Added!</div>
+          <div class="admin-success-sub">Scroll down to see your new product in the store.</div>
+        </div>
+
+      </div>
     </div>
 
   </div>
@@ -845,10 +950,18 @@ function submitOrder() {
   const skus         = { screwdriver: 'MZ1293200023CCCEPK', watch: 'MZ1156200080TEWEHB', earbuds: 'MZ2290200004IZMT', massager: 'MZ57800000348GALAXY', cable: 'MZ1155200134SEHB', flashlight: 'MZ1172200470SE', tichbuttons: 'MZ1701200032ALHAGS' };
   const productPrices= { screwdriver: 1599, watch: 1099, earbuds: 999, massager: 2499, cable: 599, flashlight: 599, tichbuttons: 799 };
 
-  const productName  = productNames[currentProduct];
-  const sku          = skus[currentProduct];
-  const price        = productPrices[currentProduct];
-  const total        = price * parseInt(qty);
+  let productName, sku, price, total;
+  if (currentProduct.startsWith('__dyn__')) {
+    productName = document.getElementById('modalProductName').textContent;
+    sku = 'N/A';
+    price = parseInt(document.getElementById('modalProductPrice').textContent.replace(/[^0-9]/g,''));
+    total = price * parseInt(qty);
+  } else {
+    productName = productNames[currentProduct];
+    sku         = skus[currentProduct];
+    price       = productPrices[currentProduct];
+    total       = price * parseInt(qty);
+  }
 
   let msg =
 `🛒 *NEW ORDER — ZX AGENT SELLER*
@@ -878,7 +991,136 @@ function submitOrder() {
   }, 700);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeAdminPanel(); }
+});
+
+/* ─── ADMIN PANEL ─── */
+const ADMIN_PASSWORD = 'zxadmin786';
+
+function openAdminPanel() {
+  document.getElementById('adminPwScreen').style.display = 'block';
+  document.getElementById('adminMainPanel').style.display = 'none';
+  document.getElementById('adminPwInput').value = '';
+  document.getElementById('adminPwInput').classList.remove('wrong');
+  document.getElementById('adminSuccess').style.display = 'none';
+  document.getElementById('adminOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('adminPwInput').focus(), 120);
+}
+
+function closeAdminPanel() {
+  document.getElementById('adminOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function handleAdminOverlayClick(e) {
+  if (e.target === document.getElementById('adminOverlay')) closeAdminPanel();
+}
+
+function checkAdminPw() {
+  if (document.getElementById('adminPwInput').value === ADMIN_PASSWORD) {
+    document.getElementById('adminPwScreen').style.display = 'none';
+    document.getElementById('adminMainPanel').style.display = 'block';
+  } else {
+    const inp = document.getElementById('adminPwInput');
+    inp.classList.add('wrong');
+    inp.value = '';
+    setTimeout(() => inp.classList.remove('wrong'), 500);
+  }
+}
+
+function addProductToPage() {
+  const name  = document.getElementById('ap-name').value.trim();
+  const desc  = document.getElementById('ap-desc').value.trim();
+  const price = document.getElementById('ap-price').value.trim();
+  const imgs  = [1,2,3,4,5,6].map(i => document.getElementById('img-'+i).value.trim()).filter(Boolean);
+
+  if (!name || !price || !imgs[0]) {
+    alert('⚠️ Please fill in Product Name, Price, and at least one Image link.');
+    return;
+  }
+
+  const id = 'p' + Date.now();
+  const formattedPrice = parseInt(price).toLocaleString('en-PK');
+  const waText = encodeURIComponent(`Hi, I want to order ${name} (Rs. ${formattedPrice})`);
+
+  // Build thumbnail strip
+  let thumbsHTML = '';
+  if (imgs.length > 1) {
+    thumbsHTML = `<div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">`;
+    imgs.forEach((url, i) => {
+      thumbsHTML += `<div onclick="dynSwap(this,'${id}-main','${id}','${url}')" class="gthumb gthumb-${id}${i===0?' active':''}"><img src="${url}" loading="lazy"/></div>`;
+    });
+    thumbsHTML += `</div>`;
+  }
+
+  // Build full card HTML
+  const card = document.createElement('div');
+  card.className = 'prod-card reveal';
+  card.innerHTML = `
+    <div class="prod-img-wrap" style="aspect-ratio:unset">
+      <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+        <img id="${id}-main" src="${imgs[0]}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)"/>
+        <span class="prod-badge">New Arrival</span>
+      </div>
+      ${thumbsHTML}
+    </div>
+    <div class="prod-body">
+      <div class="prod-tag-row">
+        <span class="prod-dot"></span>
+        <span class="prod-cat">ZX Agent Seller</span>
+      </div>
+      <h3 class="prod-name">${name}</h3>
+      <p class="prod-desc">${desc}</p>
+      <div class="prod-price-row">
+        <div>
+          <div class="prod-price-label">Price</div>
+          <div class="prod-price">Rs. ${formattedPrice}</div>
+        </div>
+        <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
+      </div>
+      <div class="prod-footer">
+        <button class="btn-order" onclick="openDynModal('${id}','${name.replace(/'/g,"\\'")}','Rs. ${formattedPrice}')">Order Now</button>
+        <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp">📲</a>
+      </div>
+    </div>`;
+
+  document.querySelector('.products-grid').appendChild(card);
+
+  // Trigger scroll reveal
+  setTimeout(() => { card.classList.add('visible'); }, 80);
+
+  // Show success, reset form
+  document.getElementById('adminSuccess').style.display = 'block';
+  ['ap-name','ap-desc','ap-price','img-1','img-2','img-3','img-4','img-5','img-6'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
+  setTimeout(() => closeAdminPanel(), 1800);
+}
+
+// Universal thumb swap for dynamically added products
+function dynSwap(el, imgId, groupId, url) {
+  document.getElementById(imgId).src = url;
+  document.querySelectorAll('.gthumb-' + groupId).forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Modal support for dynamically added products
+function openDynModal(id, name, price) {
+  currentProduct = '__dyn__' + id;
+  document.getElementById('modalTitle').textContent = 'Order ' + name;
+  document.getElementById('modalProductName').textContent = name;
+  document.getElementById('modalProductPrice').textContent = price;
+  document.getElementById('colorGroup').style.display = 'none';
+  document.getElementById('orderForm').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').innerHTML = '<span>📲</span> Confirm Order via WhatsApp';
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
 
 // Scroll reveal
 const io = new IntersectionObserver(entries => {
