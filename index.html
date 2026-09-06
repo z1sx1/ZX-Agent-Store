@@ -2538,12 +2538,11 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-// ── PWA ──
+// ── PWA: service worker removed — was causing pages to stay cached and
+// not show new uploads. Site now always loads fresh from the server. ──
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('ZX Agent Store: service worker registered', reg.scope))
-      .catch(err => console.warn('ZX Agent Store: service worker registration failed', err));
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
   });
 }
 
