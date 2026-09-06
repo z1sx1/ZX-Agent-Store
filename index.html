@@ -1300,12 +1300,8 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
         <!-- ADD TAB -->
         <div id="tab-add" class="admin-tab-panel active">
 
-          <!-- GitHub Token (legacy — only needed to delete pre-Supabase products) -->
-          <div class="admin-group">
-            <label class="admin-label">GitHub Token <span style="color:#555;font-size:0.48rem">(optional — only needed to delete older products)</span></label>
-            <input class="admin-input" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"/>
-            <div class="admin-img-hint">New products save instantly via the database — this is only used as a fallback when deleting products added before this update</div>
-          </div>
+          <!-- Products save instantly via Supabase — no token needed -->
+
 
           <div class="admin-group">
             <label class="admin-label">Product ID *</label>
@@ -1351,7 +1347,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           <button class="btn-add-product" id="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
 
           <div class="admin-success" id="adminSuccess">
-            <div class="admin-success-ico"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="admin-success-ico" id="adminSuccessIco"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             <div class="admin-success-title" id="adminSuccessTitle">Publishing…</div>
             <div class="admin-success-sub" id="adminSuccessSub">Saving to the database…</div>
           </div>
@@ -1967,7 +1963,7 @@ async function loadSupabaseProducts() {
     .from('products')
     .select('*')
     .order('created_at', { ascending: true });
-  if (error) { console.error('Failed to load products:', error); return; }
+  if (error) { console.error('Failed to load products: ' + (error.message || '') + ' | code: ' + (error.code || '') + ' | details: ' + (error.details || '') + ' | hint: ' + (error.hint || '')); return; }
 
   const grid = document.querySelector('.products-grid');
   data.forEach(p => {
@@ -2064,69 +2060,6 @@ function addProductToPage() {
       btn.disabled = false;
       btn.textContent = '+ Add Product to Store';
     });
-}
-
-// ── GITHUB API ──
-function encodeToBase64(str) {
-  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
-}
-function decodeFromBase64(b64) {
-  return decodeURIComponent(atob(b64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-}
-
-const GH_USER = 'z1sx1';
-const GH_REPO = 'ZX-Agent-Store';
-const GH_FILE = 'index.html';
-const GH_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
-
-function fetchWithTimeout(url, options, ms = 20000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ms);
-  return fetch(url, { ...options, signal: controller.signal })
-    .catch(err => {
-      if (err.name === 'AbortError') {
-        throw new Error('Request to GitHub timed out. Your connection may be blocking github.com — try switching networks or using a VPN.');
-      }
-      throw new Error('Network error reaching GitHub — check your internet connection.');
-    })
-    .finally(() => clearTimeout(timer));
-}
-
-async function pushToGitHub(cardHTML, token, productName) {
-  const getRes = await fetchWithTimeout(GH_API, {
-    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-  });
-  if (!getRes.ok) {
-    const err = await getRes.json();
-    throw new Error(err.message || 'Could not fetch file from GitHub. Check your token.');
-  }
-  const fileData = await getRes.json();
-  const sha = fileData.sha;
-  const currentHTML = decodeFromBase64(fileData.content.replace(/\n/g, ''));
-
-  const INJECT_MARKER = '\n\n  </div>\n</section>\n\n<!-- FEATURES STRIP -->';
-  if (!currentHTML.includes(INJECT_MARKER)) {
-    throw new Error('Could not find injection point in HTML. File may have been modified.');
-  }
-  const newHTML = currentHTML.replace(INJECT_MARKER, cardHTML + '\n\n  </div>\n</section>\n\n<!-- FEATURES STRIP -->');
-
-  const putRes = await fetchWithTimeout(GH_API, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `token ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      message: `Add product: ${productName}`,
-      content: encodeToBase64(newHTML),
-      sha: sha
-    })
-  });
-  if (!putRes.ok) {
-    const err = await putRes.json();
-    throw new Error(err.message || 'Failed to push to GitHub.');
-  }
 }
 
 // ── PAGE LOADER, RIPPLE, TOAST, SCROLL, etc. ──
@@ -2364,13 +2297,7 @@ function checkAdminPw() {
   }
 }
 
-// ── LOAD SAVED TOKEN ──
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('zx_gh_token');
-  if (saved) { const el = document.getElementById('gh-token'); if(el) el.value = saved; }
-});
-
-// ── DELETE PRODUCT (GitHub) ──
+// ── DELETE PRODUCT (Supabase) ──
 async function deleteProduct(id) {
   if (!confirm('Delete this product from the store?')) return;
 
@@ -2382,64 +2309,15 @@ async function deleteProduct(id) {
     setTimeout(() => card.remove(), 380);
   }
 
-  // Try Supabase first — this covers every product added since the switch to Supabase
-  if (reviewsConfigured()) {
-    const { data } = await supabaseClient.from('products').select('id').eq('id', id).maybeSingle();
-    if (data) {
-      const { error } = await supabaseClient.from('products').delete().eq('id', id);
-      if (error) { showToast('❌ Delete failed: ' + error.message); return; }
-      showToast('✅ Deleted');
-      renderDeleteList();
-      return;
-    }
-  }
-
-  // Fallback: this product predates Supabase and is still baked into the GitHub-hosted HTML
-  const tokenField = document.getElementById('gh-token');
-  const token = (tokenField && tokenField.value.trim()) || localStorage.getItem('zx_gh_token') || '';
-  if (token) localStorage.setItem('zx_gh_token', token);
-  if (!token) {
-    showToast('⚠️ This is an older product — enter your GitHub token in Add Product tab to remove it permanently.');
+  if (!reviewsConfigured()) {
+    showToast('⚠️ Not connected to the database.');
     return;
   }
 
-  showToast('⏳ Deleting from GitHub…');
-  try {
-    const getRes = await fetchWithTimeout(GH_API, {
-      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    const fileData = await getRes.json();
-    const sha = fileData.sha;
-    let html = decodeFromBase64(fileData.content.replace(/\n/g, ''));
-
-    const imgMarker = `id="${id}-main"`;
-    const imgIdx = html.indexOf(imgMarker);
-    if (imgIdx !== -1) {
-      const cardOpen = html.lastIndexOf('<div class="prod-card reveal"', imgIdx);
-      let depth = 0, i = cardOpen, cardClose = -1;
-      while (i < html.length) {
-        if (html.slice(i, i+4) === '<div') depth++;
-        if (html.slice(i, i+6) === '</div>') { depth--; if (depth === 0) { cardClose = i + 6; break; } }
-        i++;
-      }
-      if (cardClose !== -1) {
-        const commentStart = html.lastIndexOf('\n    <!-- PRODUCT:', imgIdx);
-        const removeFrom = commentStart !== -1 ? commentStart : cardOpen - 1;
-        html = html.slice(0, removeFrom) + html.slice(cardClose);
-      }
-    }
-
-    const putRes = await fetchWithTimeout(GH_API, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `Delete product ${id}`, content: encodeToBase64(html), sha })
-    });
-    if (!putRes.ok) throw new Error('GitHub push failed');
-    showToast('✅ Deleted — live in ~30 seconds');
-    renderDeleteList();
-  } catch(e) {
-    showToast('❌ Delete failed: ' + (e.message || 'unknown error'));
-  }
+  const { error } = await supabaseClient.from('products').delete().eq('id', id);
+  if (error) { showToast('❌ Delete failed: ' + error.message); return; }
+  showToast('✅ Deleted');
+  renderDeleteList();
 }
 
 function renderDeleteList() {
