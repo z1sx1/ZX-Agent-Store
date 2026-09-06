@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZX Agent Seller — Official Store</title>
+<meta property="og:title" content="ZX Agent Store">
+<meta property="og:description" content="Buy different products without hidden charges.">
+<meta property="og:image" content="https://raw.githubusercontent.com/z1sx1/ZX-Agent-Store/main/preview.png">
+<meta property="og:url" content="http://tiny.cc/zxagent">
+  
+<!-- PWA: manifest + theme -->
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#000000"/>
+<meta name="background-color" content="#000000"/>
+<meta name="description" content="Official store for ZX Agent products."/>
+
+<!-- PWA: icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png"/>
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+
+<!-- PWA: iOS standalone support -->
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="ZX Agent"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+
+<!-- Supabase client (used for site-wide product reviews) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#000000;
+  --dark:#0d0d0d;
+  --card:#141414;
+  --card2:#1a1a1a;
+  --border:rgba(255,255,255,0.07);
+  --border-md:rgba(255,255,255,0.14);
+  --border-strong:rgba(255,255,255,0.30);
+  --white:#ffffff;
+  --off:#f0f0f0;
+  --muted:#666666;
+  --mid:#444444;
+  --discount:#4caf50;
+  --price-color:#e0e0e0;
+}
+html{scroll-behavior:smooth}
+@media (max-width:768px){
+  nav{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(0,0,0,0.98)}
+  #cursor-glow{display:none}
+  .prod-sku,.prod-quick-view{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .modal-overlay,.admin-overlay{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(0,0,0,0.94)}
+  .prod-card:hover{transform:none;box-shadow:none}
+}
+body{font-family:'Space Grotesk',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden}
+
+/* ── GRAIN ── */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4}
+
+/* ── TOP TICKER ── */
+.ticker{background:var(--white);color:var(--black);padding:9px 0;overflow:hidden;position:relative;height:34px;display:flex;align-items:center;justify-content:center}
+.ticker-inner{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.ticker-slide{position:absolute;left:0;right:0;text-align:center;opacity:0;transition:opacity 0.6s ease;font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 1.2rem}
+.ticker-slide.active{opacity:1}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;left:0;right:0;width:100%;box-sizing:border-box;z-index:500;display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(0,0,0,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);gap:0.6rem}
+.nav-left{display:flex;align-items:center;gap:0.8rem;min-width:0}
+.logo-box{width:36px;height:36px;background:var(--white);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-left .logo-box{overflow:hidden;border-radius:8px}
+.logo-box span{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--black)}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.22em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.nav-mid{display:flex;gap:0.5rem;flex-shrink:0}
+.nav-link{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);padding:0.3rem 0.9rem;border:1px solid transparent;cursor:pointer;transition:all 0.2s;background:none;text-decoration:none;white-space:nowrap}
+.nav-link:hover,.nav-link.active{color:var(--white);border-color:var(--border-md)}
+.nav-right{display:flex;align-items:center;gap:0.6rem;flex-shrink:0}
+.nav-badge{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;color:var(--muted);border:1px solid var(--border-md);padding:0.28rem 0.75rem;text-transform:uppercase;white-space:nowrap}
+.nav-wa{background:var(--white);color:var(--black);border:none;padding:0.5rem 1.3rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;white-space:nowrap;flex-shrink:0}
+.nav-wa:hover{opacity:0.85;transform:scale(1.04)}
+@media(max-width:560px){
+  .logo-name{max-width:90px;font-size:1.25rem;letter-spacing:0.12em}
+  .nav-badge{display:none}
+  .nav-wa{padding:0.5rem 0.7rem}
+  .nav-btn-label{display:none}
+}
+@media(max-width:380px){
+  .logo-name{display:none}
+}
+
+/* ── HERO ── */
+.hero{min-height:82vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 3rem 4rem;position:relative;overflow:hidden}
+.hero-wm{position:absolute;bottom:-120px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:26rem;color:rgba(255,255,255,0.018);line-height:1;pointer-events:none;user-select:none;white-space:nowrap}
+.hero-eyebrow{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border-md);padding:0.3rem 1rem;display:inline-block;margin-bottom:2rem;animation:fadeUp 0.6s ease both}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,9vw,9rem);line-height:0.9;letter-spacing:0.04em;margin-bottom:1.5rem;animation:fadeUp 0.6s 0.1s ease both}
+.hero-title .solid{display:block;color:var(--white)}
+.hero-title .outline{display:block;-webkit-text-stroke:1.5px rgba(255,255,255,0.28);color:transparent}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:460px;line-height:1.75;margin:0 auto 2.5rem;font-weight:300;animation:fadeUp 0.6s 0.2s ease both}
+.hero-cta-row{display:flex;gap:1rem;justify-content:center;animation:fadeUp 0.6s 0.28s ease both}
+.btn-white{background:var(--white);color:var(--black);border:none;padding:0.95rem 2.4rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.btn-white:hover{background:var(--off);transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,255,255,0.1)}
+.btn-ghost{background:transparent;color:var(--white);border:1px solid var(--border-md);padding:0.95rem 2rem;font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:0.82rem;letter-spacing:0.05em;cursor:pointer;transition:border-color 0.2s}
+.btn-ghost:hover{border-color:var(--border-strong)}
+.hero-stats{display:flex;gap:0;margin-top:4rem;border:1px solid var(--border);animation:fadeUp 0.6s 0.36s ease both}
+.hst{padding:1.2rem 2.5rem;display:flex;flex-direction:column;gap:0.2rem;border-right:1px solid var(--border)}
+.hst:last-child{border-right:none}
+.hst-n{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1}
+.hst-l{font-family:'Space Mono',monospace;font-size:0.56rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION DIVIDER ── */
+.sdiv{display:flex;align-items:center;gap:1.5rem;padding:0 3rem;margin:3rem 0}
+.sdiv-line{flex:1;height:1px;background:var(--border)}
+.sdiv-lbl{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+/* ── PRODUCTS GRID ── */
+.products-section{padding:2rem 3rem 6rem}
+.sec-header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;row-gap:0.6rem;margin-bottom:3rem}
+.sec-num{font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:0.12em;margin-right:1rem}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:0.06em}
+.sec-tag{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border-md);padding:0.28rem 0.8rem}
+.products-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+
+/* ── PRODUCT CARD ── */
+.prod-card{background:var(--dark);display:flex;flex-direction:column;position:relative;overflow:hidden;transition:background 0.3s}
+.prod-card:hover{background:var(--card)}
+.prod-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--white);transition:width 0.4s}
+.prod-card:hover::before{width:100%}
+.prod-img-wrap{aspect-ratio:4/3;overflow:hidden;position:relative;border-bottom:1px solid var(--border)}
+.prod-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.6s,filter 0.4s;filter:grayscale(20%)}
+.prod-card:hover .prod-img-wrap img{transform:scale(1.05);filter:grayscale(0%)}
+.prod-badge{position:absolute;top:14px;left:14px;background:var(--white);color:var(--black);font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:0.14em;padding:0.2rem 0.65rem}
+.prod-sku{position:absolute;bottom:10px;right:10px;font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;color:rgba(255,255,255,0.4);background:rgba(0,0,0,0.7);padding:0.2rem 0.55rem;backdrop-filter:blur(6px)}
+
+/* ── CART SELECT CHECKBOX ── */
+.cart-check{position:absolute;top:14px;right:14px;width:28px;height:28px;border:2px solid rgba(255,255,255,0.6);background:rgba(0,0,0,0.55);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;transition:background 0.15s,border-color 0.15s;padding:0}
+.cart-check .cc-tick{opacity:0;transform:scale(0.6);transition:opacity 0.15s,transform 0.15s;stroke:var(--black)}
+.cart-check.active{background:var(--white);border-color:var(--white)}
+.cart-check.active .cc-tick{opacity:1;transform:scale(1)}
+
+/* ── FLOATING CART BAR ── */
+.cart-bar{position:fixed;left:0;right:0;bottom:0;z-index:900;background:var(--white);color:var(--black);display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.4rem;transform:translateY(110%);transition:transform 0.3s cubic-bezier(.22,1,.36,1);box-shadow:0 -10px 30px rgba(0,0,0,0.4)}
+.cart-bar.show{transform:translateY(0)}
+.cart-bar-info{display:flex;flex-direction:column;font-family:'Space Grotesk',sans-serif}
+.cart-bar-count{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid)}
+.cart-bar-total{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1.1}
+.cart-bar-btn{background:var(--black);color:var(--white);border:none;padding:0.8rem 1.5rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem}
+
+/* ── CART DRAWER ── */
+.cart-item-row{display:flex;gap:0.8rem;padding:0.9rem 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.cart-item-row img{width:56px;height:56px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.cart-item-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:0.55rem}
+.cart-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:0.6rem}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:0.82rem;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.cart-item-bottom{display:flex;justify-content:space-between;align-items:center;gap:0.6rem}
+.cart-item-price{font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--discount);white-space:nowrap}
+.cart-item-remove{background:none;border:1px solid rgba(255,60,60,0.3);color:rgba(255,90,90,0.85);width:24px;height:24px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cart-item-row .qty-stepper{flex-shrink:0}
+.cart-item-row .qty-stepper button{width:28px;height:32px;font-size:0.95rem}
+.cart-item-row .qty-stepper span{width:24px;font-size:0.78rem}
+.cart-empty-msg{padding:3rem 1rem;text-align:center;color:var(--muted);font-size:0.85rem}
+.cart-drawer-total{display:flex;justify-content:space-between;align-items:baseline;padding:1rem 0;border-top:1px solid var(--border-md);margin-top:0.5rem}
+.cart-drawer-total b{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--discount)}
+.prod-body{padding:2rem;flex:1;display:flex;flex-direction:column;gap:1rem}
+.prod-tag-row{display:flex;gap:0.6rem;align-items:center}
+.prod-dot{width:6px;height:6px;background:var(--white);border-radius:50%;animation:blink 2.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.15}}
+.prod-cat{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.prod-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:0.95;letter-spacing:0.04em}
+.prod-desc{font-size:0.88rem;color:var(--muted);line-height:1.7;font-weight:300}
+.prod-specs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:0.5rem}
+.ps-item{background:var(--card);padding:0.9rem 1rem}
+.ps-k{font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem}
+.ps-v{font-size:0.88rem;font-weight:600}
+.prod-price-row{display:flex;align-items:baseline;gap:1rem;padding:1rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:0.5rem;flex-wrap:wrap}
+.prod-price{font-family:'Bebas Neue',sans-serif;font-size:3rem;line-height:1;color:var(--discount)}
+.prod-price-original{font-size:1.2rem;color:var(--muted);text-decoration:line-through;margin-left:0.5rem}
+.prod-price-regular{font-family:'Bebas Neue',sans-serif;font-size:3rem;line-height:1;color:var(--price-color)}
+.prod-price-label{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+.prod-price-pkg{font-size:0.8rem;color:var(--muted);margin-left:auto}
+.prod-footer{display:flex;gap:0.75rem;padding-top:0.5rem;margin-top:auto}
+.btn-order{background:var(--white);color:var(--black);border:none;padding:0.85rem 2rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;flex:1}
+.btn-order:hover{background:var(--off);transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,255,255,0.1)}
+.btn-wa{background:transparent;color:var(--white);border:1px solid var(--border-md);padding:0.85rem 1.2rem;font-size:0.9rem;cursor:pointer;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.btn-wa:hover{border-color:var(--border-strong);background:rgba(255,255,255,0.05)}
+.btn-wa svg{stroke:currentColor;fill:none}
+
+/* ── FEATURES STRIP ── */
+.features-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.feat{background:var(--dark);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background 0.2s}
+.feat:last-child{border-right:none}
+.feat:hover{background:var(--card)}
+.feat-ico svg{width:28px;height:28px;stroke:var(--white);fill:none;margin-bottom:0.3rem}
+.feat-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem}
+.feat-sub{font-size:0.78rem;color:var(--muted);line-height:1.5}
+
+/* ── WHY SECTION ── */
+.why-section{padding:6rem 3rem;background:var(--dark);position:relative;overflow:hidden}
+.why-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+.why-grid{display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start}
+.why-left{}
+.why-eyebrow{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.why-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:0.92;letter-spacing:0.04em;margin-bottom:1.5rem}
+.why-title .ol{-webkit-text-stroke:1.5px rgba(255,255,255,0.25);color:transparent}
+.why-body{font-size:0.9rem;color:var(--muted);line-height:1.8;font-weight:300}
+.why-right{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+.wcard{background:var(--card);padding:1.8rem;position:relative;overflow:hidden;transition:background 0.2s}
+.wcard:hover{background:#1f1f1f}
+.wcard::after{content:'';position:absolute;left:0;top:0;width:2px;height:0;background:var(--white);transition:height 0.35s}
+.wcard:hover::after{height:100%}
+.wc-ico svg{width:28px;height:28px;stroke:var(--white);fill:none;margin-bottom:0.8rem;opacity:0.85}
+.wc-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:0.5rem}
+.wc-body{font-size:0.82rem;color:var(--muted);line-height:1.65}
+
+/* ── CTA BANNER ── */
+.cta-banner{padding:7rem 3rem;text-align:center;position:relative;overflow:hidden;border-top:1px solid var(--border)}
+.cta-wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Bebas Neue',sans-serif;font-size:18rem;color:rgba(255,255,255,0.015);pointer-events:none;white-space:nowrap}
+.cta-eyebrow{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;position:relative}
+.cta-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,6rem);letter-spacing:0.04em;margin-bottom:0.8rem;position:relative}
+.cta-sub{color:var(--muted);font-size:1rem;margin-bottom:2.5rem;position:relative;max-width:420px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;gap:1rem;justify-content:center;position:relative}
+
+/* ── FOOTER ── */
+footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;background:var(--dark)}
+.foot-left{display:flex;align-items:center;gap:0.8rem}
+.foot-right{text-align:right}
+.foot-copy{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;color:var(--muted)}
+.foot-sub{font-size:0.75rem;color:var(--mid);margin-top:0.3rem}
+.foot-wa{color:var(--white);font-size:0.75rem}
+.foot-wa:hover{color:var(--off)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);z-index:2600;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--dark);border:1px solid var(--border-md);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;animation:modalIn 0.3s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;border-bottom:1px solid var(--border)}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.06em}
+.modal-close{background:none;border:1px solid var(--border-md);color:var(--white);width:32px;height:32px;cursor:pointer;font-size:0.85rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:rgba(255,255,255,0.08);border-color:var(--border-strong)}
+.modal-product-bar{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border)}
+.mpb-name{font-weight:600;font-size:0.9rem}
+.mpb-price{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.06em}
+.modal-body{padding:1.5rem 2rem}
+.notice-bar{background:rgba(255,255,255,0.05);border:1px solid var(--border-md);padding:0.75rem 1rem;font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:var(--muted);margin-bottom:1.5rem;text-transform:uppercase;display:flex;align-items:center;gap:0.5rem}
+.notice-bar svg{stroke:var(--muted);fill:none}
+.form-group{margin-bottom:1.1rem}
+.form-label{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:0.5rem}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--card);border:1px solid var(--border-md);color:var(--white);padding:0.75rem 1rem;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;resize:vertical}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--border-strong)}
+.form-select option{background:var(--card)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.btn-submit{width:100%;background:var(--white);color:var(--black);border:none;padding:1rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+.btn-submit:hover{background:var(--off);transform:translateY(-1px)}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.success-screen{display:none;padding:3rem 2rem;text-align:center}
+.success-screen.show{display:block}
+.success-ico svg{width:48px;height:48px;stroke:var(--discount);fill:none;margin-bottom:1rem}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:0.06em;margin-bottom:0.5rem}
+.success-msg{font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:2rem}
+.wa-badge{display:inline-flex;align-items:center;gap:0.5rem;font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;color:var(--muted);border:1px solid var(--border-md);padding:0.4rem 1rem}
+.wa-badge svg{stroke:var(--muted);fill:none}
+
+/* ── GALLERY THUMBS ── */
+.gthumb{width:58px;height:58px;flex-shrink:0;border:1px solid var(--border-md);cursor:pointer;overflow:hidden;transition:border-color 0.2s}
+.gthumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
+.gthumb:hover{border-color:var(--border-strong)}
+.gthumb:hover img{transform:scale(1.08)}
+.gthumb.active{border-color:var(--white)}
+
+/* ── HOME COMPACT TILE MODE (visual only — underlying data/markup unchanged) ── */
+.prod-card.compact{cursor:pointer}
+.prod-card.compact .prod-body{padding:0.85rem 0.9rem;gap:0.45rem}
+.prod-card.compact .prod-tag-row,
+.prod-card.compact .prod-desc,
+.prod-card.compact .prod-specs,
+.prod-card.compact .prod-price-label,
+.prod-card.compact .prod-price-pkg,
+.prod-card.compact .prod-footer,
+.prod-card.compact .prod-sku,
+.prod-card.compact .prod-quick-view,
+.prod-card.compact .prod-img-wrap > div:nth-child(2){display:none !important}
+.prod-card.compact .prod-name{font-size:0.9rem;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:0;line-height:1.35;text-transform:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+.prod-card.compact .prod-price-row{border:none;padding:0;margin:0;gap:0.5rem}
+.prod-card.compact .prod-price,
+.prod-card.compact .prod-price-regular{font-size:1.35rem}
+.prod-card.compact .prod-price-original{font-size:0.78rem}
+
+/* ── PRODUCT DETAIL OVERLAY ── */
+.detail-overlay{position:fixed;inset:0;background:var(--black);z-index:2500;display:none;flex-direction:column}
+.detail-overlay.active{display:flex}
+.detail-topbar{display:flex;align-items:center;gap:0.8rem;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.detail-back{background:none;border:1px solid var(--border-md);color:var(--white);width:34px;height:34px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.detail-topbar-title{flex:1;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.detail-cart-btn{position:relative;background:none;border:1px solid var(--border-md);color:var(--white);width:34px;height:34px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.detail-cart-badge{display:none;position:absolute;top:-7px;right:-7px;background:var(--white);color:var(--black);border-radius:50%;width:16px;height:16px;font-size:0.55rem;align-items:center;justify-content:center;font-family:'Space Mono',monospace}
+.detail-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.detail-gallery-main{position:relative;aspect-ratio:1/1;background:var(--dark);overflow:hidden}
+.detail-gallery-main img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.detail-share-btn{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.6);border:1px solid var(--border-md);color:var(--white);width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.detail-gallery-thumbs{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;background:var(--dark);border-bottom:1px solid var(--border)}
+.detail-info{padding:1.3rem 1.2rem 0.5rem}
+.detail-name{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1.05;letter-spacing:0.02em;margin:0.4rem 0 0.6rem}
+.detail-price-row{display:flex;align-items:baseline;gap:0.7rem;margin-bottom:1.1rem}
+.detail-price{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--discount)}
+.detail-price-original{font-size:1.05rem;color:var(--muted);text-decoration:line-through}
+.detail-actions{display:flex;gap:0.8rem;margin-bottom:0.8rem}
+.qty-stepper{display:flex;align-items:center;border:1px solid var(--border-md);flex-shrink:0}
+.qty-stepper button{background:none;border:none;color:var(--white);width:38px;height:44px;font-size:1.1rem;cursor:pointer}
+.qty-stepper button:hover{background:rgba(255,255,255,0.06)}
+.qty-stepper span{width:32px;text-align:center;font-family:'Space Mono',monospace;font-size:0.9rem}
+.detail-add-cart{flex:1;margin:0;padding:0 1rem;height:44px;display:flex;align-items:center;justify-content:center}
+.detail-order-now{margin-top:0}
+.detail-tabs{display:flex;border-bottom:1px solid var(--border);margin-top:1.6rem}
+.detail-tab{flex:1;background:none;border:none;color:var(--muted);padding:0.85rem 0.4rem;font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.detail-tab.active{color:var(--white);border-bottom-color:var(--white)}
+.detail-tab-panel{display:none;padding:1.3rem 0}
+.detail-tab-panel.active{display:block}
+.review-summary{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border)}
+.review-summary-num{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;line-height:1}
+.review-summary-meta{font-size:0.75rem;color:var(--muted)}
+.review-stars{color:#f5b301;font-size:0.85rem;letter-spacing:0.1em}
+.review-row{padding:0.9rem 0;border-bottom:1px solid var(--border)}
+.review-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem}
+.review-row-name{font-weight:600;font-size:0.85rem}
+.review-row-date{font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace}
+.review-row-text{font-size:0.85rem;color:var(--muted);line-height:1.6}
+.star-picker{display:flex;gap:0.4rem}
+.star-picker button{background:none;border:none;font-size:1.5rem;color:var(--mid);cursor:pointer;line-height:1;padding:0}
+.star-picker button.on{color:#f5b301}
+.detail-more{padding:1.5rem 1.2rem 3rem;border-top:8px solid var(--dark)}
+.detail-more-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.04em;margin-bottom:1rem}
+.detail-more-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem}
+.dm-tile{cursor:pointer;background:var(--card);border:1px solid var(--border)}
+.dm-tile img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.dm-tile-body{padding:0.7rem 0.75rem}
+.dm-tile-name{font-size:0.8rem;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.1em}
+.dm-tile-price{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;color:var(--discount);margin-top:0.3rem}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s cubic-bezier(.22,1,.36,1),transform 0.7s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── PAGE LOADER ── */
+#page-loader{position:fixed;inset:0;background:var(--black);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;transition:opacity 0.5s ease,visibility 0.5s ease}
+#page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-logo{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:0.3em;animation:loaderPulse 1.2s ease-in-out infinite}
+@keyframes loaderPulse{0%,100%{opacity:1}50%{opacity:0.2}}
+.loader-bar-wrap{width:160px;height:1px;background:rgba(255,255,255,0.12);overflow:hidden}
+.loader-bar{height:100%;width:0;background:var(--white);animation:loaderFill 1.4s ease forwards}
+@keyframes loaderFill{0%{width:0}60%{width:80%}100%{width:100%}}
+
+/* ── CURSOR GLOW (desktop) ── */
+#cursor-glow{position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.045) 0%,transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0}
+
+/* ── SCROLL PROGRESS BAR ── */
+#scroll-prog{position:fixed;top:0;left:0;height:2px;background:var(--white);z-index:600;width:0%;transition:width 0.1s linear}
+
+/* ── PRODUCT CARD ENHANCED ── */
+.prod-card{transition:background 0.35s,transform 0.35s cubic-bezier(.22,1,.36,1),box-shadow 0.35s}
+.prod-card:hover{background:var(--card);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.prod-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--white),rgba(255,255,255,0.3));transition:width 0.5s cubic-bezier(.22,1,.36,1)}
+.prod-card:hover::before{width:100%}
+.prod-img-wrap img{transition:transform 0.7s cubic-bezier(.22,1,.36,1),filter 0.5s}
+.prod-card:hover .prod-img-wrap img{transform:scale(1.07);filter:grayscale(0%)}
+
+/* ── QUICK VIEW OVERLAY ── */
+.prod-quick-view{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);padding:0.65rem;text-align:center;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--white);transform:translateY(100%);transition:transform 0.35s cubic-bezier(.22,1,.36,1);cursor:pointer;border:none;width:100%;z-index:2;display:flex;align-items:center;justify-content:center;gap:0.4rem}
+.prod-quick-view svg{stroke:var(--white);fill:none}
+.prod-img-wrap:hover .prod-quick-view{transform:translateY(0)}
+
+/* ── TOAST NOTIFICATION ── */
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--white);color:var(--black);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.14em;padding:0.75rem 1.6rem;z-index:8000;opacity:0;transition:all 0.4s cubic-bezier(.22,1,.36,1);white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── BACK TO TOP ── */
+#back-top{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;background:var(--white);color:var(--black);border:none;cursor:pointer;font-size:1.1rem;z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(20px);transition:all 0.35s cubic-bezier(.22,1,.36,1);pointer-events:none}
+#back-top.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+#back-top:hover{background:var(--off);transform:translateY(-3px)}
+
+/* ── TICKER PAUSE ON HOVER ── */
+
+/* ── NAV ACTIVE INDICATOR ── */
+.nav-link{position:relative}
+.nav-link.active::after{content:'';position:absolute;bottom:-2px;left:0.9rem;right:0.9rem;height:1px;background:var(--white)}
+
+/* ── PRICE PULSE ── */
+@keyframes pricePop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+.prod-price.pop{animation:pricePop 0.4s ease}
+
+/* ── IMAGE ZOOM MODAL ── */
+#img-zoom-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:5000;display:none;align-items:center;justify-content:center;cursor:zoom-out}
+#img-zoom-overlay.active{display:flex}
+#img-zoom-img{max-width:92vw;max-height:88vh;object-fit:contain;animation:zoomIn 0.3s cubic-bezier(.22,1,.36,1)}
+@keyframes zoomIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
+#img-zoom-close{position:absolute;top:1.5rem;right:1.5rem;background:none;border:1px solid rgba(255,255,255,0.25);color:var(--white);width:36px;height:36px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center}
+
+/* ── RIPPLE on buttons ── */
+.btn-order,.btn-white,.btn-submit{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;transform:scale(0);animation:rippleAnim 0.55s linear;background:rgba(0,0,0,0.18);pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* ── STAGGER DELAYS ── */
+.stagger-1{transition-delay:0.05s}
+.stagger-2{transition-delay:0.13s}
+.stagger-3{transition-delay:0.21s}
+.stagger-4{transition-delay:0.29s}
+
+/* ── ADMIN PANEL ── */
+.admin-trigger{background:none;border:none;color:transparent;cursor:default;font-size:0.58rem;padding:2px 4px;user-select:none;position:relative}
+.admin-trigger::after{content:'©';color:var(--muted);font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.12em}
+.admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);backdrop-filter:blur(12px);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem}
+.admin-overlay.active{display:flex}
+.admin-modal{background:#0a0a0a;border:1px solid rgba(255,255,255,0.18);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;animation:modalIn 0.3s ease}
+.admin-head{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 1.8rem;border-bottom:1px solid var(--border)}
+.admin-head-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.1em}
+.admin-close{background:none;border:1px solid var(--border-md);color:var(--white);width:30px;height:30px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.admin-close:hover{background:rgba(255,255,255,0.08)}
+.admin-body{padding:1.6rem 1.8rem;display:flex;flex-direction:column;gap:1rem}
+.admin-group{display:flex;flex-direction:column;gap:0.45rem}
+.admin-label{font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.16em;text-transform:uppercase;color:#666}
+.admin-input,.admin-textarea{width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:0.7rem 0.9rem;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;resize:vertical}
+.admin-input:focus,.admin-textarea:focus{border-color:rgba(255,255,255,0.35)}
+.admin-img-hint{font-family:'Space Mono',monospace;font-size:0.5rem;color:#444;letter-spacing:0.08em;margin-top:0.2rem}
+.admin-imgs{display:flex;flex-direction:column;gap:0.5rem}
+.btn-add-product{width:100%;background:var(--white);color:var(--black);border:none;padding:1rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:0.5rem}
+.btn-add-product:hover{background:var(--off);transform:translateY(-1px)}
+.admin-pw-screen{padding:3rem 2rem;text-align:center}
+.admin-pw-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.08em;margin-bottom:0.4rem}
+.admin-pw-sub{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;color:#555;margin-bottom:2rem;text-transform:uppercase}
+.admin-pw-input{background:#111;border:1px solid rgba(255,255,255,0.15);color:var(--white);padding:0.85rem 1.2rem;font-family:'Space Mono',monospace;font-size:1rem;outline:none;text-align:center;letter-spacing:0.3em;width:100%;max-width:260px;transition:border-color 0.2s}
+.admin-pw-input:focus{border-color:rgba(255,255,255,0.4)}
+.admin-pw-input.wrong{border-color:#ff3333;animation:shake 0.3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.admin-pw-btn{margin-top:1rem;background:var(--white);color:var(--black);border:none;padding:0.75rem 2.5rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.admin-pw-btn:hover{background:var(--off)}
+.admin-tabs{display:flex;border-bottom:1px solid var(--border)}
+.admin-tab{flex:1;padding:0.85rem;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;background:none;border:none;color:#555;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent}
+.admin-tab.active{color:var(--white);border-bottom-color:var(--white)}
+.admin-tab-panel{display:none}
+.admin-tab-panel.active{display:flex;flex-direction:column;gap:1rem}
+.del-product-list{display:flex;flex-direction:column;gap:0.5rem;max-height:340px;overflow-y:auto}
+.del-item{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;padding:0.75rem 1rem;background:#111;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.2s}
+.del-item:hover{border-color:rgba(255,255,255,0.18)}
+.del-item-info{display:flex;align-items:center;gap:0.75rem;flex:1;min-width:0}
+.del-item-thumb{width:42px;height:42px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.del-item-name{font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del-item-price{font-family:'Space Mono',monospace;font-size:0.6rem;color:#666;margin-top:0.15rem}
+.del-item-tag{font-family:'Space Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:#444;padding:0.15rem 0.4rem;border:1px solid #222}
+.btn-del-item{background:none;border:1px solid rgba(255,60,60,0.3);color:rgba(255,80,80,0.8);padding:0.4rem 0.75rem;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;flex-shrink:0;white-space:nowrap}
+.btn-del-item:hover{background:rgba(255,40,40,0.1);border-color:rgba(255,80,80,0.7);color:#ff5555}
+.del-empty{font-family:'Space Mono',monospace;font-size:0.65rem;color:#444;text-align:center;padding:2.5rem 1rem;letter-spacing:0.1em}
+.admin-success-ico svg{width:40px;height:40px;stroke:var(--white);fill:none;margin-bottom:0.8rem}
+.admin-success-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;margin-bottom:0.4rem}
+.admin-success-sub{font-size:0.82rem;color:var(--muted)}
+@media(max-width:600px){.admin-body{padding:1.2rem}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-mid{display:none}
+  .products-grid{grid-template-columns:1fr}
+  .features-strip{grid-template-columns:1fr 1fr}
+  .feat:nth-child(2){border-right:none}
+  .why-grid{grid-template-columns:1fr}
+  .why-right{grid-template-columns:1fr}
+  .hero-stats{flex-wrap:wrap}
+  .hst{flex:1 1 45%;border-bottom:1px solid var(--border)}
+}
+@media(max-width:600px){
+  nav{padding:0.9rem 1.2rem}
+  .logo-name{font-size:1.3rem}
+  .nav-badge{display:none}
+  .hero{padding:4rem 1.5rem 3rem}
+  .products-section{padding:1.5rem 1.5rem 4rem}
+  .features-strip{grid-template-columns:1fr 1fr}
+  .why-section,.cta-banner{padding:4rem 1.5rem}
+  footer{padding:1.5rem 1.5rem;flex-direction:column;text-align:center}
+  .foot-right{text-align:center}
+  .sdiv{padding:0 1.5rem}
+  .form-row{grid-template-columns:1fr}
+  .modal{margin:0.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader">
+  <div class="loader-logo">ZX</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+<!-- CURSOR GLOW -->
+<div id="cursor-glow"></div>
+<!-- SCROLL PROGRESS -->
+<div id="scroll-prog"></div>
+<!-- TOAST -->
+<div id="toast"></div>
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+<!-- IMAGE ZOOM OVERLAY -->
+<div id="img-zoom-overlay" onclick="closeZoom()">
+  <img id="img-zoom-img" src="" alt=""/>
+  <button id="img-zoom-close" onclick="closeZoom()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-slide active">ZX AGENT SELLER</span>
+    <span class="ticker-slide">CASH ON DELIVERY</span>
+    <span class="ticker-slide">WHATSAPP SUPPORT 9AM–10PM</span>
+    <span class="ticker-slide">HALAL BUSINESS</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="logo-box"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAABqYSURBVHic7V15jBRFF//Nzt4XR4AdIAuCIGdgQeQW0H9QiQQMR6ICygp4ACvHSkAJAiuXrMtyCYpA0CWuGESCXCpKUGIMAuGQQ0BwAblxL9iFnZ3vj033N0f3THdVdVXXzvwSwk53v3pV1e/Vq3r16rWjTp06HnCAx0POhpRWNp609DzrTNtOmjJY0kUTlUQAh8MRcM1oQ/xpSejMdppCS0vncDhMlUHaVn9aEjoevPTKMFMOS3ngogCiNN2s8LHg7U9rtBzeo7DH4yFWcto6iGgroC0PUcSlWgwWgsvCTNPwt5KGBqz6SET/mkWottpSAWToWC3IWm8S8GyrlVbccgWQoaP8aWUQ5HCykFbClhaABBHh58dTlIfMCli2CObdWJoFHe1ikDcdbVt59xGLxbpV8mSJBRC1sJLFh05Dx4peBp4KPyv5MrcAMnoVZDLpMiqOnWGbNUA4vVjZFJ2G1u4W0jYKQApRiiN6g00GWlEW0gxfpgpgd22XGTJaDRl4MlEAReu04n2MwOFwUNGahVJfUo8GzQsibStp/wBirBytPJDCLK1tpkAyjOKRvQb7w2y9qRWA9MXKFo8SEX7ztCJjnIzCNhaABLVdmKwox0rIqDhUCiDypcggEP6IWMjQtLzfK7ECyNpgGcKVWUGGeotWdOKdYFYnl2hjU2h4G6UTeUrL+2+z/URLZ4aW1ekuM7Ra5ZilpQqFkGlzhYaONhiLp9UROV2S5Z160wqfAvHiSQMZ5uC0CKfNSO+6cvcC1fadRTvw5QnZrYbpKZBswiRb/AwNbSQUxTxMWQDZtZ0XLQ1kFiazsENbTSkAaRwLTfwM7eJVRDwK7xgjmWJvAPK20sZwAYH1tfVOsB1GCLsjXEJRaBCsraYVIFx2Fnm+WBmESAu1oY+4rgF4QHTgWW0QitqEUPJgWAFq+4sVrThmEbGQbBBJjAX55sOihZ8GdpOHkPsAIkYImvggnnEkCngrTTjlQKIJRTHS1qAWoLaPECz4yrZZRkMr27sxQmurxFgKHe+Olk34aRAZ1Hxh630As5Bh8UoLOwsTSzpetLoKIIuZFGU1aBCxkNbSmoHmIli2BofTfJgGstSZ5/vUVIDIN7mso1NoRXhw7PBNLivptGhD9ZmPAtCOhrX9m1y0dJFvcvHlb6QcdQ0gi3n0B++XSwLZNtpoIHqjzSyiADE7i7J1FCC2nnbbQbWSJ89BQtq8QLwha1tlUByRFlLIPoBsU4KIhbQ/iB0DderU8aGU0aUoeqHFi6cIvjL1LQl9dDj532WjlcFbJJovbd8KnwLxoBPFkwW9LDxF8GXBr1bFAulBtmmHKJ40kGmd4l1X4jPBsr0gEsgmTDIqnGh5ILIAMpl12RRVpr6lpbeDwppWANIcMh6PfN/kEtFWGn6yfKMNoG8rKT8heYFEjxCizawRiK4jz3dkp1AU2+YFooFsG200kE3RaWBF+yJ5gQyUYzUiFjI0rKqjbd2gMvqUWZZjJWQbJKxUdFvmBRItRLJ5jsxANuGngZE6Gvo+AG8hps17w5MOoBck2k8wmYFsOZAAa0/QhbQAsvnDZRiZFNBuKtLy5UVHS0uDUHyDWgAZN2VkQbi0E7B3EKKtEmOJ5CuLxYmEorCFrfICyUYro6LLwpMXP9u4QSPCZB0dK3oZeJq1kAEKIDL2hhQiAuVoY29I6WT/JpdR0MiRmfr6KEBkZ9EcXTiMqCSQaa+BSV4g0UJhFqIFV7Y1hwhIswYQre0yxOzIiHCxkMIWwaI7yiwiFpIfT56DIVVmONEvUzR/I4hYSHsjGhCTrdgOiVPNQLbvj9F68sJBHjweD6JE+ZZlEn5RtKKmInb33LCAUk/q5LiyILLRZm++ogaJsEiOK+OIFrGQ1vJUQKwAsjZYJr48EU59682Te14gmYRJxtgbEsj4PlkNooZOhPnDe7VvduXvcDiwZ88e9O7dm4S1iieffBKHDx9GeXm57jP16tXDgwcPAup4584dxMfHa9KkpaWhtLRUras3nVnQfkeMho4HL29axYtDIg/e4Enn8XjILYDC0KjXgCawSgvnz58HADz22GO6z1y5ciWgji1atNAV/vPnz6vCr4A0EEzrHwmNmb71/5uk3qR0ZvizaKtZOq1yAE55gVibyStXrqC4uFj9++LFi5rPJSYmokmTJj7Xjh8/rltup06dfH7LMIWJbLSZp6VeA4iG/6jfoUMH3WdPnz6t/t2rVy9ERWk3ed68ecyESQbI1lYrhB+QMDHWH3/8oXl9/vz5mtedTidat24NANizZ49uuYsWLaKvHPhaSNHvQzR/Iwil6I6UlBTDrWD1otauXYsuXbro3m/fvr3uYYikpCRdPmVlZZp0FRUVGDFiBLZv365J16NHj4CpEU+hFDFnB+gW+bynW1b1kSkFoK2MEVqXy4Vz585p3tu7dy+GDh2qS9uyZcugc3w9JCYm6t6TZV5NW09RsTg86bRoQyoAbwG4efMmEhISNO8lJyeHLPPSpUto0KCBYX6pqamoqqoCYI8XwoteFjoW9MFog64BeL/Yjh076gp/Tk6OoTKbNWtmmN/27dtV4ZcRMszBaWG14jjj4uLep+JAwFQP58+f1537P/vss4bLSU5ORs+ePUM+F2wdYhSiRn9ZpmY0dDxgGzdov379dIV/xIgRhspQOnrmzJkhnx0zZkwAnVnIJsC0tLzBY9qkuwbgLRSlpaVEnh8t3s2aNfPx/2vh6NGjajiGTCNiuKwZeNHqxgLRxlqYqfyUKVN0hT8tLc1wOUoZf/75Z8hnMzIy4HQ64Xa7mcWVmK2nWTotWrPeGxZ1NkPLoq0kimA0NinAAtBoOmmFy8rKNK/fvn3b0KLWm9/IkSOxYcMGw3wbNmxorJIa/GQ51ilqvSDDcVAmibFottU3bdqke0/ZwTWD9evXG342OTkZTz/9tKnyRYcQyBJ7Iwtv4YvgF154QfP6xYsXUVlZaaqsHTt26E6lqqurNa9/9913pniQQrTieGP16tV46aWXgj5jVeyN1TA9zVKmQCwabGZK4PF4cOLECbRo0ULz/rBhw0IqwL59+1R+TqczIJRZweXLl9G+fXuUlJRo3i8sLMQrr7xiqM4kYDFlYsEfALp27YrXXntN/e12u7F7926fgcAOXiZe0yZHSkqKR0SDU1NTcfXqVWK+QI13SOH/999/6y6YlVCHEydOoGXLlprPpKSkhNwUE6kArN7RokWLkJqaqvvsxo0b8fvvvwsLx2BRjhloukF5VODWrVu6B1OMQnGPpqSk4Nq1a5rPHD58GH379lV/37t3T/O5GzduoHnz5oZ5y+jKBICVK1cazrq8bNkynD171vauTBpaR3Jysoe3aW7atCnOnDlDzE+BMrKXlZXpxvmnpKTA7XYDqKnngQMH0K1bN81n27Zti0uXLgXlyXNkZP1O+vTpE3Lur4W7d+9i8+bNOHHiBBFfoxDRT9G0BZDQHjlyhJifP6ZOnaor/Lt27VKFX0G/fv10rcDp06d1Y5EA8YtXo9CrZ3l5Oe7cuYP69eubKq9evXp46623ANRsWK5atSrkQGEWosIsHMnJycQlkDLX8/ubRWJioq4wK/e9odT3m2++wTPPPKNJM3fuXJ/DMSSbTf6wox+8V69eGDJkCFJSUoh4bN++Hbt27TLNVwsiY4yEKICWGfZeBBnlceHCBd1FbVFREfbv369bzqhRo3yuefP+/PPPDfE3ArtMf/QQExOD/Px80zyysrLw4MEDYr4i6bxBlBaFhrnH48EXX3zBjOfBgweJ6LyF3CrIsFFGshNeVlamCj8LCykSXBNj0dDpWQgjoPn+GM9vctHQertazeDFF1/UvffLL79o1mXv3r3q32lpaSgpKUFZWRlKS0tRWlqKZcuWGaovTVtp5MEbxBbALGQdIWQIPaDZedWbQp49exYFBQUoKChAvXr18Pzzz6N79+5wOp0+U8tx48YhMTER06dPVy3BDz/8QNQOI2C9y0y0BgiXYCxSWlFzYbNTkaZNm+Ldd9/VvDdv3jz8+++/Adfr16+PO3fuqL9v3LiB/Px85OTkmK4vCVgPSMJjgYJBtNWQYfSnwdtvv617T0v4AfgIP1CjEAUFBUzrpQcr+sj0FEi0UBqBUTOZkJCAqKiooPlFeYDViGikHKfTiYSEBCQnJ6Nhw4aoW7eu+j8AxMXFoW7duj7xQqHm2qz3BHjClALwEn69RdTUqVMDNrb8EUwgBg4ciEGDBgWlP3jwILZs2WLosPzy5cuJFmJnz57F8uXL1d+LFy9GcnJywHPK5pMeunTp4iOoCk6dOoUVK1bgq6++8kkjo7dwrKysRElJCSorK+FyubB582YcO3YMV65cQWVlJc6cOYOTJ08iJibGp0/nzJmD4cOH60basoRVsmdIAXjO2fr06aN7LysrCx999FFQeq15/+jRo3XDH/zRu3dv9O7dGzdv3sS8efMM0ViF/Px8ZGVlEdPv2bMHQ4cORUJCAtxut9on8+fPx8CBA3Ho0KEAmmHDhmHs2LEB14uLi1V65f/MzMyg5zn8QSNHLNZzWrB0DUBS2eHDh+veMxqs5s136dKlhoXfGw0bNsSKFSsQHW2toyxYH0VHR2PAgAHEZX/22WcAgKioKB8+8+bNQ9OmTTVptELG4+PjceHChYDrjRs35jb/B6yxAiEVgKdHI1gcjoJ27doZ4utwOJCfn4/Y2FjT9fBGXl6eoXpZheHDhyMuLk7znpE+Li4uxty5c5GWlgaXywWXy4X+/fsjNTUV8fHxSEhIUP9X1kRpaWlo1KgR0tLSkJaWhokTJ6KoqAiNGzeGy+VCkyZNkJ6eDofDYej8NQ38rQ5rcNsHMII333wz5DPjx4/HlClTQj6Xm5vLZKMEAJYsWYJJkyYxKcsbRl9qbm4uJk6cSMQjKysLGzduRHl5OaqrqxETE4MBAwYgLi4O7dq1Uw8dxcbGwu12o0GDBpgwYQLcbjeqq6vh8XgwZswYHDhwAKNHjwZQs5B+9dVXdVNYasFOrk9vBFUA3h6f9PT0kM/oRX5644knngg5dXG73Th27Bju3buHTp06hQwKy87OxocffhiSN1DjKgzWd6Wlpab61uFwYO7cuZgzZ45hGgUFBQXYsGEDcnNzcf/+fQA1u7ddu3bF0aNHferx448/IicnJ2Dt079/f2RnZ+O///5Tr73++uvYuXOnoTrY2XNoiQUgaXDXrl0NP/vGG2/g448/1uU7atQoXdri4mLMnj3b51phYSE8Hg/Gjh3rky3OG2ZSLn7wwQemzzOHQoMGDdC5c2ccPXo0IOVHKNy5cwezZ8/GrFmz0LlzZwDAtWvX0KhRI1y/fl19bufOnXj//cBEgR06dAg4bupyubBgwQKKFoUGD8UJGE5pYjQUkEw9Xn75Zc3rWvVo27ZtwDNG6vvw4UMf4fdv6/r167Fjxw5deu8FOnUcusNhup/Gjx9PFHi2cOFCNVQhMzMTQI2r1DsMoqqqCvfu3QtQLIfDgcaNG6vXo6Ki0K1bN0RFRaGoqMgQfxExXEbBzALQhB4kJSVpTm2Kiopw7949tGnTJuBeenq65gt45513dPlkZ2eHrMuePXvQvXt3zXuKFWA1MpGUk5eXF3QHVwvLli3D0qVLsXbtWtUjFh0djXbt2ql1OHfuHBYsWID09HTk5OQgJiYGlZWViI+Ph8PhQG5urvqskskjmP+fVbCa1bDFInj8+PGa19esWYOysjLNePXp06dr+shdLpcuH6MbNnpfmwGMCW1ubm7Q+xMnTiRWotjYWEyZMgV5eXmmylAWwTt37lRPhLVt2xa//fabWie3242hQ4eq8UEejwfx8fFo1KiRj+Nh0KBBphbl0qwBRFVUz78f6uSYktrQ/5oW9u3b5/Nb5Euh5d26dWtDDgNvvPfee1i6dKnqUm3dujUyMzPVUBClH/37r02bNvjrr798rrVq1Qpff/21Li9WEZs83pGqADzjUbyht0nl/aWXn376CU899VTAM2PHjsUnn3zic03P7Hr7q5U6tmrVyvROK6k7kgT5+fmYPHmyZptmzpyJTz/91HBZK1euRF5eHs6cOYObN2/i7t27ePjwIVJTU9G8eXOsW7cOQM1ie/To0Th+/DiuX7+OGTNmYN26dYiNjUV1dbX6gcLbt29r8pFJ+AEGUyDaBo8cOVLz+pdffqn+vW3bNk0F6Nixo2E+jzzyCM6ePWu6fqIxdepU5OXlad4bN26c4XI8Hg9ycnLQrVs3xMbGIjk5GYcOHUKTJk0QHR2Nnj17omHDhkhKSgpIL+n/jk6dOsU8/odV+LpZqApAeqyNttIxMTGa140enO/UqROOHTum/na73ZrToOeeew579+5VO5qkvqEC8azAgwcPUFhYqDtQBIN/G7VcnGbogZqUlUuXLtWloZEjEdNS5lMgM5g6darm9YqKioCjev/884+mL3706NGYPn26+ru8vFwz85m3l4m0vkZ3PqdNmxawD0DTv/v378fgwYNNhWRYJUzp6ek4cOCAJWWLANMpkFnobS7Fx8ejR48ehsqIjY1FdHS0Gr784Ycf6npxJkyYgDVr1qi/z507FxDiEB8fr7vju3HjRkN1Yun+U/p32rRpWLVqFVXZV65cQaNGjajrdP78ed17dvb4aCFalL9W7ywqCWbNmqVu3xcXF+s+16FDB2RmZqpRkv5wOBxYsmSJLr1e8l1/+AsBK6GYOXMm1Qe9u3btir59+yI+Ph5Op1ON9VHef0xMDJxOJzweDyorK9WPhzgcDkRHR8PtdqtuU9YQpThUmeFoKh3qsIcZ+H8W9eeff9YNI87IyMCKFStw9OhRHDlyBOXl5Wjfvj169+4dNFfp5s2bDddn0KBBIQ/UfPvtt4bLU1BSUqLrETOC69evY9u2bVi5ciW+//57bN261ee+3vscPHgwhgwZguzsbF3vTzB6O0PYRpiev54U3ovhrVu3on///kEtW0ZGBjIyMgyXbyT/kAIjH90gUQAA2LJlC/r27avrPAgGl8uFy5cvw+12Y9y4caioqNA8ieaNQ4cOoUuXLqiursaYMWMwYMAAzTWADC5PLRApAK3F8P5Coz9mzJgRtIzFixdrXs/MzPTx6QdzH5rF5MmTmZTDCllZWVi9erVpOiV6My4uDnFxcSgvL0e9evVw9+5dAIGeGKfTiYyMDKSnp+Pq1avYvn07Fi5c6JNtGxCb2Y0W3LJCeDdWL/LzwoULqKioCPh3//593L9/HxUVFfj11181af1He7fbretlMoPs7GwuZ17NIthaRQ/eI7figHj48KF6zV8glXZ36NABAPD444/7RI/WBnBPixLM5GqlK/TfaCssLNSl99/VraqqwuTJk3Hr1i3T9SwpKcGkSZPUGHq74eLFizh58qQpmilTpuDBgweoqqrCqVOnsGnTpqD7LR6PB1lZWdi9ezfcbjdcLpehL+kYgR1Gf0DAGiDYoQ7/nDNmO+nRRx/1oVWswty5cxETE4NFixYZOiI5ffp05vH8VmDVqlVYuXKloUNCQM2InpiYiISEBFRVVfmM/sF4rF27FjExMaioqGDi4bKL8AOAIykpyVRteDaYdmGlt0udlJSEZs2aoU6dOuq3xYqKitS5MC1/WfpIFH9pFYD3S6Kls8M3uexG400rW+pIK8AlLxDv+BCFToRQ8QSLL6mTQrTFYgUui2C7NdoKiGqjCL616X3aLjEWS3pekMlq0PKVsa3BYFliLFqEg3lW+MlSXxrYta5BFUCUtte2UcZuEKXodoQlUyAZhV+2UTgy92cDXQVQvDckodK8v8kF0AkwjbdIlrYq7aShpcnvY9cUKZoK4B9+wBMybiKRQjR/I2AlC3Ztq2ZmOK2/I/g/WPRRbe9bWeTIRwFYabgMQmHnlxIM4WQheYDJIlgWbVcgWtFrO2TqI1UBRFdUNH8jEK04EQvJHj55gQC6uBJZYm9E5ECSKTAPECcPvMFkDSDTixVJyxvhEopCA1t/KFsPMgqwDNMeVnxlUpwo2ngUUsi4kxmxkNbSikAUIFeDZetgEYgIv3FQTYFkajDtKCyLooebANNCPRLpHdsiQ+eLqiPtMUKedCzehyh54IVo/0oaqbSol2+HY3xW9g8tLYtyeMqDHSClF4gEMrwk0Rtt4QghmeF487PDiGwlwqmtrGH7Q/EiR7ZwCj0QzV8UbD0FCteXwgMRq1EDotSIZj0h/qeBrKbToiVZQHuXQcKbtL409SShYcFbVkUwrACiXGE8vRk0/GhpaehlobMjDE2BZIxHkQWiNtoiqIGleYFkUxwZQwgioz8dLFsEyzYdoIFsih7B/2FZYixSyCZMEQspN4IugkV4BxQ6xWtjd48TK+8NabgHrcfJDC1NW+0KTQWIxN4Yo7Miv77Z9prhLToWy46wLC+QDB0luo7htNNsVzBbBIer4shWXxpaGdpqFrbKCyTDiChjW0khQx1pwSwzXATBIZvihIssOBITE3VbSrtAlGWTJhL+YD2tXRHgBZIl9obFyyApQ7RXTBZaWRB2UyBRsTeyCX+4gEluUFl2FsMp8Cwc2sgC1F6gSLiEdXQiEE6DBOCVGY4E4WA1RPKNWEjrEU1zckrrJJIMsTckL5g0NsmbrwJebRURmyQbuOYFoqFlEXvDe/OLt5eJVTm1fffXG1wPxYvefeUJkV6miOfIOGptXiBW/EWO4rwha71pYOu0KICcoz8pwslC2gW2TowVTvNY0XUUzV8UpMoLREpL6/0xS0vivWHpUSNBbTztZQSW5wWipZdpr0FUH9HQhpOwa8HyvECy0cq40SZbW+0ES9cA4bSzKKPiRCCBF4gEMk19ZKStTbAsM5zI+bAskC00uzYi5CKYNr8PaWfLFHtD20fetDSxWFbT1UaEzAvk/dsseG7siF4IsuJvZSxWOAu6Hmw7BeKByEZbBLZbBMsQexMJPKs9sCwzHAnCSSDCqa12BrND8eEyJRDdThkspExwJCQk6PZOOG3ty+bujUy92IBZXiAa2ojwWcuvth9rpIElUyA707Gil4FnOIWikIJ5clwedLSITB8iUMAkMRZvyBg/I5uFDBf8D0VRpgi0f7U7AAAAAElFTkSuQmCC" alt="ZX Agent Seller" style="width:100%;height:100%;object-fit:cover"/></div>
+    <span class="logo-name">ZX Agent Seller</span>
+  </div>
+  <div class="nav-mid">
+    <a class="nav-link" href="#products">Products</a>
+    <a class="nav-link" href="#why">Why Us</a>
+    <a class="nav-link" href="https://wa.me/923182756013" target="_blank">Contact</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge">Official Store 🇵🇰</span>
+    <button id="cart-nav-btn" class="nav-wa" style="background:transparent;color:var(--white);border:1px solid var(--border-md);position:relative" onclick="openCartDrawer()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span class="nav-btn-label">Cart</span>
+      <span id="cart-nav-badge" style="display:none;position:absolute;top:-8px;right:-8px;background:var(--white);color:var(--black);border-radius:50%;width:18px;height:18px;font-size:0.62rem;align-items:center;justify-content:center;font-family:'Space Mono',monospace">0</span>
+    </button>
+    <button id="pwa-install-btn" class="nav-wa" style="display:none;border:none;cursor:pointer" onclick="installZXAgentApp()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span class="nav-btn-label">Install App</span>
+    </button>
+    <a class="nav-wa" href="https://wa.me/923182756013" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <span class="nav-btn-label">WhatsApp</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-wm">STORE</div>
+  <div class="hero-eyebrow">Official Store — Pakistan 🇵🇰</div>
+  <h1 class="hero-title">
+    <span class="solid">Premium</span>
+    <span class="outline">Products</span>
+    <span class="solid">Delivered</span>
+  </h1>
+  <p class="hero-sub">Quality-picked items delivered to your door. Cash on delivery across all of Pakistan. No advance payment needed.</p>
+  <div class="hero-cta-row">
+    <button class="btn-white" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+    <a class="btn-ghost" href="https://wa.me/923182756013" target="_blank">WhatsApp Us</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hst"><span class="hst-n">COD</span><span class="hst-l">Payment Method</span></div>
+    <div class="hst"><span class="hst-n">7+</span><span class="hst-l">Products</span></div>
+    <div class="hst"><span class="hst-n">All PK</span><span class="hst-l">Delivery</span></div>
+    <div class="hst"><span class="hst-n">0%</span><span class="hst-l">Hidden Charges</span></div>
+  </div>
+</section>
+
+<div class="sdiv"><div class="sdiv-line"></div><span class="sdiv-lbl">Featured Products</span><div class="sdiv-line"></div></div>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="sec-header">
+    <div style="display:flex;align-items:baseline">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Our Products</h2>
+    </div>
+    <span class="sec-tag">7 Items Available</span>
+  </div>
+
+  <div class="products-grid">
+
+    <!-- SCREWDRIVER CARD -->
+    <div class="prod-card reveal" id="screwdriver">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="sd-main" src="https://i.postimg.cc/XYYBV7qp/1776024119629.jpg" alt="Screwdriver Set" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">Best Seller</span>
+          <span class="prod-sku">SKU: MZ1293200023</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="sdSwap(this,'https://i.postimg.cc/XYYBV7qp/1776024119629.jpg')" class="gthumb gthumb-sd active"><img src="https://i.postimg.cc/XYYBV7qp/1776024119629.jpg" loading="lazy"/></div>
+          <div onclick="sdSwap(this,'https://i.postimg.cc/K883Zvjk/1776024121954.jpg')" class="gthumb gthumb-sd"><img src="https://i.postimg.cc/K883Zvjk/1776024121954.jpg" loading="lazy"/></div>
+          <div onclick="sdSwap(this,'https://i.postimg.cc/JzzH140y/1776024123618.jpg')" class="gthumb gthumb-sd"><img src="https://i.postimg.cc/JzzH140y/1776024123618.jpg" loading="lazy"/></div>
+          <div onclick="sdSwap(this,'https://i.postimg.cc/Z55vTKny/1776024124192.jpg')" class="gthumb gthumb-sd"><img src="https://i.postimg.cc/Z55vTKny/1776024124192.jpg" loading="lazy"/></div>
+          <div onclick="sdSwap(this,'https://i.postimg.cc/g22LYkjx/1776024124515.jpg')" class="gthumb gthumb-sd"><img src="https://i.postimg.cc/g22LYkjx/1776024124515.jpg" loading="lazy"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Tools &amp; Hardware</span>
+        </div>
+        <h3 class="prod-name">12-Piece Precision Screwdriver Set</h3>
+        <p class="prod-desc">Professional-grade precision screwdrivers for electronics, appliances, and fine mechanical work. Ergonomic handles, hardened tips.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Pieces</div><div class="ps-v">12 Pcs</div></div>
+          <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Chrome Vanadium</div></div>
+          <div class="ps-item"><div class="ps-k">Tip Types</div><div class="ps-v">Flat + Phillips</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price-regular">Rs. 1,599</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">Full Set · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('screwdriver')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%2012-Piece%20Screwdriver%20Set%20(Rs.%201%2C599)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('screwdriver', '12-Piece Precision Screwdriver Set')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WATCH CARD -->
+    <div class="prod-card reveal" id="watch">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="w-main" src="https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg" alt="Chronograph Watch" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">New Arrival</span>
+          <span class="prod-sku">SKU: MZ1156200080</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="wSwap(this,'https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg')" class="gthumb gthumb-w active"><img src="https://i.postimg.cc/ZqsR1y1p/1775995736158.jpg" loading="lazy"/></div>
+          <div onclick="wSwap(this,'https://i.postimg.cc/SQTrDZTx/1775995736475.jpg')" class="gthumb gthumb-w"><img src="https://i.postimg.cc/SQTrDZTx/1775995736475.jpg" loading="lazy"/></div>
+          <div onclick="wSwap(this,'https://i.postimg.cc/qR8RDMdM/1775995736898.jpg')" class="gthumb gthumb-w"><img src="https://i.postimg.cc/qR8RDMdM/1775995736898.jpg" loading="lazy"/></div>
+          <div onclick="wSwap(this,'https://i.postimg.cc/cH1j2XVj/1775995737261.jpg')" class="gthumb gthumb-w"><img src="https://i.postimg.cc/cH1j2XVj/1775995737261.jpg" loading="lazy"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Watches &amp; Accessories</span>
+        </div>
+        <h3 class="prod-name">Men's Chronograph Stainless Steel Watch</h3>
+        <p class="prod-desc">Bold chronograph design with multi-function sub-dials and a premium chain strap. Available in 5 stunning color variants for every style.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Stainless Steel</div></div>
+          <div class="ps-item"><div class="ps-k">Strap</div><div class="ps-v">Chain Strap</div></div>
+          <div class="ps-item"><div class="ps-k">Colors</div><div class="ps-v">5 Variants</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price-regular">Rs. 1,099</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('watch')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Chronograph%20Watch%20(Rs.%201%2C099)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('watch', 'Men\'s Chronograph Stainless Steel Watch')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EARBUDS CARD -->
+    <div class="prod-card reveal" id="earbuds">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="eb-main" src="https://i.postimg.cc/x1PrxRnr/1776069221987.jpg" alt="Bluetooth Earbuds" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">New Arrival</span>
+          <span class="prod-sku">SKU: MZ2290200004</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="ebSwap(this,'https://i.postimg.cc/x1PrxRnr/1776069221987.jpg')" class="gthumb gthumb-eb active"><img src="https://i.postimg.cc/x1PrxRnr/1776069221987.jpg" loading="lazy"/></div>
+          <div onclick="ebSwap(this,'https://i.postimg.cc/1zRkLq5T/1776069222188.jpg')" class="gthumb gthumb-eb"><img src="https://i.postimg.cc/1zRkLq5T/1776069222188.jpg" loading="lazy"/></div>
+          <div onclick="ebSwap(this,'https://i.postimg.cc/HLWqfysN/1776069222336.jpg')" class="gthumb gthumb-eb"><img src="https://i.postimg.cc/HLWqfysN/1776069222336.jpg" loading="lazy"/></div>
+          <div onclick="ebSwap(this,'https://i.postimg.cc/YS25JWqs/1776069222488.jpg')" class="gthumb gthumb-eb"><img src="https://i.postimg.cc/YS25JWqs/1776069222488.jpg" loading="lazy"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Audio &amp; Electronics</span>
+        </div>
+        <h3 class="prod-name">Noise-Cancelling Bluetooth Earbuds</h3>
+        <p class="prod-desc">Bluetooth 5.1 wireless earbuds with active noise cancellation, all-day comfort fit, and 15-hour call time. Comes with fast-charge case and cable.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Bluetooth</div><div class="ps-v">v5.1</div></div>
+          <div class="ps-item"><div class="ps-k">Call Time</div><div class="ps-v">15 Hours</div></div>
+          <div class="ps-item"><div class="ps-k">Battery</div><div class="ps-v">250 mAh</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price-regular">Rs. 999</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">Full Set · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('earbuds')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Bluetooth%20Earbuds%20(Rs.%20999)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('earbuds', 'Noise-Cancelling Bluetooth Earbuds')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MASSAGER GUN CARD -->
+    <div class="prod-card reveal" id="massager">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="mg-main" src="https://i.postimg.cc/pTNmV6VF/1777464197971.webp" alt="Mini Massager Gun" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">New Arrival</span>
+          <span class="prod-sku">SKU: MZ57800000348</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="mgSwap(this,'https://i.postimg.cc/pTNmV6VF/1777464197971.webp')" class="gthumb gthumb-mg active"><img src="https://i.postimg.cc/pTNmV6VF/1777464197971.webp" loading="lazy"/></div>
+          <div onclick="mgSwap(this,'https://i.postimg.cc/kGH39k9H/1777464188777.webp')" class="gthumb gthumb-mg"><img src="https://i.postimg.cc/kGH39k9H/1777464188777.webp" loading="lazy"/></div>
+          <div onclick="mgSwap(this,'https://i.postimg.cc/gj7Fdfmp/1777464189954.webp')" class="gthumb gthumb-mg"><img src="https://i.postimg.cc/gj7Fdfmp/1777464189954.webp" loading="lazy"/></div>
+          <div onclick="mgSwap(this,'https://i.postimg.cc/ZnQtZ14Z/1777464191486.webp')" class="gthumb gthumb-mg"><img src="https://i.postimg.cc/ZnQtZ14Z/1777464191486.webp" loading="lazy"/></div>
+          <div onclick="mgSwap(this,'https://i.postimg.cc/j210KGtR/1777464192726.webp')" class="gthumb gthumb-mg"><img src="https://i.postimg.cc/j210KGtR/1777464192726.webp" loading="lazy"/></div>
+          <div onclick="mgSwap(this,'https://i.postimg.cc/tJcQyLpj/1777464194807.webp')" class="gthumb gthumb-mg"><img src="https://i.postimg.cc/tJcQyLpj/1777464194807.webp" loading="lazy"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Health &amp; Wellness</span>
+        </div>
+        <h3 class="prod-name">Mini Massager Gun</h3>
+        <p class="prod-desc">Compact mini massage gun with 1200 mAh battery and 62-min standby. ABS plastic body in Blue. Perfect for muscle relief anytime, anywhere.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Battery</div><div class="ps-v">1200 mAh</div></div>
+          <div class="ps-item"><div class="ps-k">Standby</div><div class="ps-v">62 Minutes</div></div>
+          <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Blue</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price-regular">Rs. 2,499</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('massager')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Mini%20Massager%20Gun%20(Rs.%202%2C499)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('massager', 'Mini Massager Gun')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARGING CABLE CARD -->
+    <div class="prod-card reveal" id="cable">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="cc-main" src="https://i.postimg.cc/rsJXGrGP/1777617882672.jpg" alt="3-in-1 Charging Cable" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">New Arrival</span>
+          <span class="prod-sku">SKU: MZ1155200134</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="ccSwap(this,'https://i.postimg.cc/rsJXGrGP/1777617882672.jpg')" class="gthumb gthumb-cc active"><img src="https://i.postimg.cc/rsJXGrGP/1777617882672.jpg" loading="lazy"/></div>
+          <div onclick="ccSwap(this,'https://i.postimg.cc/VsB8Pxyf/1777617882964.jpg')" class="gthumb gthumb-cc"><img src="https://i.postimg.cc/VsB8Pxyf/1777617882964.jpg" loading="lazy"/></div>
+          <div onclick="ccSwap(this,'https://i.postimg.cc/CMHgp3yM/1777617883230.jpg')" class="gthumb gthumb-cc"><img src="https://i.postimg.cc/CMHgp3yM/1777617883230.jpg" loading="lazy"/></div>
+          <div onclick="ccSwap(this,'https://i.postimg.cc/zDSrYsmV/1777617883585.jpg')" class="gthumb gthumb-cc"><img src="https://i.postimg.cc/zDSrYsmV/1777617883585.jpg" loading="lazy"/></div>
+          <div onclick="ccSwap(this,'https://i.postimg.cc/tRtjGK0C/1777617884552.jpg')" class="gthumb gthumb-cc"><img src="https://i.postimg.cc/tRtjGK0C/1777617884552.jpg" loading="lazy"/></div>
+          <div onclick="ccSwap(this,'https://i.postimg.cc/v8LswJRZ/1777617884869.jpg')" class="gthumb gthumb-cc"><img src="https://i.postimg.cc/v8LswJRZ/1777617884869.jpg" loading="lazy"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Cables &amp; Accessories</span>
+        </div>
+        <h3 class="prod-name">100W 3-in-1 Fast Charging Cable</h3>
+        <p class="prod-desc">100W fast charging nylon braided multi-cable with Type-C, Micro USB, and universal adapter — charges all your devices at full speed. Copper core for maximum efficiency.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Copper Core</div></div>
+          <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Black</div></div>
+          <div class="ps-item"><div class="ps-k">Connectors</div><div class="ps-v">Type-C · Micro · USB</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price-regular">Rs. 599</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Cable · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('cable')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20100W%203-in-1%20Fast%20Charging%20Cable%20(Rs.%20599)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('cable', '100W 3-in-1 Fast Charging Cable')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLASHLIGHT CARD -->
+    <div class="prod-card reveal" id="flashlight">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="fl-main" src="https://i.postimg.cc/QxKGYk9J/1777618063385.webp" alt="Rechargeable Flashlight" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">New Arrival</span>
+          <span class="prod-sku">SKU: MZ1172200470</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="flSwap(this,'https://i.postimg.cc/QxKGYk9J/1777618063385.webp')" class="gthumb gthumb-fl active"><img src="https://i.postimg.cc/QxKGYk9J/1777618063385.webp" loading="lazy"/></div>
+          <div onclick="flSwap(this,'https://i.postimg.cc/sDGdH9Qc/1777618063588.webp')" class="gthumb gthumb-fl"><img src="https://i.postimg.cc/sDGdH9Qc/1777618063588.webp" loading="lazy"/></div>
+          <div onclick="flSwap(this,'https://i.postimg.cc/nc9bSYj0/1777618064095.webp')" class="gthumb gthumb-fl"><img src="https://i.postimg.cc/nc9bSYj0/1777618064095.webp" loading="lazy"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Lighting &amp; Outdoor</span>
+        </div>
+        <h3 class="prod-name">Rechargeable Type-C Flashlight</h3>
+        <p class="prod-desc">Compact ABS plastic flashlight with Type-C rechargeable port. Durable black body, bright output — ideal for home, travel, and outdoor use.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">ABS Plastic</div></div>
+          <div class="ps-item"><div class="ps-k">Charging</div><div class="ps-v">Type-C</div></div>
+          <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Black</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price-regular">Rs. 599</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">1 Pc · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('flashlight')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20the%20Rechargeable%20Type-C%20Flashlight%20(Rs.%20599)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('flashlight', 'Rechargeable Type-C Flashlight')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TICH BUTTONS CARD -->
+    <div class="prod-card reveal" id="tichbuttons">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="tb-main" src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg" alt="Tich Buttons 50 Pcs" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">New Arrival</span>
+          <span class="prod-sku">SKU: MZ1701200032ALHAGS</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">
+          <div onclick="tbSwap(this,'https://i.postimg.cc/GpZkbCBW/1777894125333.jpg')" class="gthumb gthumb-tb active"><img src="https://i.postimg.cc/GpZkbCBW/1777894125333.jpg" loading="lazy"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/KYdnm2kh/1777894126213.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/KYdnm2kh/1777894126213.jpg" loading="lazy"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/Dztq7TWH/1777894129823.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/Dztq7TWH/1777894129823.jpg" loading="lazy"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/25P4CDqg/1777894130589.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/25P4CDqg/1777894130589.jpg" loading="lazy"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/N0W1QcyW/1777894131554.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/N0W1QcyW/1777894131554.jpg" loading="lazy"/></div>
+          <div onclick="tbSwap(this,'https://i.postimg.cc/TPZrT6yt/1777894133423.jpg')" class="gthumb gthumb-tb"><img src="https://i.postimg.cc/TPZrT6yt/1777894133423.jpg" loading="lazy"/></div>
+        </div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row">
+          <span class="prod-dot"></span>
+          <span class="prod-cat">Sewing &amp; Craft</span>
+        </div>
+        <h3 class="prod-name">Stainless Steel Tich Buttons — 50 Pcs</h3>
+        <p class="prod-desc">Premium stainless steel snap/tich buttons in silver finish. Pack of 50 pieces — perfect for garments, bags, crafts, and DIY sewing projects. Strong, rust-resistant, and easy to press.</p>
+        <div class="prod-specs">
+          <div class="ps-item"><div class="ps-k">Material</div><div class="ps-v">Stainless Steel</div></div>
+          <div class="ps-item"><div class="ps-k">Pieces</div><div class="ps-v">50 Pcs</div></div>
+          <div class="ps-item"><div class="ps-k">Color</div><div class="ps-v">Silver</div></div>
+          <div class="ps-item"><div class="ps-k">Delivery</div><div class="ps-v">COD · All PK</div></div>
+        </div>
+        <div class="prod-price-row">
+          <div>
+            <div class="prod-price-label">Price</div>
+            <div class="prod-price-regular">Rs. 799</div>
+          </div>
+          <div class="prod-price-pkg" style="margin-left:auto">50 Pcs · Free Delivery</div>
+        </div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openModal('tichbuttons')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%20Stainless%20Steel%20Tich%20Buttons%2050%20Pcs%20(Rs.%20799)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('tichbuttons', 'Stainless Steel Tich Buttons — 50 Pcs')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <!-- PRODUCT: 1 in 32 Screwdriver set with Green Handle -->
+    <div class="prod-card reveal" id="p1778020601319">
+      <div class="prod-img-wrap" style="aspect-ratio:unset">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+          <img id="p1778020601319-main" src="https://i.postimg.cc/BZH6ym8b/1777951541161.webp" alt="1 in 32 Screwdriver set with Green Handle" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+          <span class="prod-badge">New Arrival</span>
+          <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Tap image to zoom
+          </button>
+        </div>
+        <div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)"><div onclick="dynSwap(this,'p1778020601319-main','p1778020601319','https://i.postimg.cc/BZH6ym8b/1777951541161.webp')" class="gthumb gthumb-p1778020601319 active"><img src="https://i.postimg.cc/BZH6ym8b/1777951541161.webp" loading="lazy"/></div><div onclick="dynSwap(this,'p1778020601319-main','p1778020601319','https://i.postimg.cc/WbV3P0r1/1777951540928.webp')" class="gthumb gthumb-p1778020601319"><img src="https://i.postimg.cc/WbV3P0r1/1777951540928.webp" loading="lazy"/></div><div onclick="dynSwap(this,'p1778020601319-main','p1778020601319','https://i.postimg.cc/Yq79wQgS/1777951540636.webp')" class="gthumb gthumb-p1778020601319"><img src="https://i.postimg.cc/Yq79wQgS/1777951540636.webp" loading="lazy"/></div></div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat">ZX Agent Seller</span></div>
+        <h3 class="prod-name">1 in 32 Screwdriver set with Green Handle</h3>
+        <p class="prod-desc">•  Material: Iron
+•  Number Of Pieces: 1 Pc
+•  Color: Multicolor
+•  Package Includes: 1 x Screwdriver Set
+•  Note: There might be an error of 1-3 cm due to manual measurement, and slight color differences may occur as a result of varying lighting and monitor effects.
+•  Product Code: MZ16300000060WRSR</p>
+        <div class="prod-price-row"><div><div class="prod-price-label">Price</div><div class="prod-price-regular">Rs. 799</div></div><div class="prod-price-pkg" style="margin-left:auto">1 Pc &middot; Free Delivery</div></div>
+        <div class="prod-footer">
+          <button class="btn-order" onclick="openDynModal('p1778020601319','1 in 32 Screwdriver set with Green Handle','Rs. 799')">Order Now</button>
+          <a class="btn-wa" href="https://wa.me/923182756013?text=Hi%2C%20I%20want%20to%20order%201%20in%2032%20Screwdriver%20set%20with%20Green%20Handle%20(Rs.%20799)" target="_blank" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+          <button class="btn-wa" onclick="shareProduct('p1778020601319', '1 in 32 Screwdriver set with Green Handle')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip">
+  <div class="feat reveal">
+    <div class="feat-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+    <div class="feat-title">Cash on Delivery</div>
+    <div class="feat-sub">Pay when your order arrives. No advance required.</div>
+  </div>
+  <div class="feat reveal">
+    <div class="feat-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="1" y="4" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 17 16 17 16 8"/><circle cx="5.5" cy="18" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/></svg></div>
+    <div class="feat-title">Delivery Available</div>
+    <div class="feat-sub">Delivered across all of Pakistan.</div>
+  </div>
+  <div class="feat reveal">
+    <div class="feat-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="feat-title">Halal Business</div>
+    <div class="feat-sub">100% transparent, honest pricing. No hidden fees.</div>
+  </div>
+  <div class="feat reveal">
+    <div class="feat-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+    <div class="feat-title">WhatsApp Support</div>
+    <div class="feat-sub">Talk to us directly 9AM – 10PM, 7 days a week.</div>
+  </div>
+</div>
+
+<!-- WHY SECTION -->
+<section class="why-section" id="why">
+  <div class="why-grid">
+    <div class="why-left reveal">
+      <div class="why-eyebrow">Why ZX Agent Seller</div>
+      <h2 class="why-title">
+        <span style="display:block">Built On</span>
+        <span class="ol" style="display:block">Trust</span>
+      </h2>
+      <p class="why-body">We are a trusted agent seller in Pakistan. We pick the best products and connect you directly with reliable suppliers. All orders are confirmed via WhatsApp so you always know what's happening.</p>
+    </div>
+    <div class="why-right">
+      <div class="wcard reveal">
+        <div class="wc-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="wc-title">Curated Selection</div>
+        <div class="wc-body">Every product is hand-picked for quality and value before we list it.</div>
+      </div>
+      <div class="wcard reveal">
+        <div class="wc-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+        <div class="wc-title">Direct WhatsApp Orders</div>
+        <div class="wc-body">Your order goes straight to our WhatsApp. No bots, no delays.</div>
+      </div>
+      <div class="wcard reveal">
+        <div class="wc-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+        <div class="wc-title">Made for Pakistan</div>
+        <div class="wc-body">COD, Urdu support, local delivery — designed for Pakistani shoppers.</div>
+      </div>
+      <div class="wcard reveal">
+        <div class="wc-ico"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+        <div class="wc-title">Verified Seller</div>
+        <div class="wc-body">We are a verified and accountable seller. What you see is what you get.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="cta-wm">ORDER</div>
+  <div class="cta-eyebrow">Ready to Order?</div>
+  <h2 class="cta-title">Get Yours Today</h2>
+  <p class="cta-sub">Cash on delivery. Confirm on WhatsApp in seconds.</p>
+  <div class="cta-btns">
+    <button class="btn-white" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Browse Products</button>
+    <a class="btn-ghost" href="https://wa.me/923182756013" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Chat on WhatsApp
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-left">
+    <div class="logo-box"><span>ZX</span></div>
+    <div>
+      <div class="logo-name" style="font-size:1.2rem">ZX Agent Seller</div>
+      <div class="foot-copy">Pakistan's Trusted Online Store</div>
+    </div>
+  </div>
+  <div class="foot-right">
+    <div class="foot-copy"><button class="admin-trigger" onclick="openAdminPanel()" title=""></button> 2026 ZX Agent Seller · Halal · Transparent · 🇵🇰</div>
+    <div class="foot-sub">Halal · Transparent · <a class="foot-wa" href="https://wa.me/923182756013" target="_blank">+92 318 2756013</a></div>
+  </div>
+</footer>
+
+<!-- ═══ ORDER MODAL ═══ -->
+<!-- FLOATING CART BAR -->
+<div class="cart-bar" id="cartBar">
+  <div class="cart-bar-info">
+    <span class="cart-bar-count" id="cartBarCount">0 items selected</span>
+    <span class="cart-bar-total" id="cartBarTotal">Rs. 0</span>
+  </div>
+  <button class="cart-bar-btn" onclick="openCartDrawer()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    Checkout
+  </button>
+</div>
+
+<!-- CART DRAWER -->
+<div class="modal-overlay" id="cartOverlay" onclick="if(event.target===this)closeCartDrawer()">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">My Cart</span>
+      <button class="modal-close" onclick="closeCartDrawer()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="cartDrawerList"></div>
+      <div class="cart-drawer-total" id="cartDrawerTotalWrap" style="display:none">
+        <span>Total</span>
+        <b id="cartDrawerTotal">Rs. 0</b>
+      </div>
+      <button class="btn-submit" id="cartSendBtn" onclick="sendCartOrder()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Order All via WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL OVERLAY -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-topbar">
+    <button class="detail-back" onclick="closeProductDetail()" aria-label="Back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span class="detail-topbar-title" id="detailTopTitle">Product</span>
+    <button class="detail-cart-btn" onclick="openCartDrawer()" aria-label="Cart">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span class="detail-cart-badge" id="detailCartBadge">0</span>
+    </button>
+  </div>
+  <div class="detail-scroll" id="detailScroll">
+    <div class="detail-gallery">
+      <div class="detail-gallery-main">
+        <img id="detailMainImg" src="" alt="" onclick="zoomImg(this.src)"/>
+        <button class="detail-share-btn" id="detailShareBtn" title="Share" aria-label="Share">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </div>
+      <div class="detail-gallery-thumbs" id="detailThumbs"></div>
+    </div>
+    <div class="detail-info">
+      <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat" id="detailCat"></span></div>
+      <h2 class="detail-name" id="detailName"></h2>
+      <div class="detail-price-row">
+        <span class="detail-price" id="detailPrice"></span>
+        <span class="detail-price-original" id="detailPriceOriginal" style="display:none"></span>
+      </div>
+      <div class="detail-actions">
+        <div class="qty-stepper">
+          <button onclick="changeDetailQty(-1)" aria-label="Decrease">−</button>
+          <span id="detailQty">1</span>
+          <button onclick="changeDetailQty(1)" aria-label="Increase">+</button>
+        </div>
+        <button class="btn-order detail-add-cart" id="detailAddCartBtn" onclick="addDetailToCart()">Add to Cart</button>
+      </div>
+      <button class="btn-submit detail-order-now" id="detailOrderNowBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Order Now via WhatsApp
+      </button>
+
+      <div class="detail-tabs">
+        <button class="detail-tab active" data-tab="overview" onclick="switchDetailTab('overview')">Overview</button>
+        <button class="detail-tab" data-tab="specs" onclick="switchDetailTab('specs')">Product Details</button>
+        <button class="detail-tab" data-tab="reviews" onclick="switchDetailTab('reviews')">Reviews <span id="detailReviewCount"></span></button>
+      </div>
+      <div class="detail-tab-panel active" id="detailPanelOverview">
+        <p class="prod-desc" id="detailDesc"></p>
+      </div>
+      <div class="detail-tab-panel" id="detailPanelSpecs">
+        <div class="prod-specs" id="detailSpecs"></div>
+      </div>
+      <div class="detail-tab-panel" id="detailPanelReviews">
+        <div id="detailReviewSummary"></div>
+        <div id="detailReviewList"></div>
+        <button class="btn-wa" style="width:100%;margin-top:1rem;padding:0.85rem" onclick="toggleReviewForm()">✎&nbsp; Write a Review</button>
+        <div id="reviewForm" style="display:none;margin-top:1rem">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input class="form-input" id="revName" placeholder="e.g. Ahmad"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rating</label>
+            <div class="star-picker" id="starPicker"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Review</label>
+            <textarea class="form-textarea" id="revText" rows="3" placeholder="How was the product?"></textarea>
+          </div>
+          <div class="notice-bar" style="margin-bottom:0">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Published instantly — visible to every visitor on this product page
+          </div>
+          <button class="btn-submit" onclick="submitReview()">Submit Review</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-more">
+      <div class="detail-more-title">You Might Also Like</div>
+      <div class="detail-more-grid" id="detailMoreGrid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+
+    <!-- FORM STATE -->
+    <div id="orderForm">
+      <div class="modal-head">
+        <span class="modal-title" id="modalTitle">Place Order</span>
+        <button class="modal-close" onclick="closeModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-product-bar">
+        <div class="mpb-name" id="modalProductName">—</div>
+        <div class="mpb-price" id="modalProductPrice">—</div>
+      </div>
+      <div class="modal-body">
+        <div class="notice-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Order confirmed directly via WhatsApp · Cash on Delivery
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input class="form-input" id="fname" type="text" placeholder="e.g. Ali Ahmed"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input class="form-input" id="fphone" type="tel" placeholder="03XX XXXXXXX"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Address *</label>
+          <textarea class="form-input form-textarea" id="faddress" rows="2" placeholder="House No., Street, Area…"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">City *</label>
+            <input class="form-input" id="fcity" type="text" placeholder="e.g. Karachi"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quantity</label>
+            <input class="form-input" id="fqty" type="number" value="1" min="1" max="99"/>
+          </div>
+        </div>
+
+        <!-- Watch-only: color selector -->
+        <div class="form-group" id="colorGroup" style="display:none">
+          <label class="form-label">Watch Color *</label>
+          <select class="form-input form-select" id="fcolor">
+            <option value="Black / Black Strap">Black / Black Strap</option>
+            <option value="Grey / Rose Gold">Grey / Rose Gold</option>
+            <option value="Brown / Rose Gold">Brown / Rose Gold</option>
+            <option value="Navy Blue / Rose Gold">Navy Blue / Rose Gold</option>
+            <option value="Black / Rose Gold">Black / Rose Gold</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notes (Optional)</label>
+          <input class="form-input" id="fnotes" type="text" placeholder="Any special instructions…"/>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="submitOrder()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Confirm Order via WhatsApp
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-ico"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div class="success-title">Order Sent!</div>
+      <div class="success-msg">Your order has been sent to ZX Agent Seller on WhatsApp. We'll confirm it shortly. Thank you for shopping with us! 🇵🇰</div>
+      <div class="wa-badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+        WhatsApp Notification Sent
+      </div>
+      <br/><br/>
+      <button class="btn-ghost" onclick="closeModal()" style="padding:0.7rem 2rem;cursor:pointer">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ ADMIN PANEL ═══ -->
+<div class="admin-overlay" id="adminOverlay" onclick="handleAdminOverlayClick(event)">
+  <div class="admin-modal">
+
+    <!-- PASSWORD SCREEN -->
+    <div id="adminPwScreen" class="admin-pw-screen">
+      <div class="admin-pw-title">Admin Access</div>
+      <div class="admin-pw-sub">ZX Agent Seller · Owner Only</div>
+      <input class="admin-pw-input" id="adminPwInput" type="password" placeholder="••••••••" maxlength="32"
+        onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+      <br/>
+      <button class="admin-pw-btn" onclick="checkAdminPw()">Unlock</button>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div id="adminMainPanel" style="display:none">
+      <div class="admin-head">
+        <span class="admin-head-title">Admin Panel</span>
+        <button class="admin-close" onclick="closeAdminPanel()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- TABS -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('add')">+ Add Product</button>
+        <button class="admin-tab" onclick="switchTab('delete')">🗑 Delete Product</button>
+        <button class="admin-tab" onclick="switchTab('reviews')">★ Reviews</button>
+      </div>
+
+      <div class="admin-body">
+
+        <!-- ADD TAB -->
+        <div id="tab-add" class="admin-tab-panel active">
+
+          <!-- GitHub Token (legacy — only needed to delete pre-Supabase products) -->
+          <div class="admin-group">
+            <label class="admin-label">GitHub Token <span style="color:#555;font-size:0.48rem">(optional — only needed to delete older products)</span></label>
+            <input class="admin-input" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"/>
+            <div class="admin-img-hint">New products save instantly via the database — this is only used as a fallback when deleting products added before this update</div>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Product ID *</label>
+            <input class="admin-input" id="ap-id" type="text" placeholder="unique-id-no-spaces"/>
+            <div class="admin-img-hint">Use lowercase letters, numbers, hyphens. e.g. 'premium-kettle'</div>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Product Name *</label>
+            <input class="admin-input" id="ap-name" type="text" placeholder="e.g. Electric Kettle 1.8L"/>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Description *</label>
+            <textarea class="admin-input admin-textarea" id="ap-desc" rows="3" placeholder="Short product description…"></textarea>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Real Price (Rs.) *</label>
+            <input class="admin-input" id="ap-price" type="number" placeholder="e.g. 1299"/>
+            <div class="admin-img-hint">Original price before discount</div>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Discount Price (Rs.)</label>
+            <input class="admin-input" id="ap-discount" type="number" placeholder="e.g. 999 (leave blank for no discount)"/>
+            <div class="admin-img-hint">The discounted price shown in green</div>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Image Links</label>
+            <div class="admin-imgs">
+              <input class="admin-input" id="img-1" type="url" placeholder="Main image URL (required)"/>
+              <input class="admin-input" id="img-2" type="url" placeholder="Thumbnail 2 (optional)"/>
+              <input class="admin-input" id="img-3" type="url" placeholder="Thumbnail 3 (optional)"/>
+              <input class="admin-input" id="img-4" type="url" placeholder="Thumbnail 4 (optional)"/>
+              <input class="admin-input" id="img-5" type="url" placeholder="Thumbnail 5 (optional)"/>
+              <input class="admin-input" id="img-6" type="url" placeholder="Thumbnail 6 (optional)"/>
+            </div>
+            <div class="admin-img-hint">Paste postimg.cc links · Leave extra fields blank</div>
+          </div>
+
+          <button class="btn-add-product" id="btn-add-product" onclick="addProductToPage()">+ Add Product to Store</button>
+
+          <div class="admin-success" id="adminSuccess">
+            <div class="admin-success-ico"><svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="admin-success-title" id="adminSuccessTitle">Publishing…</div>
+            <div class="admin-success-sub" id="adminSuccessSub">Saving to the database…</div>
+          </div>
+
+        </div>
+
+        <!-- DELETE TAB -->
+        <div id="tab-delete" class="admin-tab-panel">
+          <div id="del-product-list" class="del-product-list"></div>
+        </div>
+
+        <!-- REVIEWS TAB -->
+        <div id="tab-reviews" class="admin-tab-panel">
+          <div id="admin-review-list" class="del-product-list"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── SHARE FUNCTION ──
+function shareProduct(id, name) {
+  const shareUrl = window.location.origin + window.location.pathname + '#' + id;
+  if (navigator.share) {
+    navigator.share({
+      title: name + ' - ZX Agent Seller',
+      text: 'Check out this product: ' + name + ' at ZX Agent Seller!',
+      url: shareUrl
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(shareUrl)
+      .then(() => showToast('🔗 Link copied to clipboard!'))
+      .catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = shareUrl;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('🔗 Link copied to clipboard!');
+      });
+  }
+}
+
+// ── RETROACTIVE ID PATCH ──
+function assignIdsToOldProducts() {
+  const cards = document.querySelectorAll('.prod-card');
+  const staticIds = ['screwdriver', 'watch', 'earbuds', 'massager', 'cable', 'flashlight', 'tichbuttons'];
+  cards.forEach((card, index) => {
+    if (!card.id) {
+      if (index < staticIds.length) {
+        card.id = staticIds[index];
+      } else {
+        card.id = 'card-' + Date.now() + '-' + index;
+      }
+    }
+  });
+}
+
+// ── CART SYSTEM ──
+let cart = {};
+try { cart = JSON.parse(localStorage.getItem('zx_cart') || '{}'); } catch (e) { cart = {}; }
+
+function saveCart() {
+  localStorage.setItem('zx_cart', JSON.stringify(cart));
+}
+
+function getCardData(card) {
+  const nameEl = card.querySelector('.prod-name');
+  const priceEl = card.querySelector('.prod-price, .prod-price-regular');
+  const origEl = card.querySelector('.prod-price-original');
+  const imgEl = card.querySelector('.prod-img-wrap img');
+  const descEl = card.querySelector('.prod-desc');
+  const specsEl = card.querySelector('.prod-specs');
+  const catEl = card.querySelector('.prod-cat');
+  const waEl = card.querySelector('.prod-footer .btn-wa[href^="https://wa.me"], .prod-footer a.btn-wa');
+  const gthumbImgs = Array.from(card.querySelectorAll('.gthumb img')).map(im => im.src);
+  const priceNum = priceEl ? parseInt(priceEl.textContent.replace(/[^0-9]/g, '')) || 0 : 0;
+  return {
+    id: card.id,
+    name: nameEl ? nameEl.textContent.trim() : card.id,
+    price: priceNum,
+    originalPrice: origEl ? origEl.textContent.trim() : '',
+    img: imgEl ? imgEl.src : '',
+    gallery: gthumbImgs.length ? gthumbImgs : (imgEl ? [imgEl.src] : []),
+    desc: descEl ? descEl.textContent.trim() : '',
+    specsHTML: specsEl ? specsEl.innerHTML : '',
+    category: catEl ? catEl.textContent.trim() : 'ZX Agent Seller',
+    waHref: waEl ? waEl.getAttribute('href') : ''
+  };
+}
+
+// ── CARD SETUP: cart checkbox + compact tile + tap-to-open-detail ──
+function setupProductCard(card) {
+  if (!card.id || card.dataset.zxSetup) return;
+  card.dataset.zxSetup = '1';
+  card.classList.add('compact');
+
+  // In tile mode, tapping the card opens the detail page — disable the
+  // old "tap image to zoom" handler here so it doesn't fire underneath.
+  const mainImg = card.querySelector('.prod-img-wrap img');
+  if (mainImg) { mainImg.onclick = null; mainImg.removeAttribute('onclick'); }
+
+  const imgWrap = card.querySelector('.prod-img-wrap > div') || card.querySelector('.prod-img-wrap');
+  if (imgWrap && !imgWrap.querySelector('.cart-check')) {
+    const btn = document.createElement('button');
+    btn.className = 'cart-check' + (cart[card.id] ? ' active' : '');
+    btn.setAttribute('aria-label', 'Select for cart');
+    btn.innerHTML = '<svg class="cc-tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    btn.onclick = function(e) { e.stopPropagation(); toggleCartItem(card, btn); };
+    imgWrap.style.position = imgWrap.style.position || 'relative';
+    imgWrap.appendChild(btn);
+  }
+
+  card.addEventListener('click', e => {
+    if (e.target.closest('.cart-check')) return;
+    openProductDetail(card.id);
+  });
+}
+
+function setupAllProductCards() {
+  document.querySelectorAll('.prod-card').forEach(setupProductCard);
+}
+
+function toggleCartItem(card, btn) {
+  const data = getCardData(card);
+  if (cart[data.id]) {
+    delete cart[data.id];
+    btn.classList.remove('active');
+  } else {
+    cart[data.id] = Object.assign(data, { qty: 1 });
+    btn.classList.add('active');
+  }
+  saveCart();
+  renderCartBar();
+}
+
+function addToCart(data, qty) {
+  qty = Math.max(1, qty || 1);
+  if (cart[data.id]) {
+    cart[data.id].qty += qty;
+  } else {
+    cart[data.id] = Object.assign({}, data, { qty });
+  }
+  saveCart();
+  renderCartBar();
+  const btn = document.querySelector('#' + CSS.escape(data.id) + ' .cart-check');
+  if (btn) btn.classList.add('active');
+  showToast('✓ Added to cart');
+}
+
+function changeCartQty(id, delta) {
+  if (!cart[id]) return;
+  cart[id].qty = (cart[id].qty || 1) + delta;
+  if (cart[id].qty <= 0) {
+    removeCartItem(id);
+    return;
+  }
+  saveCart();
+  renderCartBar();
+  renderCartDrawer();
+}
+
+function removeCartItem(id) {
+  delete cart[id];
+  saveCart();
+  const btn = document.querySelector('#' + CSS.escape(id) + ' .cart-check');
+  if (btn) btn.classList.remove('active');
+  renderCartBar();
+  renderCartDrawer();
+}
+
+function cartTotals() {
+  const items = Object.values(cart);
+  const totalQty = items.reduce((sum, it) => sum + (it.qty || 1), 0);
+  const total = items.reduce((sum, it) => sum + (it.price || 0) * (it.qty || 1), 0);
+  return { items, total, totalQty };
+}
+
+function renderCartBar() {
+  const { items, total, totalQty } = cartTotals();
+  const bar = document.getElementById('cartBar');
+  const badge = document.getElementById('cart-nav-badge');
+  const detailBadge = document.getElementById('detailCartBadge');
+  document.getElementById('cartBarCount').textContent = totalQty + (totalQty === 1 ? ' item selected' : ' items selected');
+  document.getElementById('cartBarTotal').textContent = 'Rs. ' + total.toLocaleString('en-PK');
+  if (items.length > 0) {
+    bar.classList.add('show');
+    badge.style.display = 'flex';
+    badge.textContent = totalQty;
+  } else {
+    bar.classList.remove('show');
+    badge.style.display = 'none';
+  }
+  if (detailBadge) {
+    detailBadge.style.display = totalQty > 0 ? 'flex' : 'none';
+    detailBadge.textContent = totalQty;
+  }
+}
+
+function renderCartDrawer() {
+  const { items, total } = cartTotals();
+  const list = document.getElementById('cartDrawerList');
+  const totalWrap = document.getElementById('cartDrawerTotalWrap');
+  const sendBtn = document.getElementById('cartSendBtn');
+  if (items.length === 0) {
+    list.innerHTML = '<div class="cart-empty-msg">Your cart is empty.<br>Tap the checkbox on any product, or Add to Cart on a product page.</div>';
+    totalWrap.style.display = 'none';
+    sendBtn.style.display = 'none';
+    return;
+  }
+  totalWrap.style.display = 'flex';
+  sendBtn.style.display = 'flex';
+  document.getElementById('cartDrawerTotal').textContent = 'Rs. ' + total.toLocaleString('en-PK');
+  list.innerHTML = items.map(it => `
+    <div class="cart-item-row">
+      <img src="${it.img}" alt="${it.name}"/>
+      <div class="cart-item-main">
+        <div class="cart-item-top">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${it.name}</div>
+          </div>
+          <button class="cart-item-remove" onclick="removeCartItem('${it.id}')" aria-label="Remove">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="cart-item-bottom">
+          <span class="cart-item-price">Rs. ${it.price.toLocaleString('en-PK')} × ${it.qty || 1}</span>
+          <div class="qty-stepper">
+            <button onclick="changeCartQty('${it.id}',-1)" aria-label="Decrease">−</button>
+            <span>${it.qty || 1}</span>
+            <button onclick="changeCartQty('${it.id}',1)" aria-label="Increase">+</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openCartDrawer() {
+  renderCartDrawer();
+  document.getElementById('cartOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCartDrawer() {
+  document.getElementById('cartOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function sendCartOrder() {
+  const { items, total } = cartTotals();
+  if (items.length === 0) return;
+  let msg = `🛒 *NEW ORDER — ZX AGENT SELLER*\n━━━━━━━━━━━━━━━━━━━━\n`;
+  items.forEach((it, i) => {
+    const qty = it.qty || 1;
+    msg += `${i + 1}. ${it.name} — Rs. ${it.price.toLocaleString('en-PK')} x${qty} = Rs. ${(it.price * qty).toLocaleString('en-PK')}\n`;
+  });
+  msg += `━━━━━━━━━━━━━━━━━━━━\n💰 *Total:* Rs. ${total.toLocaleString('en-PK')}\n━━━━━━━━━━━━━━━━━━━━\n✅ Please confirm this order! I'll share my name, phone and address here.`;
+  window.open(`https://wa.me/923182756013?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// ── PRODUCT DETAIL OVERLAY ──
+let currentDetailId = null;
+let detailQty = 1;
+
+function openProductDetail(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const data = getCardData(card);
+  currentDetailId = id;
+  detailQty = 1;
+  document.getElementById('detailQty').textContent = '1';
+
+  document.getElementById('detailTopTitle').textContent = data.name;
+  document.getElementById('detailName').textContent = data.name;
+  document.getElementById('detailCat').textContent = data.category;
+  document.getElementById('detailDesc').textContent = data.desc || 'No description provided yet.';
+  document.getElementById('detailSpecs').innerHTML = data.specsHTML || '<div class="cart-empty-msg" style="padding:1rem 0">No extra specs listed for this product.</div>';
+  document.getElementById('detailPrice').textContent = 'Rs. ' + data.price.toLocaleString('en-PK');
+  const origEl = document.getElementById('detailPriceOriginal');
+  if (data.originalPrice) { origEl.textContent = data.originalPrice; origEl.style.display = 'inline'; }
+  else { origEl.style.display = 'none'; }
+
+  const mainImg = document.getElementById('detailMainImg');
+  mainImg.src = data.img;
+  mainImg.alt = data.name;
+  const thumbsWrap = document.getElementById('detailThumbs');
+  if (data.gallery.length > 1) {
+    thumbsWrap.style.display = 'flex';
+    thumbsWrap.innerHTML = data.gallery.map((url, i) => `<div class="gthumb${i===0?' active':''}" data-url="${url}" onclick="detailGallerySwap(this,'${url}')"><img src="${url}" ${i>0?'loading="lazy"':''}/></div>`).join('');
+  } else {
+    thumbsWrap.style.display = 'none';
+    thumbsWrap.innerHTML = '';
+  }
+
+  document.getElementById('detailShareBtn').onclick = () => shareProduct(id, data.name);
+  const orderBtn = document.getElementById('detailOrderNowBtn');
+  orderBtn.onclick = () => {
+    if (id.startsWith('p') || !['screwdriver','watch','earbuds','massager','cable','flashlight','tichbuttons'].includes(id)) {
+      openDynModal(id, data.name, 'Rs. ' + data.price.toLocaleString('en-PK'));
+    } else {
+      openModal(id);
+    }
+  };
+
+  switchDetailTab('overview');
+  renderReviews(id);
+  renderDetailMore(id);
+  renderCartBar();
+
+  document.getElementById('detailOverlay').classList.add('active');
+  document.getElementById('detailScroll').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductDetail() {
+  document.getElementById('detailOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  currentDetailId = null;
+}
+
+function detailGallerySwap(el, url) {
+  document.getElementById('detailMainImg').src = url;
+  document.querySelectorAll('#detailThumbs .gthumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function changeDetailQty(delta) {
+  detailQty = Math.max(1, detailQty + delta);
+  document.getElementById('detailQty').textContent = detailQty;
+}
+
+function addDetailToCart() {
+  if (!currentDetailId) return;
+  const card = document.getElementById(currentDetailId);
+  const data = getCardData(card);
+  addToCart(data, detailQty);
+}
+
+function switchDetailTab(tab) {
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.detail-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('detailPanel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+}
+
+function renderDetailMore(excludeId) {
+  const grid = document.getElementById('detailMoreGrid');
+  const others = Array.from(document.querySelectorAll('.prod-card')).filter(c => c.id && c.id !== excludeId);
+  if (others.length === 0) { grid.innerHTML = ''; return; }
+  const shuffled = others.sort(() => Math.random() - 0.5).slice(0, 6);
+  grid.innerHTML = shuffled.map(c => {
+    const d = getCardData(c);
+    return `<div class="dm-tile" onclick="openProductDetail('${d.id}')">
+      <img src="${d.img}" alt="${d.name}" loading="lazy"/>
+      <div class="dm-tile-body">
+        <div class="dm-tile-name">${d.name}</div>
+        <div class="dm-tile-price">Rs. ${d.price.toLocaleString('en-PK')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── REVIEWS (Supabase — shared, shown to every visitor instantly) ──
+// 1. Create a free project at https://supabase.com
+// 2. In the SQL editor, run the schema from reviews-schema.sql (included alongside this file)
+// 3. Paste your Project URL and anon public key below (Project Settings → API)
+const SUPABASE_URL = 'https://qssvisjerxfhrthocyoy.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_o6q6tvB5zJmDacD0L-J2Kg_L6ToVVPN';
+
+let supabaseClient = null;
+if (typeof window.supabase !== 'undefined' && SUPABASE_URL.startsWith('http')) {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+let reviews = {};      // in-memory cache: { productId: [ {name, rating, text, date}, ... ] }
+let selectedStars = 0;
+
+function reviewsConfigured() {
+  return !!supabaseClient;
+}
+
+async function fetchReviews(id) {
+  if (!reviewsConfigured()) return reviews[id] || [];
+  const { data, error } = await supabaseClient
+    .from('reviews')
+    .select('name, rating, text, created_at')
+    .eq('product_id', id)
+    .order('created_at', { ascending: false });
+  if (error) {
+    console.error('Failed to load reviews:', error);
+    return reviews[id] || [];
+  }
+  reviews[id] = data.map(r => ({
+    name: r.name,
+    rating: r.rating,
+    text: r.text,
+    date: new Date(r.created_at).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' })
+  }));
+  return reviews[id];
+}
+
+async function renderReviews(id) {
+  const listEl = document.getElementById('detailReviewList');
+  const summaryEl = document.getElementById('detailReviewSummary');
+  const countEl = document.getElementById('detailReviewCount');
+  listEl.innerHTML = '<div class="cart-empty-msg" style="padding:1.5rem 0">Loading reviews…</div>';
+  summaryEl.innerHTML = '';
+  countEl.textContent = '';
+
+  const list = await fetchReviews(id);
+  if (id !== currentDetailId) return; // user navigated away before this resolved
+
+  countEl.textContent = list.length ? '(' + list.length + ')' : '';
+
+  if (list.length === 0) {
+    summaryEl.innerHTML = '';
+  } else {
+    const avg = list.reduce((s, r) => s + r.rating, 0) / list.length;
+    summaryEl.innerHTML = `
+      <div class="review-summary">
+        <div class="review-summary-num">${avg.toFixed(1)}</div>
+        <div>
+          <div class="review-stars">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5 - Math.round(avg))}</div>
+          <div class="review-summary-meta">${list.length} review${list.length === 1 ? '' : 's'}</div>
+        </div>
+      </div>`;
+  }
+
+  if (list.length === 0) {
+    listEl.innerHTML = '<div class="cart-empty-msg" style="padding:1.5rem 0">No reviews yet — be the first to share your experience!</div>';
+  } else {
+    listEl.innerHTML = list.map(r => `
+      <div class="review-row">
+        <div class="review-row-head">
+          <span class="review-row-name">${escapeHtml(r.name)}</span>
+          <span class="review-row-date">${r.date}</span>
+        </div>
+        <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+        <div class="review-row-text" style="margin-top:0.3rem">${escapeHtml(r.text)}</div>
+      </div>`).join('');
+  }
+
+  buildStarPicker();
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function buildStarPicker() {
+  selectedStars = 0;
+  const picker = document.getElementById('starPicker');
+  picker.innerHTML = [1,2,3,4,5].map(n => `<button type="button" onclick="pickStar(${n})">★</button>`).join('');
+}
+
+function pickStar(n) {
+  selectedStars = n;
+  document.querySelectorAll('#starPicker button').forEach((b, i) => b.classList.toggle('on', i < n));
+}
+
+function toggleReviewForm() {
+  const form = document.getElementById('reviewForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+async function submitReview() {
+  if (!currentDetailId) return;
+  const name = document.getElementById('revName').value.trim();
+  const text = document.getElementById('revText').value.trim();
+  if (!name || !text || selectedStars === 0) {
+    alert('⚠️ Please add your name, a star rating, and your review.');
+    return;
+  }
+  if (!reviewsConfigured()) {
+    alert('⚠️ Reviews aren\'t connected yet. Add your Supabase URL and key in the code to enable this.');
+    return;
+  }
+
+  const submitBtn = document.querySelector('#reviewForm .btn-submit');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting…';
+
+  const { error } = await supabaseClient.from('reviews').insert({
+    product_id: currentDetailId,
+    name,
+    rating: selectedStars,
+    text
+  });
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Submit Review';
+
+  if (error) {
+    console.error('Failed to submit review:', error);
+    alert('⚠️ Something went wrong submitting your review. Please try again.');
+    return;
+  }
+
+  document.getElementById('reviewForm').style.display = 'none';
+  document.getElementById('revName').value = '';
+  document.getElementById('revText').value = '';
+  showToast('✓ Review published!');
+
+  renderReviews(currentDetailId);
+}
+
+// ── CENTERED ANNOUNCEMENT TICKER (cross-fades, always centered) ──
+(function() {
+  const slides = document.querySelectorAll('.ticker-slide');
+  if (slides.length < 2) return;
+  let idx = 0;
+  setInterval(() => {
+    slides[idx].classList.remove('active');
+    idx = (idx + 1) % slides.length;
+    slides[idx].classList.add('active');
+  }, 3000);
+})();
+
+// ── AUTO-SCROLL ON HASH ──
+window.addEventListener('DOMContentLoaded', function() {
+  assignIdsToOldProducts();
+  setupAllProductCards();
+  renderCartBar();
+  loadSupabaseProducts();
+  const hash = window.location.hash.substring(1);
+  if (hash) {
+    const target = document.getElementById(hash);
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.style.outline = '2px solid var(--white)';
+        target.style.outlineOffset = '4px';
+        setTimeout(() => {
+          target.style.outline = '';
+          target.style.outlineOffset = '';
+        }, 2000);
+      }, 600);
+    }
+  }
+});
+
+// ── PRODUCTS (Supabase — instant, shared across all visitors) ──
+function createProductCard(p) {
+  const id = p.id;
+  const name = p.name;
+  const desc = p.description;
+  const imgs = p.images || [];
+
+  const formattedPrice = parseInt(p.price).toLocaleString('en-PK');
+  let priceHTML = '';
+  let displayPrice = formattedPrice;
+  let discountPriceClass = 'prod-price-regular';
+
+  if (p.discount_price && p.discount_price > 0 && p.discount_price < p.price) {
+    const formattedDiscount = parseInt(p.discount_price).toLocaleString('en-PK');
+    displayPrice = formattedDiscount;
+    discountPriceClass = 'prod-price';
+    priceHTML = `<span class="prod-price-original">Rs. ${formattedPrice}</span>`;
+  }
+
+  const waText = encodeURIComponent(`Hi, I want to order ${name} (Rs. ${displayPrice})`);
+
+  let thumbsHTML = '';
+  if (imgs.length > 1) {
+    thumbsHTML = `<div style="display:flex;gap:6px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border)">`;
+    imgs.forEach((url, idx) => {
+      thumbsHTML += `<div onclick="dynSwap(this,'${id}-main','${id}','${url}')" class="gthumb gthumb-${id}${idx===0?' active':''}"><img src="${url}" loading="lazy"/></div>`;
+    });
+    thumbsHTML += `</div>`;
+  }
+
+  const card = document.createElement('div');
+  card.className = 'prod-card reveal';
+  card.id = id;
+  card.innerHTML = `
+    <div class="prod-img-wrap" style="aspect-ratio:unset">
+      <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
+        <img id="${id}-main" src="${imgs[0]}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:grayscale(15%)" loading="lazy" onclick="zoomImg(this.src)"/>
+        <span class="prod-badge">New Arrival</span>
+        <button class="prod-quick-view" onclick="event.stopPropagation();zoomImg(this.closest('.prod-img-wrap').querySelector('img').src)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Tap image to zoom</button>
+      </div>${thumbsHTML}</div>
+    <div class="prod-body">
+      <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat">ZX Agent Seller</span></div>
+      <h3 class="prod-name">${escapeHtml(name)}</h3>
+      <p class="prod-desc">${escapeHtml(desc)}</p>
+      <div class="prod-price-row">
+        <div>
+          <div class="prod-price-label">Price</div>
+          <div>
+            <span class="${discountPriceClass}">Rs. ${displayPrice}</span>
+            ${priceHTML}
+          </div>
+        </div>
+        <div class="prod-price-pkg" style="margin-left:auto">1 Pc &middot; Free Delivery</div>
+      </div>
+      <div class="prod-footer">
+        <button class="btn-order" onclick="openDynModal('${id}','${name.replace(/'/g,"\\'")}','Rs. ${displayPrice}')">Order Now</button>
+        <a class="btn-wa" href="https://wa.me/923182756013?text=${waText}" target="_blank" title="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></a>
+        <button class="btn-wa" onclick="shareProduct('${id}', '${name.replace(/'/g,"\\'")}')" title="Share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+      </div>
+    </div>`;
+  return card;
+}
+
+async function loadSupabaseProducts() {
+  if (!reviewsConfigured()) return;
+  const { data, error } = await supabaseClient
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: true });
+  if (error) { console.error('Failed to load products:', error); return; }
+
+  const grid = document.querySelector('.products-grid');
+  data.forEach(p => {
+    if (document.getElementById(p.id)) return; // already on the page
+    const card = createProductCard(p);
+    grid.appendChild(card);
+    if (typeof io !== 'undefined') io.observe(card);
+    else card.classList.add('visible');
+  });
+  setupAllProductCards();
+}
+
+
+function addProductToPage() {
+  const id    = document.getElementById('ap-id').value.trim();
+  const name  = document.getElementById('ap-name').value.trim();
+  const desc  = document.getElementById('ap-desc').value.trim();
+  const price = document.getElementById('ap-price').value.trim();
+  const discount = document.getElementById('ap-discount').value.trim();
+  const imgs  = [1,2,3,4,5,6].map(i => document.getElementById('img-'+i).value.trim()).filter(Boolean);
+
+  if (!id) { alert('⚠️ Please enter a unique Product ID (no spaces).'); return; }
+  if (!name || !price || !imgs[0]) {
+    alert('⚠️ Please fill in Product Name, Price, and at least one Image link.');
+    return;
+  }
+  if (!reviewsConfigured()) {
+    alert('⚠️ Products aren\'t connected to Supabase yet. Add your Supabase URL and key in the code first.');
+    return;
+  }
+
+  const product = {
+    id,
+    name,
+    description: desc,
+    price: parseInt(price),
+    discount_price: (discount && parseInt(discount) > 0) ? parseInt(discount) : null,
+    images: imgs
+  };
+
+  const btn = document.getElementById('btn-add-product');
+  btn.disabled = true;
+  btn.textContent = '⏳ Publishing…';
+  const successDiv = document.getElementById('adminSuccess');
+  successDiv.style.display = 'block';
+  document.getElementById('adminSuccessIco').innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  document.getElementById('adminSuccessTitle').textContent = 'Publishing…';
+  document.getElementById('adminSuccessSub').textContent = 'Connecting to database…';
+
+  const progressTimer1 = setTimeout(() => {
+    document.getElementById('adminSuccessSub').textContent = 'Still saving… (5s)';
+  }, 5000);
+  const progressTimer2 = setTimeout(() => {
+    document.getElementById('adminSuccessSub').textContent = 'Still saving… (10s) — taking longer than usual';
+  }, 10000);
+
+  const insertPromise = supabaseClient.from('products').insert(product);
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Timed out reaching the database. Check your connection and try again.')), 15000)
+  );
+
+  Promise.race([insertPromise, timeoutPromise])
+    .then(({ error }) => {
+      clearTimeout(progressTimer1);
+      clearTimeout(progressTimer2);
+      if (error) throw new Error(error.message || 'Failed to save product.');
+
+      const card = createProductCard(product);
+      document.querySelector('.products-grid').appendChild(card);
+      setTimeout(() => card.classList.add('visible'), 80);
+      setupAllProductCards();
+
+      document.getElementById('adminSuccessIco').innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2" style="stroke:#4caf50"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+      document.getElementById('adminSuccessTitle').textContent = '✅ Uploaded!';
+      document.getElementById('adminSuccessTitle').style.color = '#4caf50';
+      document.getElementById('adminSuccessSub').textContent = 'Live for all visitors right now.';
+      btn.textContent = '✅ Uploaded!';
+      ['ap-id','ap-name','ap-desc','ap-price','ap-discount','img-1','img-2','img-3','img-4','img-5','img-6'].forEach(fid => {
+        document.getElementById(fid).value = '';
+      });
+      setTimeout(() => {
+        document.getElementById('adminSuccessTitle').style.color = '';
+        btn.disabled = false;
+        btn.textContent = '+ Add Product to Store';
+        closeAdminPanel();
+      }, 1600);
+    })
+    .catch(err => {
+      clearTimeout(progressTimer1);
+      clearTimeout(progressTimer2);
+      document.getElementById('adminSuccessIco').innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+      document.getElementById('adminSuccessTitle').textContent = 'Save Failed';
+      document.getElementById('adminSuccessSub').textContent = err.message || 'Something went wrong — try again.';
+      btn.disabled = false;
+      btn.textContent = '+ Add Product to Store';
+    });
+}
+
+// ── GITHUB API ──
+function encodeToBase64(str) {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
+}
+function decodeFromBase64(b64) {
+  return decodeURIComponent(atob(b64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+}
+
+const GH_USER = 'z1sx1';
+const GH_REPO = 'ZX-Agent-Store';
+const GH_FILE = 'index.html';
+const GH_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+
+function fetchWithTimeout(url, options, ms = 20000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...options, signal: controller.signal })
+    .catch(err => {
+      if (err.name === 'AbortError') {
+        throw new Error('Request to GitHub timed out. Your connection may be blocking github.com — try switching networks or using a VPN.');
+      }
+      throw new Error('Network error reaching GitHub — check your internet connection.');
+    })
+    .finally(() => clearTimeout(timer));
+}
+
+async function pushToGitHub(cardHTML, token, productName) {
+  const getRes = await fetchWithTimeout(GH_API, {
+    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!getRes.ok) {
+    const err = await getRes.json();
+    throw new Error(err.message || 'Could not fetch file from GitHub. Check your token.');
+  }
+  const fileData = await getRes.json();
+  const sha = fileData.sha;
+  const currentHTML = decodeFromBase64(fileData.content.replace(/\n/g, ''));
+
+  const INJECT_MARKER = '\n\n  </div>\n</section>\n\n<!-- FEATURES STRIP -->';
+  if (!currentHTML.includes(INJECT_MARKER)) {
+    throw new Error('Could not find injection point in HTML. File may have been modified.');
+  }
+  const newHTML = currentHTML.replace(INJECT_MARKER, cardHTML + '\n\n  </div>\n</section>\n\n<!-- FEATURES STRIP -->');
+
+  const putRes = await fetchWithTimeout(GH_API, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: `Add product: ${productName}`,
+      content: encodeToBase64(newHTML),
+      sha: sha
+    })
+  });
+  if (!putRes.ok) {
+    const err = await putRes.json();
+    throw new Error(err.message || 'Failed to push to GitHub.');
+  }
+}
+
+// ── PAGE LOADER, RIPPLE, TOAST, SCROLL, etc. ──
+// Never wait indefinitely on window 'load' (all images incl. off-screen
+// thumbnails) — that hangs the loader forever if any image host stalls.
+// Hide as soon as the DOM/content is ready, with 'load' as a nicer path
+// when it's fast, and a hard cap so it can never get stuck.
+let loaderHidden = false;
+function hidePageLoader() {
+  if (loaderHidden) return;
+  loaderHidden = true;
+  const l = document.getElementById('page-loader');
+  if (l) l.classList.add('hidden');
+}
+window.addEventListener('load', () => setTimeout(hidePageLoader, 400));
+document.addEventListener('DOMContentLoaded', () => setTimeout(hidePageLoader, 1200));
+setTimeout(hidePageLoader, 3500); // absolute safety cap
+
+const cursorGlow = document.getElementById('cursor-glow');
+if (window.innerWidth > 768) {
+  let glowTicking = false, lastX = 0, lastY = 0;
+  document.addEventListener('mousemove', e => {
+    lastX = e.clientX; lastY = e.clientY;
+    if (!glowTicking) {
+      requestAnimationFrame(() => {
+        cursorGlow.style.opacity = '1';
+        cursorGlow.style.left = lastX + 'px';
+        cursorGlow.style.top = lastY + 'px';
+        glowTicking = false;
+      });
+      glowTicking = true;
+    }
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => { cursorGlow.style.opacity = '0'; });
+}
+
+const navSecLinks = Array.from(document.querySelectorAll('.nav-link[href^="#"]')).map(link => ({
+  link, sec: document.querySelector(link.getAttribute('href'))
+})).filter(x => x.sec);
+let scrollTicking = false;
+function handleScroll() {
+  const prog = document.getElementById('scroll-prog');
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  prog.style.width = Math.min(pct, 100) + '%';
+  const bt = document.getElementById('back-top');
+  if (window.scrollY > 500) bt.classList.add('visible');
+  else bt.classList.remove('visible');
+  navSecLinks.forEach(({ link, sec }) => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 120 && rect.bottom >= 120) link.classList.add('active');
+    else link.classList.remove('active');
+  });
+  scrollTicking = false;
+}
+window.addEventListener('scroll', () => {
+  if (!scrollTicking) {
+    requestAnimationFrame(handleScroll);
+    scrollTicking = true;
+  }
+}, { passive: true });
+
+function addRipple(e) {
+  const btn = e.currentTarget;
+  const circle = document.createElement('span');
+  const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+  const radius = diameter / 2;
+  const rect = btn.getBoundingClientRect();
+  circle.style.cssText = `width:${diameter}px;height:${diameter}px;left:${e.clientX - rect.left - radius}px;top:${e.clientY - rect.top - radius}px`;
+  circle.classList.add('ripple');
+  btn.querySelector('.ripple')?.remove();
+  btn.appendChild(circle);
+}
+document.querySelectorAll('.btn-order, .btn-white, .btn-submit').forEach(btn => {
+  btn.addEventListener('click', addRipple);
+});
+
+function showToast(msg, duration = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function zoomImg(src) {
+  const overlay = document.getElementById('img-zoom-overlay');
+  const img = document.getElementById('img-zoom-img');
+  if (src && src.startsWith('http')) {
+    img.src = src;
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+function closeZoom() {
+  document.getElementById('img-zoom-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.prod-price, .prod-price-regular').forEach(p => {
+  p.closest('.prod-card')?.addEventListener('mouseenter', () => {
+    p.classList.remove('pop');
+    void p.offsetWidth;
+    p.classList.add('pop');
+  });
+});
+
+function animateCounter(el, target, suffix = '') {
+  let start = 0;
+  const isText = isNaN(parseInt(target));
+  if (isText) { el.textContent = target; return; }
+  const num = parseInt(target);
+  const duration = 1200;
+  const step = duration / num;
+  const timer = setInterval(() => {
+    start++;
+    el.textContent = start + suffix;
+    if (start >= num) { el.textContent = target; clearInterval(timer); }
+  }, step);
+}
+
+const heroObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    document.querySelectorAll('.hst-n').forEach(el => {
+      const orig = el.textContent;
+      if (orig === 'COD' || orig === 'All PK') return;
+      const num = parseInt(orig);
+      if (!isNaN(num)) {
+        const suffix = orig.replace(num.toString(), '');
+        el.textContent = '0' + suffix;
+        animateCounter(el, orig, '');
+      }
+    });
+    heroObs.disconnect();
+  }
+}, { threshold: 0.5 });
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) heroObs.observe(heroStats);
+
+document.querySelectorAll('.btn-order').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setTimeout(() => showToast('✓ Opening order form…'), 100);
+  });
+});
+
+document.querySelectorAll('.prod-card').forEach((card, i) => {
+  card.style.transitionDelay = (i * 0.06) + 's';
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeAdminPanel();
+    closeZoom();
+  }
+});
+
+// ── ADMIN TABS ──
+function switchTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (tab === 'delete') renderDeleteList();
+  if (tab === 'reviews') renderAdminReviewsList();
+}
+
+function renderDeleteList() {
+  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
+  const list = document.getElementById('del-product-list');
+  if (products.length === 0) {
+    list.innerHTML = '<div class="del-empty">No saved products to delete.</div>';
+    return;
+  }
+  list.innerHTML = products.map(p => `
+    <div class="del-item" id="del-row-${p.id}">
+      <div class="del-item-info">
+        <img class="del-item-thumb" src="${p.imgs[0]}" onerror="this.style.display='none'"/>
+        <div>
+          <div class="del-item-name">${p.name}</div>
+          <div class="del-item-price">Rs. ${parseInt(p.price).toLocaleString('en-PK')}</div>
+        </div>
+      </div>
+      <span class="del-item-tag">SAVED</span>
+      <button class="btn-del-item" onclick="deleteProduct('${p.id}')">Delete</button>
+    </div>
+  `).join('');
+}
+
+function deleteProduct(id) {
+  if (!confirm('Delete this product from the store?')) return;
+  const card = document.querySelector(`[id="${id}"]`);
+  if (card) {
+    card.style.transition = 'opacity 0.35s,transform 0.35s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => card.remove(), 380);
+  }
+  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
+  localStorage.setItem('zx_products', JSON.stringify(products.filter(p => p.id !== id)));
+  const row = document.getElementById('del-row-' + id);
+  if (row) { row.style.opacity = '0'; setTimeout(() => renderDeleteList(), 280); }
+  showToast('🗑 Product deleted');
+}
+
+const ADMIN_PASSWORD = 'zxadmin786';
+
+function openAdminPanel() {
+  document.getElementById('adminPwScreen').style.display = 'block';
+  document.getElementById('adminMainPanel').style.display = 'none';
+  document.getElementById('adminPwInput').value = '';
+  document.getElementById('adminPwInput').classList.remove('wrong');
+  document.getElementById('adminSuccess').style.display = 'none';
+  document.getElementById('adminOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('adminPwInput').focus(), 120);
+}
+
+function closeAdminPanel() {
+  document.getElementById('adminOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function handleAdminOverlayClick(e) {
+  if (e.target === document.getElementById('adminOverlay')) closeAdminPanel();
+}
+
+function checkAdminPw() {
+  if (document.getElementById('adminPwInput').value === ADMIN_PASSWORD) {
+    document.getElementById('adminPwScreen').style.display = 'none';
+    document.getElementById('adminMainPanel').style.display = 'block';
+  } else {
+    const inp = document.getElementById('adminPwInput');
+    inp.classList.add('wrong');
+    inp.value = '';
+    setTimeout(() => inp.classList.remove('wrong'), 500);
+  }
+}
+
+// ── LOAD SAVED TOKEN ──
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('zx_gh_token');
+  if (saved) { const el = document.getElementById('gh-token'); if(el) el.value = saved; }
+});
+
+// ── DELETE PRODUCT (GitHub) ──
+async function deleteProduct(id) {
+  if (!confirm('Delete this product from the store?')) return;
+
+  const card = document.querySelector(`[id="${id}"]`);
+  if (card) {
+    card.style.transition = 'opacity 0.35s,transform 0.35s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => card.remove(), 380);
+  }
+
+  // Try Supabase first — this covers every product added since the switch to Supabase
+  if (reviewsConfigured()) {
+    const { data } = await supabaseClient.from('products').select('id').eq('id', id).maybeSingle();
+    if (data) {
+      const { error } = await supabaseClient.from('products').delete().eq('id', id);
+      if (error) { showToast('❌ Delete failed: ' + error.message); return; }
+      showToast('✅ Deleted');
+      renderDeleteList();
+      return;
+    }
+  }
+
+  // Fallback: this product predates Supabase and is still baked into the GitHub-hosted HTML
+  const tokenField = document.getElementById('gh-token');
+  const token = (tokenField && tokenField.value.trim()) || localStorage.getItem('zx_gh_token') || '';
+  if (token) localStorage.setItem('zx_gh_token', token);
+  if (!token) {
+    showToast('⚠️ This is an older product — enter your GitHub token in Add Product tab to remove it permanently.');
+    return;
+  }
+
+  showToast('⏳ Deleting from GitHub…');
+  try {
+    const getRes = await fetchWithTimeout(GH_API, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    const fileData = await getRes.json();
+    const sha = fileData.sha;
+    let html = decodeFromBase64(fileData.content.replace(/\n/g, ''));
+
+    const imgMarker = `id="${id}-main"`;
+    const imgIdx = html.indexOf(imgMarker);
+    if (imgIdx !== -1) {
+      const cardOpen = html.lastIndexOf('<div class="prod-card reveal"', imgIdx);
+      let depth = 0, i = cardOpen, cardClose = -1;
+      while (i < html.length) {
+        if (html.slice(i, i+4) === '<div') depth++;
+        if (html.slice(i, i+6) === '</div>') { depth--; if (depth === 0) { cardClose = i + 6; break; } }
+        i++;
+      }
+      if (cardClose !== -1) {
+        const commentStart = html.lastIndexOf('\n    <!-- PRODUCT:', imgIdx);
+        const removeFrom = commentStart !== -1 ? commentStart : cardOpen - 1;
+        html = html.slice(0, removeFrom) + html.slice(cardClose);
+      }
+    }
+
+    const putRes = await fetchWithTimeout(GH_API, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Delete product ${id}`, content: encodeToBase64(html), sha })
+    });
+    if (!putRes.ok) throw new Error('GitHub push failed');
+    showToast('✅ Deleted — live in ~30 seconds');
+    renderDeleteList();
+  } catch(e) {
+    showToast('❌ Delete failed: ' + (e.message || 'unknown error'));
+  }
+}
+
+function renderDeleteList() {
+  const list = document.getElementById('del-product-list');
+  const dynCards = [...document.querySelectorAll('.prod-card')].filter(c => c.id && !['screwdriver','watch','earbuds','massager','cable','flashlight','tichbuttons'].includes(c.id));
+  if (dynCards.length === 0) {
+    list.innerHTML = '<div class="del-empty">No added products found.</div>';
+    return;
+  }
+  list.innerHTML = dynCards.map(card => {
+    const pid = card.id;
+    const pname = card.querySelector('.prod-name')?.textContent || 'Product';
+    const pprice = card.querySelector('.prod-price, .prod-price-regular')?.textContent || '';
+    const img = card.querySelector('img[id]');
+    return `
+      <div class="del-item" id="del-row-${pid}">
+        <div class="del-item-info">
+          <img class="del-item-thumb" src="${img ? img.src : ''}" onerror="this.style.display='none'"/>
+          <div>
+            <div class="del-item-name">${pname}</div>
+            <div class="del-item-price">${pprice}</div>
+          </div>
+        </div>
+        <button class="btn-del-item" onclick="deleteProduct('${pid}')">Delete</button>
+      </div>`;
+  }).join('');
+}
+
+// ── ADMIN: REVIEW MODERATION (Supabase) ──
+async function renderAdminReviewsList() {
+  const list = document.getElementById('admin-review-list');
+  if (!reviewsConfigured()) {
+    list.innerHTML = '<div class="del-empty">Reviews aren\'t connected to Supabase yet.</div>';
+    return;
+  }
+  list.innerHTML = '<div class="del-empty">Loading reviews…</div>';
+
+  const { data, error } = await supabaseClient
+    .from('reviews')
+    .select('id, product_id, name, rating, text, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to load reviews for admin:', error);
+    list.innerHTML = '<div class="del-empty">Failed to load reviews.</div>';
+    return;
+  }
+  if (!data.length) {
+    list.innerHTML = '<div class="del-empty">No reviews yet.</div>';
+    return;
+  }
+
+  list.innerHTML = data.map(r => {
+    const card = document.getElementById(r.product_id);
+    const productName = card ? (card.querySelector('.prod-name')?.textContent.trim() || r.product_id) : r.product_id;
+    const date = new Date(r.created_at).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `
+      <div class="del-item" id="rev-row-${r.id}" style="flex-direction:column;align-items:stretch;gap:0.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.6rem">
+          <div>
+            <div class="del-item-name">${escapeHtml(r.name)} · ${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+            <div class="del-item-price">${escapeHtml(productName)} · ${date}</div>
+          </div>
+          <button class="btn-del-item" onclick="deleteReview('${r.id}')" style="flex-shrink:0">Delete</button>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);line-height:1.5">${escapeHtml(r.text)}</div>
+      </div>`;
+  }).join('');
+}
+
+async function deleteReview(id) {
+  if (!confirm('Delete this review? This cannot be undone.')) return;
+  const row = document.getElementById('rev-row-' + id);
+  if (row) row.style.opacity = '0.4';
+
+  const { error } = await supabaseClient.from('reviews').delete().eq('id', id);
+
+  if (error) {
+    console.error('Failed to delete review:', error);
+    alert('⚠️ Failed to delete review.');
+    if (row) row.style.opacity = '1';
+    return;
+  }
+  showToast('🗑 Review deleted');
+  renderAdminReviewsList();
+}
+
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ── PWA ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('ZX Agent Store: service worker registered', reg.scope))
+      .catch(err => console.warn('ZX Agent Store: service worker registration failed', err));
+  });
+}
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById('pwa-install-btn');
+  if (btn) btn.style.display = 'inline-flex';
+});
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  const btn = document.getElementById('pwa-install-btn');
+  if (btn) btn.style.display = 'none';
+});
+function installZXAgentApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.finally(() => { deferredInstallPrompt = null; });
+}
+
+// ── MODAL FUNCTIONS ──
+function openModal(product) {
+  currentProduct = product;
+  const isWatch = product === 'watch';
+  const titles = { screwdriver: 'Order Screwdriver Set', watch: 'Order Watch', earbuds: 'Order Earbuds', massager: 'Order Massager Gun', cable: 'Order Charging Cable', flashlight: 'Order Flashlight', tichbuttons: 'Order Tich Buttons' };
+  const names  = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons — 50 Pcs' };
+  const prices = { screwdriver: 'Rs. 1,599', watch: 'Rs. 1,099', earbuds: 'Rs. 999', massager: 'Rs. 2,499', cable: 'Rs. 599', flashlight: 'Rs. 599', tichbuttons: 'Rs. 799' };
+
+  document.getElementById('modalTitle').textContent = titles[product];
+  document.getElementById('modalProductName').textContent = names[product];
+  document.getElementById('modalProductPrice').textContent = prices[product];
+  document.getElementById('colorGroup').style.display = isWatch ? 'block' : 'none';
+  document.getElementById('orderForm').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Confirm Order via WhatsApp';
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function openDynModal(id, name, price) {
+  currentProduct = '__dyn__' + id;
+  document.getElementById('modalTitle').textContent = 'Order ' + name;
+  document.getElementById('modalProductName').textContent = name;
+  document.getElementById('modalProductPrice').textContent = price;
+  document.getElementById('colorGroup').style.display = 'none';
+  document.getElementById('orderForm').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Confirm Order via WhatsApp';
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function submitOrder() {
+  const name    = document.getElementById('fname').value.trim();
+  const phone   = document.getElementById('fphone').value.trim();
+  const address = document.getElementById('faddress').value.trim();
+  const city    = document.getElementById('fcity').value.trim();
+  const qty     = document.getElementById('fqty').value || '1';
+  const notes   = document.getElementById('fnotes').value.trim();
+  const color   = document.getElementById('fcolor').value;
+
+  if (!name || !phone || !address || !city) {
+    alert('⚠️ Please fill in Name, Phone, Address, and City.');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Opening WhatsApp…';
+
+  const productNames = { screwdriver: '12-Piece Precision Screwdriver Set', watch: "Men's Chronograph Stainless Steel Watch", earbuds: 'Noise-Cancelling Bluetooth Earbuds', massager: 'Mini Massager Gun', cable: '100W 3-in-1 Fast Charging Cable', flashlight: 'Rechargeable Type-C Flashlight', tichbuttons: 'Stainless Steel Tich Buttons — 50 Pcs' };
+  const skus         = { screwdriver: 'MZ1293200023CCCEPK', watch: 'MZ1156200080TEWEHB', earbuds: 'MZ2290200004IZMT', massager: 'MZ57800000348GALAXY', cable: 'MZ1155200134SEHB', flashlight: 'MZ1172200470SE', tichbuttons: 'MZ1701200032ALHAGS' };
+  const productPrices= { screwdriver: 1599, watch: 1099, earbuds: 999, massager: 2499, cable: 599, flashlight: 599, tichbuttons: 799 };
+
+  let productName, sku, price, total;
+  if (currentProduct.startsWith('__dyn__')) {
+    productName = document.getElementById('modalProductName').textContent;
+    sku = 'N/A';
+    const priceStr = document.getElementById('modalProductPrice').textContent.replace(/[^0-9]/g,'');
+    price = parseInt(priceStr) || 0;
+    total = price * parseInt(qty);
+  } else {
+    productName = productNames[currentProduct];
+    sku         = skus[currentProduct];
+    price       = productPrices[currentProduct];
+    total       = price * parseInt(qty);
+  }
+
+  let msg =
+`🛒 *NEW ORDER — ZX AGENT SELLER*
+━━━━━━━━━━━━━━━━━━━━
+📦 *Product:* ${productName}
+🔖 *SKU:* ${sku}
+💰 *Price:* Rs. ${price} × ${qty} = Rs. ${total}`;
+
+  if (currentProduct === 'watch') msg += `\n🎨 *Color:* ${color}`;
+
+  msg +=
+`
+━━━━━━━━━━━━━━━━━━━━
+👤 *Customer Info*
+• Name: ${name}
+• Phone: ${phone}
+• City: ${city}
+• Address: ${address}${notes ? '\n• Notes: ' + notes : ''}
+━━━━━━━━━━━━━━━━━━━━
+✅ Please confirm this order!`;
+
+  window.open(`https://wa.me/923182756013?text=${encodeURIComponent(msg)}`, '_blank');
+
+  setTimeout(() => {
+    document.getElementById('orderForm').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+  }, 700);
+}
+
+// ── SWAP FUNCTIONS ──
+function sdSwap(el, url) {
+  document.getElementById('sd-main').src = url;
+  document.querySelectorAll('.gthumb-sd').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function wSwap(el, url) {
+  document.getElementById('w-main').src = url;
+  document.querySelectorAll('.gthumb-w').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function ebSwap(el, url) {
+  document.getElementById('eb-main').src = url;
+  document.querySelectorAll('.gthumb-eb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function mgSwap(el, url) {
+  document.getElementById('mg-main').src = url;
+  document.querySelectorAll('.gthumb-mg').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function ccSwap(el, url) {
+  document.getElementById('cc-main').src = url;
+  document.querySelectorAll('.gthumb-cc').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function flSwap(el, url) {
+  document.getElementById('fl-main').src = url;
+  document.querySelectorAll('.gthumb-fl').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function tbSwap(el, url) {
+  document.getElementById('tb-main').src = url;
+  document.querySelectorAll('.gthumb-tb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function dynSwap(el, mainId, id, url) {
+  document.getElementById(mainId).src = url;
+  document.querySelectorAll('.gthumb-' + id).forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
