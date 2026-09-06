@@ -304,6 +304,12 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .detail-info{padding:1.3rem 1.2rem 0.5rem}
 .detail-name{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1.05;letter-spacing:0.02em;margin:0.4rem 0 0.6rem}
 .detail-price-row{display:flex;align-items:baseline;gap:0.7rem;margin-bottom:1.1rem}
+.detail-option-group{margin-bottom:0.9rem}
+.detail-option-label{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem}
+.detail-option-pills{display:flex;flex-wrap:wrap;gap:0.5rem}
+.opt-pill{background:var(--card);border:1px solid var(--border-md);color:var(--white);padding:0.5rem 0.9rem;font-family:'Space Grotesk',sans-serif;font-size:0.82rem;cursor:pointer;transition:border-color 0.2s,background 0.2s}
+.opt-pill.active{background:var(--white);color:#000;border-color:var(--white)}
+.admin-spec-row.admin-opt-row .admin-input:first-child{flex:0 0 32%}
 .detail-price{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--discount)}
 .detail-price-original{font-size:1.05rem;color:var(--muted);text-decoration:line-through}
 .detail-actions{display:flex;gap:0.8rem;margin-bottom:0.8rem}
@@ -414,18 +420,23 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);backdrop-filter:blur(12px);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem}
 .admin-overlay.active{display:flex}
 .admin-modal{background:#0a0a0a;border:1px solid rgba(255,255,255,0.18);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;animation:modalIn 0.3s ease}
-.admin-head{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 1.8rem;border-bottom:1px solid var(--border)}
-.admin-head-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.1em}
-.admin-close{background:none;border:1px solid var(--border-md);color:var(--white);width:30px;height:30px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.admin-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;border-bottom:1px solid var(--border)}
+.admin-head-title{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:0.1em}
+.admin-close{background:none;border:1px solid var(--border-md);color:var(--white);width:28px;height:28px;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
 .admin-close:hover{background:rgba(255,255,255,0.08)}
-.admin-body{padding:1.6rem 1.8rem;display:flex;flex-direction:column;gap:1rem}
-.admin-group{display:flex;flex-direction:column;gap:0.45rem}
-.admin-label{font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.16em;text-transform:uppercase;color:#666}
-.admin-input,.admin-textarea{width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:0.7rem 0.9rem;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;resize:vertical}
+.admin-body{padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:0.75rem}
+.admin-group{display:flex;flex-direction:column;gap:0.35rem}
+.admin-label{font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:#666}
+.admin-input,.admin-textarea{width:100%;background:#111;border:1px solid rgba(255,255,255,0.1);color:var(--white);padding:0.55rem 0.7rem;font-family:'Space Grotesk',sans-serif;font-size:0.82rem;outline:none;transition:border-color 0.2s;resize:vertical;min-width:0}
 .admin-input:focus,.admin-textarea:focus{border-color:rgba(255,255,255,0.35)}
-.admin-img-hint{font-family:'Space Mono',monospace;font-size:0.5rem;color:#444;letter-spacing:0.08em;margin-top:0.2rem}
-.admin-imgs{display:flex;flex-direction:column;gap:0.5rem}
-.btn-add-product{width:100%;background:var(--white);color:var(--black);border:none;padding:1rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:0.5rem}
+.admin-img-hint{font-family:'Space Mono',monospace;font-size:0.48rem;color:#444;letter-spacing:0.06em;margin-top:0.15rem;line-height:1.4}
+.admin-imgs{display:flex;flex-direction:column;gap:0.4rem}
+.admin-specs{display:flex;flex-direction:column;gap:0.4rem}
+.admin-spec-row{display:flex;gap:0.4rem}
+.admin-spec-row .admin-input{width:auto;padding:0.5rem 0.6rem;font-size:0.76rem}
+.admin-spec-row .admin-input:first-child{flex:0 0 34%}
+.admin-spec-row .admin-input:last-child{flex:1;min-width:0}
+.btn-add-product{width:100%;background:var(--white);color:var(--black);border:none;padding:0.85rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:0.4rem}
 .btn-add-product:hover{background:var(--off);transform:translateY(-1px)}
 .admin-pw-screen{padding:3rem 2rem;text-align:center}
 .admin-pw-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.08em;margin-bottom:0.4rem}
@@ -437,19 +448,20 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .admin-pw-btn{margin-top:1rem;background:var(--white);color:var(--black);border:none;padding:0.75rem 2.5rem;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
 .admin-pw-btn:hover{background:var(--off)}
 .admin-tabs{display:flex;border-bottom:1px solid var(--border)}
-.admin-tab{flex:1;padding:0.85rem;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;background:none;border:none;color:#555;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent}
+.admin-tab{flex:1;padding:0.65rem 0.4rem;font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.13em;text-transform:uppercase;background:none;border:none;color:#555;cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent}
 .admin-tab.active{color:var(--white);border-bottom-color:var(--white)}
 .admin-tab-panel{display:none}
-.admin-tab-panel.active{display:flex;flex-direction:column;gap:1rem}
-.del-product-list{display:flex;flex-direction:column;gap:0.5rem;max-height:340px;overflow-y:auto}
-.del-item{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;padding:0.75rem 1rem;background:#111;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.2s}
+.admin-tab-panel.active{display:flex;flex-direction:column;gap:0.75rem}
+.del-product-list{display:flex;flex-direction:column;gap:0.4rem;max-height:340px;overflow-y:auto}
+.del-item{display:flex;align-items:center;justify-content:space-between;gap:0.6rem;padding:0.6rem 0.8rem;background:#111;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.2s}
 .del-item:hover{border-color:rgba(255,255,255,0.18)}
-.del-item-info{display:flex;align-items:center;gap:0.75rem;flex:1;min-width:0}
-.del-item-thumb{width:42px;height:42px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
-.del-item-name{font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.del-item-price{font-family:'Space Mono',monospace;font-size:0.6rem;color:#666;margin-top:0.15rem}
-.del-item-tag{font-family:'Space Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:#444;padding:0.15rem 0.4rem;border:1px solid #222}
-.btn-del-item{background:none;border:1px solid rgba(255,60,60,0.3);color:rgba(255,80,80,0.8);padding:0.4rem 0.75rem;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;flex-shrink:0;white-space:nowrap}
+.del-item-info{display:flex;align-items:center;gap:0.6rem;flex:1;min-width:0}
+.del-item-text{flex:1;min-width:0;overflow:hidden}
+.del-item-thumb{width:36px;height:36px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+.del-item-name{font-size:0.76rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del-item-price{font-family:'Space Mono',monospace;font-size:0.56rem;color:#666;margin-top:0.1rem}
+.del-item-tag{font-family:'Space Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;color:#444;padding:0.12rem 0.35rem;border:1px solid #222;flex-shrink:0}
+.btn-del-item{background:none;border:1px solid rgba(255,60,60,0.3);color:rgba(255,80,80,0.8);padding:0.35rem 0.6rem;font-family:'Space Mono',monospace;font-size:0.54rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;flex-shrink:0;white-space:nowrap}
 .btn-del-item:hover{background:rgba(255,40,40,0.1);border-color:rgba(255,80,80,0.7);color:#ff5555}
 .del-empty{font-family:'Space Mono',monospace;font-size:0.65rem;color:#444;text-align:center;padding:2.5rem 1rem;letter-spacing:0.1em}
 .admin-success-ico svg{width:40px;height:40px;stroke:var(--white);fill:none;margin-bottom:0.8rem}
@@ -1124,6 +1136,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
         <span class="detail-price" id="detailPrice"></span>
         <span class="detail-price-original" id="detailPriceOriginal" style="display:none"></span>
       </div>
+      <div id="detailOptionsWrap" style="display:none"></div>
       <div class="detail-actions">
         <div class="qty-stepper">
           <button onclick="changeDetailQty(-1)" aria-label="Decrease">−</button>
@@ -1320,6 +1333,27 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
           </div>
 
           <div class="admin-group">
+            <label class="admin-label">Product Details (optional)</label>
+            <div class="admin-specs">
+              <div class="admin-spec-row"><input class="admin-input" id="spec-k-1" type="text" placeholder="Label e.g. Material"/><input class="admin-input" id="spec-v-1" type="text" placeholder="Value e.g. Stainless Steel"/></div>
+              <div class="admin-spec-row"><input class="admin-input" id="spec-k-2" type="text" placeholder="Label"/><input class="admin-input" id="spec-v-2" type="text" placeholder="Value"/></div>
+              <div class="admin-spec-row"><input class="admin-input" id="spec-k-3" type="text" placeholder="Label"/><input class="admin-input" id="spec-v-3" type="text" placeholder="Value"/></div>
+              <div class="admin-spec-row"><input class="admin-input" id="spec-k-4" type="text" placeholder="Label"/><input class="admin-input" id="spec-v-4" type="text" placeholder="Value"/></div>
+            </div>
+            <div class="admin-img-hint">Shows under the "Product Details" tab · Leave rows blank to skip</div>
+          </div>
+
+          <div class="admin-group">
+            <label class="admin-label">Product Options (optional)</label>
+            <div class="admin-specs">
+              <div class="admin-spec-row admin-opt-row"><input class="admin-input" id="opt-name-1" type="text" placeholder="e.g. Size"/><input class="admin-input" id="opt-values-1" type="text" placeholder="e.g. 17, 18, 19, 20"/></div>
+              <div class="admin-spec-row admin-opt-row"><input class="admin-input" id="opt-name-2" type="text" placeholder="e.g. Color"/><input class="admin-input" id="opt-values-2" type="text" placeholder="e.g. Black, Silver, Gold"/></div>
+              <div class="admin-spec-row admin-opt-row"><input class="admin-input" id="opt-name-3" type="text" placeholder="Option name"/><input class="admin-input" id="opt-values-3" type="text" placeholder="Comma-separated values"/></div>
+            </div>
+            <div class="admin-img-hint">Buyers pick one value per option on the product page · comma-separate values · leave blank to skip</div>
+          </div>
+
+          <div class="admin-group">
             <label class="admin-label">Real Price (Rs.) *</label>
             <input class="admin-input" id="ap-price" type="number" placeholder="e.g. 1299"/>
             <div class="admin-img-hint">Original price before discount</div>
@@ -1429,6 +1463,8 @@ function getCardData(card) {
   const waEl = card.querySelector('.prod-footer .btn-wa[href^="https://wa.me"], .prod-footer a.btn-wa');
   const gthumbImgs = Array.from(card.querySelectorAll('.gthumb img')).map(im => im.src);
   const priceNum = priceEl ? parseInt(priceEl.textContent.replace(/[^0-9]/g, '')) || 0 : 0;
+  let options = [];
+  try { options = JSON.parse(card.dataset.options || '[]'); } catch (e) { options = []; }
   return {
     id: card.id,
     name: nameEl ? nameEl.textContent.trim() : card.id,
@@ -1439,7 +1475,8 @@ function getCardData(card) {
     desc: descEl ? descEl.textContent.trim() : '',
     specsHTML: specsEl ? specsEl.innerHTML : '',
     category: catEl ? catEl.textContent.trim() : 'ZX Agent Seller',
-    waHref: waEl ? waEl.getAttribute('href') : ''
+    waHref: waEl ? waEl.getAttribute('href') : '',
+    options: options
   };
 }
 
@@ -1615,6 +1652,8 @@ function sendCartOrder() {
 // ── PRODUCT DETAIL OVERLAY ──
 let currentDetailId = null;
 let detailQty = 1;
+let currentOptionsList = [];
+let selectedOptions = {};
 
 function openProductDetail(id) {
   const card = document.getElementById(id);
@@ -1634,6 +1673,11 @@ function openProductDetail(id) {
   if (data.originalPrice) { origEl.textContent = data.originalPrice; origEl.style.display = 'inline'; }
   else { origEl.style.display = 'none'; }
 
+  currentOptionsList = data.options || [];
+  selectedOptions = {};
+  currentOptionsList.forEach(opt => { if (opt.values.length) selectedOptions[opt.name] = opt.values[0]; });
+  renderDetailOptions();
+
   const mainImg = document.getElementById('detailMainImg');
   mainImg.src = data.img;
   mainImg.alt = data.name;
@@ -1649,8 +1693,10 @@ function openProductDetail(id) {
   document.getElementById('detailShareBtn').onclick = () => shareProduct(id, data.name);
   const orderBtn = document.getElementById('detailOrderNowBtn');
   orderBtn.onclick = () => {
+    const variantText = Object.entries(selectedOptions).map(([k, v]) => `${k}: ${v}`).join(', ');
+    const orderName = variantText ? `${data.name} (${variantText})` : data.name;
     if (id.startsWith('p') || !['screwdriver','watch','earbuds','massager','cable','flashlight','tichbuttons'].includes(id)) {
-      openDynModal(id, data.name, 'Rs. ' + data.price.toLocaleString('en-PK'));
+      openDynModal(id, orderName, 'Rs. ' + data.price.toLocaleString('en-PK'));
     } else {
       openModal(id);
     }
@@ -1687,7 +1733,32 @@ function addDetailToCart() {
   if (!currentDetailId) return;
   const card = document.getElementById(currentDetailId);
   const data = getCardData(card);
+  const variantText = Object.entries(selectedOptions).map(([k, v]) => `${k}: ${v}`).join(', ');
+  if (variantText) data.name = `${data.name} (${variantText})`;
   addToCart(data, detailQty);
+}
+
+function renderDetailOptions() {
+  const wrap = document.getElementById('detailOptionsWrap');
+  if (!currentOptionsList.length) {
+    wrap.style.display = 'none';
+    wrap.innerHTML = '';
+    return;
+  }
+  wrap.style.display = 'block';
+  wrap.innerHTML = currentOptionsList.map(opt => `
+    <div class="detail-option-group">
+      <div class="detail-option-label">${escapeHtml(opt.name)}</div>
+      <div class="detail-option-pills">
+        ${opt.values.map(v => `<button type="button" class="opt-pill${selectedOptions[opt.name] === v ? ' active' : ''}" onclick="selectDetailOption('${opt.name.replace(/'/g, "\\'")}','${v.replace(/'/g, "\\'")}')">${escapeHtml(v)}</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectDetailOption(name, value) {
+  selectedOptions[name] = value;
+  renderDetailOptions();
 }
 
 function switchDetailTab(tab) {
@@ -1924,9 +1995,17 @@ function createProductCard(p) {
     thumbsHTML += `</div>`;
   }
 
+  let specsHTML = '';
+  if (Array.isArray(p.specs) && p.specs.length) {
+    specsHTML = `<div class="prod-specs">` + p.specs.map(s =>
+      `<div class="ps-item"><div class="ps-k">${escapeHtml(s.k)}</div><div class="ps-v">${escapeHtml(s.v)}</div></div>`
+    ).join('') + `</div>`;
+  }
+
   const card = document.createElement('div');
   card.className = 'prod-card reveal';
   card.id = id;
+  card.dataset.options = JSON.stringify(p.options || []);
   card.innerHTML = `
     <div class="prod-img-wrap" style="aspect-ratio:unset">
       <div style="position:relative;aspect-ratio:4/3;overflow:hidden">
@@ -1938,6 +2017,7 @@ function createProductCard(p) {
       <div class="prod-tag-row"><span class="prod-dot"></span><span class="prod-cat">ZX Agent Seller</span></div>
       <h3 class="prod-name">${escapeHtml(name)}</h3>
       <p class="prod-desc">${escapeHtml(desc)}</p>
+      ${specsHTML}
       <div class="prod-price-row">
         <div>
           <div class="prod-price-label">Price</div>
@@ -1984,6 +2064,14 @@ function addProductToPage() {
   const price = document.getElementById('ap-price').value.trim();
   const discount = document.getElementById('ap-discount').value.trim();
   const imgs  = [1,2,3,4,5,6].map(i => document.getElementById('img-'+i).value.trim()).filter(Boolean);
+  const specs = [1,2,3,4].map(i => ({
+    k: document.getElementById('spec-k-'+i).value.trim(),
+    v: document.getElementById('spec-v-'+i).value.trim()
+  })).filter(s => s.k && s.v);
+  const options = [1,2,3].map(i => ({
+    name: document.getElementById('opt-name-'+i).value.trim(),
+    values: document.getElementById('opt-values-'+i).value.split(',').map(v => v.trim()).filter(Boolean)
+  })).filter(o => o.name && o.values.length);
 
   if (!id) { alert('⚠️ Please enter a unique Product ID (no spaces).'); return; }
   if (!name || !price || !imgs[0]) {
@@ -2001,7 +2089,9 @@ function addProductToPage() {
     description: desc,
     price: parseInt(price),
     discount_price: (discount && parseInt(discount) > 0) ? parseInt(discount) : null,
-    images: imgs
+    images: imgs,
+    specs: specs,
+    options: options
   };
 
   const btn = document.getElementById('btn-add-product');
@@ -2041,7 +2131,7 @@ function addProductToPage() {
       document.getElementById('adminSuccessTitle').style.color = '#4caf50';
       document.getElementById('adminSuccessSub').textContent = 'Live for all visitors right now.';
       btn.textContent = '✅ Uploaded!';
-      ['ap-id','ap-name','ap-desc','ap-price','ap-discount','img-1','img-2','img-3','img-4','img-5','img-6'].forEach(fid => {
+      ['ap-id','ap-name','ap-desc','ap-price','ap-discount','img-1','img-2','img-3','img-4','img-5','img-6','spec-k-1','spec-v-1','spec-k-2','spec-v-2','spec-k-3','spec-v-3','spec-k-4','spec-v-4','opt-name-1','opt-values-1','opt-name-2','opt-values-2','opt-name-3','opt-values-3'].forEach(fid => {
         document.getElementById(fid).value = '';
       });
       setTimeout(() => {
@@ -2236,7 +2326,7 @@ function renderDeleteList() {
     <div class="del-item" id="del-row-${p.id}">
       <div class="del-item-info">
         <img class="del-item-thumb" src="${p.imgs[0]}" onerror="this.style.display='none'"/>
-        <div>
+        <div class="del-item-text">
           <div class="del-item-name">${p.name}</div>
           <div class="del-item-price">Rs. ${parseInt(p.price).toLocaleString('en-PK')}</div>
         </div>
@@ -2336,7 +2426,7 @@ function renderDeleteList() {
       <div class="del-item" id="del-row-${pid}">
         <div class="del-item-info">
           <img class="del-item-thumb" src="${img ? img.src : ''}" onerror="this.style.display='none'"/>
-          <div>
+          <div class="del-item-text">
             <div class="del-item-name">${pname}</div>
             <div class="del-item-price">${pprice}</div>
           </div>
