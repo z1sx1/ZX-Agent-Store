@@ -27,8 +27,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
 
-<!-- Supabase client (used for site-wide product reviews) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- GitHub-backed products & reviews (no external client library needed — plain fetch calls) -->
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -441,6 +440,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 .admin-pw-screen{padding:3rem 2rem;text-align:center}
 .admin-pw-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.08em;margin-bottom:0.4rem}
 .admin-pw-sub{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;color:#555;margin-bottom:2rem;text-transform:uppercase}
+.admin-hint{font-family:'Space Mono',monospace;font-size:0.56rem;color:#777;letter-spacing:0.04em;line-height:1.4}
 .admin-pw-input{background:#111;border:1px solid rgba(255,255,255,0.15);color:var(--white);padding:0.85rem 1.2rem;font-family:'Space Mono',monospace;font-size:1rem;outline:none;text-align:center;letter-spacing:0.3em;width:100%;max-width:260px;transition:border-color 0.2s}
 .admin-pw-input:focus{border-color:rgba(255,255,255,0.4)}
 .admin-pw-input.wrong{border-color:#ff3333;animation:shake 0.3s ease}
@@ -1286,8 +1286,12 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <div id="adminPwScreen" class="admin-pw-screen">
       <div class="admin-pw-title">Admin Access</div>
       <div class="admin-pw-sub">ZX Agent Seller · Owner Only</div>
-      <input class="admin-pw-input" id="adminPwInput" type="password" placeholder="••••••••" maxlength="32"
+      <input class="admin-pw-input" id="adminPwInput" type="password" placeholder="Password" maxlength="32"
+        onkeydown="if(event.key==='Enter')document.getElementById('adminTokenInput').focus()"/>
+      <br/>
+      <input class="admin-pw-input" id="adminTokenInput" type="password" placeholder="GitHub token" maxlength="200" style="letter-spacing:0.04em;font-size:0.72rem;margin-top:0.7rem"
         onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+      <div class="admin-hint" style="margin-top:0.6rem;max-width:260px;margin-left:auto;margin-right:auto">Leave blank if you only need to view — the token is only required to add/delete products or reviews. It's kept in this browser tab only, never saved to the site.</div>
       <br/>
       <button class="admin-pw-btn" onclick="checkAdminPw()">Unlock</button>
     </div>
@@ -1313,7 +1317,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
         <!-- ADD TAB -->
         <div id="tab-add" class="admin-tab-panel active">
 
-          <!-- Products save instantly via Supabase — no token needed -->
+          <!-- Products save to GitHub — needs the admin token entered on unlock -->
 
 
           <div class="admin-group">
@@ -1784,37 +1788,97 @@ function renderDetailMore(excludeId) {
   }).join('');
 }
 
-// ── REVIEWS (Supabase — shared, shown to every visitor instantly) ──
-// 1. Create a free project at https://supabase.com
-// 2. In the SQL editor, run the schema from reviews-schema.sql (included alongside this file)
-// 3. Paste your Project URL and anon public key below (Project Settings → API)
-const SUPABASE_URL = 'https://qssvisjerxfhrthocyoy.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_o6q6tvB5zJmDacD0L-J2Kg_L6ToVVPN';
+// ── REVIEWS & ADMIN-ADDED PRODUCTS (GitHub — shared, shown to every visitor) ──
+// Products/reviews added via the admin panel are stored as JSON files in a
+// GitHub repo you own. The 7 original products stay hardcoded in this page;
+// only what you add through the admin panel lives on GitHub.
+//
+// 1. Create data/products.json and data/reviews.json in the repo below,
+//    each containing just: []
+// 2. Fill in the repo details (not secret — just names):
+const GITHUB_OWNER  = 'z1sx1';
+const GITHUB_REPO   = 'ZX-Agent-Store';
+const GITHUB_BRANCH = 'main';
+const PRODUCTS_PATH = 'data/products.json';
+const REVIEWS_PATH  = 'data/reviews.json';
 
-let supabaseClient = null;
-if (typeof window.supabase !== 'undefined' && SUPABASE_URL.startsWith('http')) {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ── ADMIN TOKEN — ENTERED PER SESSION, NEVER SAVED IN THIS FILE ──
+// GitHub automatically scans every commit for live tokens and revokes any it
+// finds — a token typed into this file and committed to the repo WILL be
+// killed immediately, every time. So instead you paste your token into the
+// admin panel itself, each time you open it on a device/browser. It's held
+// only in that tab's sessionStorage — cleared when the tab closes — and is
+// never written back into this file or committed anywhere.
+//
+// Create it at https://github.com/settings/tokens?type=beta
+// → "Fine-grained tokens" → New token
+// → Repository access: ONLY z1sx1/ZX-Agent-Store (not "all repos")
+// → Permissions: Contents → Read and write. Nothing else.
+// → Set an expiration date; re-issue and re-paste it when it lapses.
+let sessionGithubToken = sessionStorage.getItem('zxagent_gh_token') || '';
+
+function ghReady() { return !!(GITHUB_OWNER && GITHUB_REPO && sessionGithubToken); }
+function ghRawUrl(path) { return `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${path}`; }
+function ghApiUrl(path) { return `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`; }
+function b64EncodeUnicode(str) { return btoa(unescape(encodeURIComponent(str))); }
+function b64DecodeUnicode(str) { return decodeURIComponent(escape(atob(str))); }
+
+// Public read: tries api.github.com first (reflects the latest commit almost
+// immediately — no long CDN cache), falls back to raw.githubusercontent.com
+// (near-unlimited, but its CDN cache can lag behind by minutes to hours).
+async function ghReadPublic(path) {
+  try {
+    const res = await fetch(ghApiUrl(path), { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' });
+    if (res.ok) { const text = await res.text(); return JSON.parse(text); }
+  } catch (e) { /* fall through to raw fallback */ }
+  try {
+    const res = await fetch(ghRawUrl(path), { cache: 'no-store' });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (e) { console.error('GitHub read failed (both API and raw):', e); return []; }
+}
+
+// Authenticated read+sha — needed before any write, so we can PUT with the right sha.
+async function ghReadForWrite(path) {
+  const res = await fetch(ghApiUrl(path), { headers: { Authorization: 'token ' + sessionGithubToken, Accept: 'application/vnd.github+json' } });
+  if (res.status === 404) return { sha: null, data: [] };
+  if (!res.ok) throw new Error('GitHub read failed (' + res.status + ')');
+  const json = await res.json();
+  const data = JSON.parse(b64DecodeUnicode(json.content.replace(/\n/g, '')));
+  return { sha: json.sha, data };
+}
+
+// Authenticated write — commits the full updated array back to the file.
+async function ghWrite(path, data, sha, message) {
+  const res = await fetch(ghApiUrl(path).split('?')[0], {
+    method: 'PUT',
+    headers: { Authorization: 'token ' + sessionGithubToken, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message,
+      content: b64EncodeUnicode(JSON.stringify(data, null, 2)),
+      branch: GITHUB_BRANCH,
+      ...(sha ? { sha } : {})
+    })
+  });
+  if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.message || 'GitHub write failed (' + res.status + ')'); }
 }
 
 let reviews = {};      // in-memory cache: { productId: [ {name, rating, text, date}, ... ] }
 let selectedStars = 0;
 
+// Kept as an alias so the rest of the file (many call sites) doesn't need
+// touching — it now checks the GitHub connection instead of Supabase.
 function reviewsConfigured() {
-  return !!supabaseClient;
+  return ghReady();
 }
 
 async function fetchReviews(id) {
-  if (!reviewsConfigured()) return reviews[id] || [];
-  const { data, error } = await supabaseClient
-    .from('reviews')
-    .select('name, rating, text, created_at')
-    .eq('product_id', id)
-    .order('created_at', { ascending: false });
-  if (error) {
-    console.error('Failed to load reviews:', error);
-    return reviews[id] || [];
-  }
-  reviews[id] = data.map(r => ({
+  if (!GITHUB_OWNER || !GITHUB_REPO) return reviews[id] || [];
+  const all = await ghReadPublic(REVIEWS_PATH);
+  const list = (all || [])
+    .filter(r => r.product_id === id)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  reviews[id] = list.map(r => ({
     name: r.name,
     rating: r.rating,
     text: r.text,
@@ -1889,7 +1953,10 @@ function toggleReviewForm() {
   form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
-async function submitReview() {
+// Ordinary visitors have no GitHub token, so their reviews can't write to the
+// repo directly. Instead this sends the review to you on WhatsApp — add it to
+// the site yourself afterward from the admin panel's Reviews tab.
+function submitReview() {
   if (!currentDetailId) return;
   const name = document.getElementById('revName').value.trim();
   const text = document.getElementById('revText').value.trim();
@@ -1897,37 +1964,15 @@ async function submitReview() {
     alert('⚠️ Please add your name, a star rating, and your review.');
     return;
   }
-  if (!reviewsConfigured()) {
-    alert('⚠️ Reviews aren\'t connected yet. Add your Supabase URL and key in the code to enable this.');
-    return;
-  }
-
-  const submitBtn = document.querySelector('#reviewForm .btn-submit');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Submitting…';
-
-  const { error } = await supabaseClient.from('reviews').insert({
-    product_id: currentDetailId,
-    name,
-    rating: selectedStars,
-    text
-  });
-
-  submitBtn.disabled = false;
-  submitBtn.textContent = 'Submit Review';
-
-  if (error) {
-    console.error('Failed to submit review:', error);
-    alert('⚠️ Something went wrong submitting your review. Please try again.');
-    return;
-  }
+  const productName = document.getElementById('detailName')?.textContent || currentDetailId;
+  const stars = '★'.repeat(selectedStars) + '☆'.repeat(5 - selectedStars);
+  const msg = `New Review — ZX Agent Seller\nProduct: ${productName}\nName: ${name}\nRating: ${stars}\nReview: ${text}`;
+  window.open(`https://wa.me/923182756013?text=${encodeURIComponent(msg)}`, '_blank');
 
   document.getElementById('reviewForm').style.display = 'none';
   document.getElementById('revName').value = '';
   document.getElementById('revText').value = '';
-  showToast('✓ Review published!');
-
-  renderReviews(currentDetailId);
+  showToast('✓ Sent — we\'ll post it once we review it');
 }
 
 // ── CENTERED ANNOUNCEMENT TICKER (cross-fades, always centered) ──
@@ -1947,7 +1992,7 @@ window.addEventListener('DOMContentLoaded', function() {
   assignIdsToOldProducts();
   setupAllProductCards();
   renderCartBar();
-  loadSupabaseProducts();
+  loadGithubProducts();
   const hash = window.location.hash.substring(1);
   if (hash) {
     const target = document.getElementById(hash);
@@ -1965,7 +2010,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// ── PRODUCTS (Supabase — instant, shared across all visitors) ──
+// ── PRODUCTS (GitHub — shared across all visitors) ──
 function createProductCard(p) {
   const id = p.id;
   const name = p.name;
@@ -2037,13 +2082,10 @@ function createProductCard(p) {
   return card;
 }
 
-async function loadSupabaseProducts() {
-  if (!reviewsConfigured()) return;
-  const { data, error } = await supabaseClient
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: true });
-  if (error) { console.error('Failed to load products: ' + (error.message || '') + ' | code: ' + (error.code || '') + ' | details: ' + (error.details || '') + ' | hint: ' + (error.hint || '')); return; }
+async function loadGithubProducts() {
+  if (!GITHUB_OWNER || !GITHUB_REPO) return;
+  const data = await ghReadPublic(PRODUCTS_PATH);
+  if (!data || !data.length) return;
 
   const grid = document.querySelector('.products-grid');
   data.forEach(p => {
@@ -2078,8 +2120,8 @@ function addProductToPage() {
     alert('⚠️ Please fill in Product Name, Price, and at least one Image link.');
     return;
   }
-  if (!reviewsConfigured()) {
-    alert('⚠️ Products aren\'t connected to Supabase yet. Add your Supabase URL and key in the code first.');
+  if (!ghReady()) {
+    alert('⚠️ Not connected to GitHub yet — unlock the admin panel with your token first.');
     return;
   }
 
@@ -2091,7 +2133,8 @@ function addProductToPage() {
     discount_price: (discount && parseInt(discount) > 0) ? parseInt(discount) : null,
     images: imgs,
     specs: specs,
-    options: options
+    options: options,
+    created_at: new Date().toISOString()
   };
 
   const btn = document.getElementById('btn-add-product');
@@ -2101,7 +2144,7 @@ function addProductToPage() {
   successDiv.style.display = 'block';
   document.getElementById('adminSuccessIco').innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
   document.getElementById('adminSuccessTitle').textContent = 'Publishing…';
-  document.getElementById('adminSuccessSub').textContent = 'Connecting to database…';
+  document.getElementById('adminSuccessSub').textContent = 'Connecting to GitHub…';
 
   const progressTimer1 = setTimeout(() => {
     document.getElementById('adminSuccessSub').textContent = 'Still saving… (5s)';
@@ -2110,16 +2153,20 @@ function addProductToPage() {
     document.getElementById('adminSuccessSub').textContent = 'Still saving… (10s) — taking longer than usual';
   }, 10000);
 
-  const insertPromise = supabaseClient.from('products').insert(product);
+  const savePromise = (async () => {
+    const { sha, data } = await ghReadForWrite(PRODUCTS_PATH);
+    if (data.some(p => p.id === id)) throw new Error('A product with this ID already exists — pick a different ID.');
+    data.push(product);
+    await ghWrite(PRODUCTS_PATH, data, sha, `Add product: ${name}`);
+  })();
   const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timed out reaching the database. Check your connection and try again.')), 15000)
+    setTimeout(() => reject(new Error('Timed out reaching GitHub. Check your connection and try again.')), 15000)
   );
 
-  Promise.race([insertPromise, timeoutPromise])
-    .then(({ error }) => {
+  Promise.race([savePromise, timeoutPromise])
+    .then(() => {
       clearTimeout(progressTimer1);
       clearTimeout(progressTimer2);
-      if (error) throw new Error(error.message || 'Failed to save product.');
 
       const card = createProductCard(product);
       document.querySelector('.products-grid').appendChild(card);
@@ -2315,44 +2362,6 @@ function switchTab(tab) {
   if (tab === 'reviews') renderAdminReviewsList();
 }
 
-function renderDeleteList() {
-  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
-  const list = document.getElementById('del-product-list');
-  if (products.length === 0) {
-    list.innerHTML = '<div class="del-empty">No saved products to delete.</div>';
-    return;
-  }
-  list.innerHTML = products.map(p => `
-    <div class="del-item" id="del-row-${p.id}">
-      <div class="del-item-info">
-        <img class="del-item-thumb" src="${p.imgs[0]}" onerror="this.style.display='none'"/>
-        <div class="del-item-text">
-          <div class="del-item-name">${p.name}</div>
-          <div class="del-item-price">Rs. ${parseInt(p.price).toLocaleString('en-PK')}</div>
-        </div>
-      </div>
-      <span class="del-item-tag">SAVED</span>
-      <button class="btn-del-item" onclick="deleteProduct('${p.id}')">Delete</button>
-    </div>
-  `).join('');
-}
-
-function deleteProduct(id) {
-  if (!confirm('Delete this product from the store?')) return;
-  const card = document.querySelector(`[id="${id}"]`);
-  if (card) {
-    card.style.transition = 'opacity 0.35s,transform 0.35s';
-    card.style.opacity = '0';
-    card.style.transform = 'scale(0.95)';
-    setTimeout(() => card.remove(), 380);
-  }
-  const products = JSON.parse(localStorage.getItem('zx_products') || '[]');
-  localStorage.setItem('zx_products', JSON.stringify(products.filter(p => p.id !== id)));
-  const row = document.getElementById('del-row-' + id);
-  if (row) { row.style.opacity = '0'; setTimeout(() => renderDeleteList(), 280); }
-  showToast('🗑 Product deleted');
-}
-
 const ADMIN_PASSWORD = 'zxadmin786';
 
 function openAdminPanel() {
@@ -2360,6 +2369,7 @@ function openAdminPanel() {
   document.getElementById('adminMainPanel').style.display = 'none';
   document.getElementById('adminPwInput').value = '';
   document.getElementById('adminPwInput').classList.remove('wrong');
+  document.getElementById('adminTokenInput').value = sessionGithubToken || '';
   document.getElementById('adminSuccess').style.display = 'none';
   document.getElementById('adminOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -2377,6 +2387,11 @@ function handleAdminOverlayClick(e) {
 
 function checkAdminPw() {
   if (document.getElementById('adminPwInput').value === ADMIN_PASSWORD) {
+    const tokenVal = document.getElementById('adminTokenInput').value.trim();
+    if (tokenVal) {
+      sessionGithubToken = tokenVal;
+      sessionStorage.setItem('zxagent_gh_token', tokenVal);
+    }
     document.getElementById('adminPwScreen').style.display = 'none';
     document.getElementById('adminMainPanel').style.display = 'block';
   } else {
@@ -2387,7 +2402,7 @@ function checkAdminPw() {
   }
 }
 
-// ── DELETE PRODUCT (Supabase) ──
+// ── DELETE PRODUCT (GitHub) ──
 async function deleteProduct(id) {
   if (!confirm('Delete this product from the store?')) return;
 
@@ -2399,13 +2414,16 @@ async function deleteProduct(id) {
     setTimeout(() => card.remove(), 380);
   }
 
-  if (!reviewsConfigured()) {
-    showToast('⚠️ Not connected to the database.');
+  if (!ghReady()) {
+    showToast('⚠️ Not connected to GitHub.');
     return;
   }
 
-  const { error } = await supabaseClient.from('products').delete().eq('id', id);
-  if (error) { showToast('❌ Delete failed: ' + error.message); return; }
+  try {
+    const { sha, data } = await ghReadForWrite(PRODUCTS_PATH);
+    const filtered = data.filter(p => p.id !== id);
+    await ghWrite(PRODUCTS_PATH, filtered, sha, `Delete product: ${id}`);
+  } catch (e) { showToast('❌ Delete failed: ' + e.message); return; }
   showToast('✅ Deleted');
   renderDeleteList();
 }
@@ -2436,25 +2454,20 @@ function renderDeleteList() {
   }).join('');
 }
 
-// ── ADMIN: REVIEW MODERATION (Supabase) ──
+// ── ADMIN: REVIEW MODERATION (GitHub) ──
 async function renderAdminReviewsList() {
   const list = document.getElementById('admin-review-list');
-  if (!reviewsConfigured()) {
-    list.innerHTML = '<div class="del-empty">Reviews aren\'t connected to Supabase yet.</div>';
+  if (!ghReady()) {
+    list.innerHTML = '<div class="del-empty">Not connected to GitHub this session.</div>';
     return;
   }
   list.innerHTML = '<div class="del-empty">Loading reviews…</div>';
 
-  const { data, error } = await supabaseClient
-    .from('reviews')
-    .select('id, product_id, name, rating, text, created_at')
-    .order('created_at', { ascending: false });
+  let data;
+  try { ({ data } = await ghReadForWrite(REVIEWS_PATH)); }
+  catch (e) { list.innerHTML = '<div class="del-empty">Failed to load reviews.</div>'; return; }
 
-  if (error) {
-    console.error('Failed to load reviews for admin:', error);
-    list.innerHTML = '<div class="del-empty">Failed to load reviews.</div>';
-    return;
-  }
+  data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   if (!data.length) {
     list.innerHTML = '<div class="del-empty">No reviews yet.</div>';
     return;
@@ -2483,10 +2496,12 @@ async function deleteReview(id) {
   const row = document.getElementById('rev-row-' + id);
   if (row) row.style.opacity = '0.4';
 
-  const { error } = await supabaseClient.from('reviews').delete().eq('id', id);
-
-  if (error) {
-    console.error('Failed to delete review:', error);
+  try {
+    const { sha, data } = await ghReadForWrite(REVIEWS_PATH);
+    const filtered = data.filter(r => r.id !== id);
+    await ghWrite(REVIEWS_PATH, filtered, sha, `Delete review: ${id}`);
+  } catch (e) {
+    console.error('Failed to delete review:', e);
     alert('⚠️ Failed to delete review.');
     if (row) row.style.opacity = '1';
     return;
